@@ -55,6 +55,12 @@ func NewParser(file string) *Parser {
 				})
 				break
 
+			case "DEBUG":
+				p.Commands = append(p.Commands, &Debug{
+					Token: t,
+				})
+				break
+
 			case "MICROSPECTOR":
 			case "ENDMICROSPECTOR":
 				p.Commands = append(p.Commands, &Microspector{
