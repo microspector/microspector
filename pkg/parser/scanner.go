@@ -193,7 +193,7 @@ func (s *Scanner) scanVariable() (tok Token) {
 		Text: s.readUntilWith(isVarEnd) + string(s.read()),
 	}
 
-	tok.Text = strings.Trim(tok.Text, "{}")
+	tok.Text = strings.TrimSpace(  strings.Trim(tok.Text, "{}") )
 
 	return tok
 }

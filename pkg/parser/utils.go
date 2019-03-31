@@ -2,9 +2,10 @@ package parser
 
 import (
 	"bytes"
+	"encoding/json"
+	"github.com/thedevsaddam/gojsonq"
 	"html/template"
 	"reflect"
-	"strings"
 	"time"
 )
 
@@ -65,25 +66,7 @@ func isTrue(val reflect.Value) (truth, ok bool) {
 
 var zero reflect.Value
 
-func query(fieldPath string, state map[string]interface{}) reflect.Value {
-	segments := strings.Split(fieldPath, ".")
-	var v = reflect.ValueOf(state)
-	for _, fieldName := range segments {
-
-		switch v.Kind() {
-		case reflect.Struct:
-			tField, ok := v.Type().FieldByName(fieldName)
-			if ok {
-				field := v.FieldByIndex(tField.Index)
-				v = field
-			}
-			break
-
-		case reflect.Map:
-			nameVal := reflect.ValueOf(fieldName)
-			v = v.MapIndex(nameVal)
-			break
-		}
-	}
-	return v
+func query(fieldPath string, state map[string]interface{}) interface{} {
+	b, _ := json.Marshal(state)
+	return gojsonq.New().JSONString(string(b)).From( fieldPath ).Get()
 }

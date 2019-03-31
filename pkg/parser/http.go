@@ -72,10 +72,6 @@ func (h *Http) Run(state *State) error {
 		h.Url = _url
 	}
 
-	var postForm url.Values
-
-	var resultVariable = "lastCall"
-
 	for i := 0; i < len(h.Token.Tree); i++ {
 		token := h.Token.Tree[i]
 
@@ -119,6 +115,7 @@ func (h *Http) Run(state *State) error {
 
 					h.Params = _params
 				}
+
 
 			} else if token.Text == "HEADER" {
 				headersToken := h.Token.Tree[i+1]
@@ -168,7 +165,7 @@ func (h *Http) Run(state *State) error {
 	r, err := http.NewRequest(h.Method, h.Url, nil)
 
 	if h.Method == "POST" {
-		postForm, _ = url.ParseQuery(h.Params)
+		r.PostForm, _ = url.ParseQuery(h.Params)
 	} else {
 		h.Url = h.Url + "?" + h.Params
 	}
@@ -180,9 +177,6 @@ func (h *Http) Run(state *State) error {
 			r.Header.Add(headerKey, headerValue)
 		}
 	}
-
-	//apply headers.
-	r.PostForm = postForm
 
 	if err != nil {
 		return err
@@ -203,7 +197,7 @@ func (h *Http) Run(state *State) error {
 		return err
 	}
 
-	state.Vars[resultVariable] = NewFromResponse(response, elapsed)
+	state.Vars[h.Into] = NewFromResponse(response, elapsed)
 
 	return nil
 }

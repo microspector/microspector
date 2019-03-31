@@ -1,6 +1,9 @@
 package parser
 
-import "log"
+import (
+	"github.com/davecgh/go-spew/spew"
+	"log"
+)
 
 type Debug struct {
 	Token Token
@@ -31,6 +34,7 @@ func (s *Debug) Run(state *State) error {
 		case VARIABLE:
 			//find value of VARIABLE from state
 			log.Printf("[DEBUG] Value of : %s\n", token.Text)
+			spew.Dump( query(token.Text, state.Vars) )
 			break
 
 		default:
