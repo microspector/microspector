@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type Http struct {
@@ -38,6 +39,11 @@ func NewFromResponse(response *http.Response, took int64) HttpResult {
 		ContentLength: len(content),
 		Content:       string(content),
 		Took:          took,
+		Headers:       make(map[string]string),
+	}
+
+	for k, v := range response.Header {
+		result.Headers[toVariableName(k)] = v[0]
 	}
 
 	_ = json.Unmarshal(content, &result.Json)
@@ -122,6 +128,7 @@ func (h *Http) Run(state *State) error {
 				if h.Headers == nil {
 					h.Headers = map[string]string{}
 				}
+
 				log.Printf("Setting Header %s to %s\n", headerSegments[0], headerSegments[1])
 				h.Headers[headerSegments[0]] = headerSegments[1]
 
@@ -153,10 +160,18 @@ func (h *Http) Run(state *State) error {
 		h.Url = h.Url + "?" + h.Params
 	}
 
-	r, err := http.NewRequest(h.Method, h.Url, nil)
+	var (
+		err error
+		r   *http.Request
+	)
 
 	if h.Method == "POST" {
 		log.Println(h.Params)
+		r, err = http.NewRequest(h.Method, h.Url, strings.NewReader(h.Params))
+		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	} else {
+		r, err = http.NewRequest(h.Method, h.Url, nil)
 	}
 
 	for headerKey, headerValue := range h.Headers {
@@ -172,11 +187,17 @@ func (h *Http) Run(state *State) error {
 	}
 
 	start := makeTimestamp()
-	response, err := http.DefaultClient.Do(r)
-	if err != nil {
-		log.Println(err)
-		return err
+
+	client := &http.Client{
+		Timeout: 30 * time.Second,
 	}
+
+	response, err := client.Do(r)
+	if err != nil {
+		panic(err)
+	}
+
+	defer response.Body.Close()
 	elapsed := makeTimestamp() - start
 
 	log.Printf("Got : %d  took : %dms", response.StatusCode, elapsed)

@@ -6,6 +6,7 @@ import (
 	"github.com/thedevsaddam/gojsonq"
 	"html/template"
 	"reflect"
+	"strings"
 	"time"
 )
 
@@ -68,5 +69,14 @@ var zero reflect.Value
 
 func query(fieldPath string, state map[string]interface{}) interface{} {
 	b, _ := json.Marshal(state)
-	return gojsonq.New().JSONString(string(b)).From( fieldPath ).Get()
+	return gojsonq.New().JSONString(string(b)).From(fieldPath).Get()
+}
+
+func toVariableName(str string) string {
+	segments := strings.Split(str, "-")
+	for key, value := range segments {
+		segments[key] = strings.Title(value);
+	}
+
+	return strings.Join(segments, "")
 }
