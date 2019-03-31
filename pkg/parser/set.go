@@ -9,7 +9,7 @@ type Set struct {
 	Token Token
 }
 
-func (s *Set) Run(state State) error {
+func (s *Set) Run(state *State) error {
 	argCount := 2
 
 	if len(s.Token.Tree)-1 != argCount {

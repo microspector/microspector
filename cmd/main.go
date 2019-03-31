@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	var state = parser.State{
+	var state = &parser.State{
 		Vars: map[string]interface{}{},
 	}
 
@@ -15,10 +15,13 @@ func main() {
 	for _, cmd := range p.Commands {
 		err := cmd.Run(state)
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
 		}
 	}
 
 	// print a report here.
-	//spew.Dump(state)
+
+	log.Printf("Passed MUST : %d", state.SuccessMust)
+	log.Printf("Passed SHOULD : %d", state.SuccessShould)
+	log.Printf("Failed SHOULD : %d", state.FailedShould)
 }

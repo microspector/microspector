@@ -8,5 +8,5 @@ type State struct {
 }
 
 type Command interface {
-	Run(State) error
+	Run(*State) error
 }

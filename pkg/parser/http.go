@@ -57,7 +57,7 @@ var validHttpMethods = map[string]int{
 	"PUT":     1,
 }
 
-func (h *Http) Run(state State) error {
+func (h *Http) Run(state *State) error {
 
 	urlToken := h.Token.Tree[2]
 	h.Url = urlToken.Text
