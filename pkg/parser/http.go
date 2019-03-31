@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -41,20 +40,9 @@ func NewFromResponse(response *http.Response, took int64) HttpResult {
 		Took:          took,
 	}
 
-	//if response.Header.Get("content-type") == "application/json" {
 	_ = json.Unmarshal(content, &result.Json)
 
-	//}
-
 	return result
-}
-
-var validHttpMethods = map[string]int{
-	"GET":     1,
-	"POST":    1,
-	"HEAD":    1,
-	"OPTIONS": 1,
-	"PUT":     1,
 }
 
 func (h *Http) Run(state *State) error {
@@ -82,7 +70,7 @@ func (h *Http) Run(state *State) error {
 			// URL, HEADER, PARAMS, INTO etc.etc.
 			if token.Text == "HTTP" {
 				//ok
-			} else if _, isAMethod := validHttpMethods[token.Text]; isAMethod {
+			} else if isValidMethod(token.Text) {
 				h.Method = token.Text
 			} else if token.Text == "URL" {
 
@@ -115,7 +103,6 @@ func (h *Http) Run(state *State) error {
 
 					h.Params = _params
 				}
-
 
 			} else if token.Text == "HEADER" {
 				headersToken := h.Token.Tree[i+1]
@@ -162,12 +149,14 @@ func (h *Http) Run(state *State) error {
 
 	log.Printf("HTTP %s %s\n", h.Method, h.Url)
 
+	if h.Method != "POST" {
+		h.Url = h.Url + "?" + h.Params
+	}
+
 	r, err := http.NewRequest(h.Method, h.Url, nil)
 
 	if h.Method == "POST" {
-		r.PostForm, _ = url.ParseQuery(h.Params)
-	} else {
-		h.Url = h.Url + "?" + h.Params
+		log.Println(h.Params)
 	}
 
 	for headerKey, headerValue := range h.Headers {
@@ -200,4 +189,14 @@ func (h *Http) Run(state *State) error {
 	state.Vars[h.Into] = NewFromResponse(response, elapsed)
 
 	return nil
+}
+
+func isValidMethod(method string) bool {
+
+	switch method {
+	case "GET", "POST", "HEAD", "OPTIONS", "PUT":
+		return true
+	}
+
+	return false
 }
