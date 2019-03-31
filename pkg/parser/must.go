@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 	"strings"
 )
@@ -29,6 +30,19 @@ func (m *Must) IsShouldNot() bool {
 
 func (m *Must) Run(state *State) (err error) {
 	m.State = state
+
+	if len(m.Token.Tree) == 2 && m.Token.Tree[1].Type == VARIABLE {
+
+		log.Printf("Checking truth for %s\n", m.Token.Tree[1].Text)
+
+		if truth, _ := IsTrue(m.interfaceValueOf(m.Token.Tree[1])); !truth {
+			err = fmt.Errorf("%s Is not true", m.Token.Tree[1].Text)
+		} else {
+			log.Printf("%s is true!\n", m.Token.Tree[1].Text)
+		}
+
+		return m.actuallyFailed(err)
+	}
 
 	for i := 0; i < len(m.Token.Tree); i++ {
 		token := m.Token.Tree[i]
@@ -107,7 +121,12 @@ func (m *Must) Run(state *State) (err error) {
 func (m *Must) performMatch(i int) (err error) {
 	leftToken := m.Token.Tree[i-1]
 	rightToken := m.Token.Tree[i+1]
-	_, err = regexp.MatchString(rightToken.Text, leftToken.Text)
+	matched, err := regexp.MatchString(rightToken.Text, m.valueOf(leftToken))
+	if matched {
+		log.Printf("%s matches %s", leftToken.Text, rightToken.Text)
+	} else {
+		log.Printf("%s does not match %s", leftToken.Text, rightToken.Text)
+	}
 	return m.actuallyFailed(err)
 }
 
@@ -219,5 +238,9 @@ func (m *Must) performLTE(i int) (err error) {
 }
 
 func (m *Must) valueOf(token Token) string {
-	return valueOf(token, m.State)
+	return stringValueOf(token, m.State)
+}
+
+func (m *Must) interfaceValueOf(token Token) interface{} {
+	return interfaceValueOf(token, m.State)
 }

@@ -200,7 +200,7 @@ func (h *Http) Run(state *State) error {
 	defer response.Body.Close()
 	elapsed := makeTimestamp() - start
 
-	log.Printf("Got : %d  took : %dms", response.StatusCode, elapsed)
+	//log.Printf("Got : %d  took : %dms", response.StatusCode, elapsed)
 
 	if err != nil {
 		log.Println(err)

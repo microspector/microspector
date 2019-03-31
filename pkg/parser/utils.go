@@ -69,19 +69,41 @@ var zero reflect.Value
 
 func query(fieldPath string, state map[string]interface{}) interface{} {
 	b, _ := json.Marshal(state)
-	return gojsonq.New().JSONString(string(b)).From(fieldPath).Get()
+	return gojsonq.New().JSONString(string(b)).Find(fieldPath)
 }
 
 func toVariableName(str string) string {
 	segments := strings.Split(str, "-")
 	for key, value := range segments {
-		segments[key] = strings.Title(value);
+		segments[key] = strings.Title(value)
 	}
 
 	return strings.Join(segments, "")
 }
 
-func valueOf(token Token, state *State) string {
+func interfaceValueOf(token Token, state *State) interface{} {
+	if token.Type == STRING {
+		if token.isTemplated() {
+
+			_result, err := executeTemplate(token.Text, state.Vars)
+			if err != nil {
+				panic(err)
+			}
+			return _result
+
+		} else {
+			return token.Text
+		}
+	} else if token.Type == INTEGER {
+		return token.Text
+	} else if token.Type == VARIABLE {
+		return query(token.Text, state.Vars)
+	}
+
+	return token.Text
+}
+
+func stringValueOf(token Token, state *State) string {
 	if token.Type == STRING {
 		if token.isTemplated() {
 
