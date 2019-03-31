@@ -1,7 +1,14 @@
 package parser
 
+import (
+	"fmt"
+	"regexp"
+	"strings"
+)
+
 type Must struct {
 	Token Token
+	State *State
 }
 
 func (m *Must) IsMust() bool {
@@ -21,6 +28,7 @@ func (m *Must) IsShouldNot() bool {
 }
 
 func (m *Must) Run(state *State) (err error) {
+	m.State = state
 
 	for i := 0; i < len(m.Token.Tree); i++ {
 		token := m.Token.Tree[i]
@@ -96,48 +104,120 @@ func (m *Must) Run(state *State) (err error) {
 	return err
 }
 
-func (m *Must) performMatch(i int) error {
+func (m *Must) performMatch(i int) (err error) {
+	leftToken := m.Token.Tree[i-1]
+	rightToken := m.Token.Tree[i+1]
+	_, err = regexp.MatchString(rightToken.Text, leftToken.Text)
+	return m.actuallyFailed(err)
+}
+
+func (m *Must) actuallyFailed(err error) error {
+	if err != nil {
+		if m.IsShouldNot() || m.IsMustNot() {
+			return nil
+		} else {
+			return err
+		}
+	}
 
 	return nil
 }
 
-func (m *Must) performIn(i int) error {
+func (m *Must) performIn(i int) (err error) {
 
 	return nil
 }
 
-func (m *Must) performEqual(i int) error {
-	return nil
+func (m *Must) performEqual(i int) (err error) {
+
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if leftToken != rightToken {
+		err = fmt.Errorf("they are not equal")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performNotEqual(i int) error {
-	return nil
+func (m *Must) performNotEqual(i int) (err error) {
+
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if leftToken == rightToken {
+		err = fmt.Errorf("they are equal")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performEndWith(i int) error {
-	return nil
+func (m *Must) performEndWith(i int) (err error) {
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if !strings.HasSuffix(leftToken, rightToken) {
+		err = fmt.Errorf("%s doesn't end with %s", leftToken, rightToken)
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performStartWith(i int) error {
-	return nil
+func (m *Must) performStartWith(i int) (err error) {
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if !strings.HasPrefix(leftToken, rightToken) {
+		err = fmt.Errorf("%s doesn't start with %s", leftToken, rightToken)
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performOperator(i int) error {
-	return nil
+func (m *Must) performGT(i int) (err error) {
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if !(leftToken > rightToken) {
+		err = fmt.Errorf("it is not gt")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performGT(i int) error {
-	return nil
+func (m *Must) performLT(i int) (err error) {
+	leftToken := m.valueOf(m.Token.Tree[i-1])
+	rightToken := m.valueOf(m.Token.Tree[i+1])
+
+	if !(leftToken < rightToken) {
+		err = fmt.Errorf("it is not lt")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performLT(i int) error {
-	return nil
+func (m *Must) performGTE(i int) (err error) {
+	leftToken := m.Token.Tree[i-1]
+	rightToken := m.Token.Tree[i+1]
+
+	if !(leftToken.Text >= rightToken.Text) {
+		err = fmt.Errorf("it is not gte")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performGTE(i int) error {
-	return nil
+func (m *Must) performLTE(i int) (err error) {
+	leftToken := m.Token.Tree[i-1]
+	rightToken := m.Token.Tree[i+1]
+
+	if !(leftToken.Text <= rightToken.Text) {
+		err = fmt.Errorf("it is not lte")
+	}
+
+	return m.actuallyFailed(err)
 }
 
-func (m *Must) performLTE(i int) error {
-	return nil
+func (m *Must) valueOf(token Token) string {
+	return valueOf(token, m.State)
 }

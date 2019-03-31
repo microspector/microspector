@@ -156,7 +156,7 @@ func (h *Http) Run(state *State) error {
 
 	log.Printf("HTTP %s %s\n", h.Method, h.Url)
 
-	if h.Method != "POST" {
+	if h.Method != "POST" && h.Params != "" {
 		h.Url = h.Url + "?" + h.Params
 	}
 

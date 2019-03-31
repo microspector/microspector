@@ -29,7 +29,7 @@ func NewParser(file string) *Parser {
 	for sc.Scan() {
 		line := sc.Text()
 		t, err := makeCommand(line)
-		log.Println(t.Text)
+
 		if err != nil {
 			log.Fatalf("error on line x: %v", err)
 		}

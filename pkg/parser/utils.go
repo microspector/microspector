@@ -80,3 +80,25 @@ func toVariableName(str string) string {
 
 	return strings.Join(segments, "")
 }
+
+func valueOf(token Token, state *State) string {
+	if token.Type == STRING {
+		if token.isTemplated() {
+
+			_result, err := executeTemplate(token.Text, state.Vars)
+			if err != nil {
+				panic(err)
+			}
+			return _result
+
+		} else {
+			return token.Text
+		}
+	} else if token.Type == INTEGER {
+		return token.Text
+	} else if token.Type == VARIABLE {
+		return query(token.Text, state.Vars).(string)
+	}
+
+	return token.Text
+}
