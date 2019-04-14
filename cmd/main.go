@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/tufanbarisyildirim/microspector/pkg/parser"
 	"log"
 )
@@ -11,7 +12,10 @@ func main() {
 		Vars: map[string]interface{}{},
 	}
 
-	p := parser.NewParser("../tasks/main.msf")
+	var file = flag.String("file", "../tasks/main.msf", "Task file path")
+	flag.Parse()
+
+	p := parser.NewParser(*file)
 	for _, cmd := range p.Commands {
 		err := cmd.Run(state)
 		if err != nil {

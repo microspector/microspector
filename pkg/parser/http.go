@@ -129,7 +129,6 @@ func (h *Http) Run(state *State) error {
 					h.Headers = map[string]string{}
 				}
 
-				log.Printf("Setting Header %s to %s\n", headerSegments[0], headerSegments[1])
 				h.Headers[headerSegments[0]] = headerSegments[1]
 
 			} else if token.Text == "INTO" {
@@ -154,8 +153,6 @@ func (h *Http) Run(state *State) error {
 
 	}
 
-	log.Printf("HTTP %s %s\n", h.Method, h.Url)
-
 	if h.Method != "POST" && h.Params != "" {
 		h.Url = h.Url + "?" + h.Params
 	}
@@ -166,7 +163,6 @@ func (h *Http) Run(state *State) error {
 	)
 
 	if h.Method == "POST" {
-		log.Println(h.Params)
 		r, err = http.NewRequest(h.Method, h.Url, strings.NewReader(h.Params))
 		r.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 

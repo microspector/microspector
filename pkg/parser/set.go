@@ -33,7 +33,5 @@ func (s *Set) Run(state *State) error {
 		break
 	}
 
-	log.Printf("SET variable %s to %s\n", variableNameToken.Text, variableValueToken.Text)
-
 	return nil
 }
