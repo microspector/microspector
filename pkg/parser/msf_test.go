@@ -47,6 +47,33 @@ func doTest(s tst, opts ...Option) (func(t *testing.T)) {
 	}
 }
 
+func TestParse_Number(t *testing.T) {
+
+	var tests = []tst{
+		{"0", true, int64(0)},
+		{"1", true, int64(1)},
+		{"-1", true, int64(-1)},
+		{"0.", true, float64(0)},
+		{"1.", true, float64(1)},
+		{"-1.", true, float64(-1)},
+		{"0.0", false, nil},
+		{"-0", false, nil},
+		{"-0.0", false, nil},
+		{"0.1", true, float64(0.1)},
+		{"1.1", true, float64(1.1)},
+		{"-1.1", true, float64(-1.1)},
+		{"11", true, int64(11)},
+		{"-11", true, int64(-11)},
+		{"1234567890.0", true, float64(1234567890.0)},
+		{"1234567890", true, int64(1234567890)},
+	}
+
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Number")))
+	}
+}
+
+
 func TestParse_String(t *testing.T) {
 	var tests = []tst{
 		{"''", true, ""},

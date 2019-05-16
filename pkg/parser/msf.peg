@@ -33,5 +33,36 @@ Whitespace ⟵ [\t\n\v\f\r ]+ {
 UnicodeEscape ⟵ 'u' HexDigit HexDigit HexDigit HexDigit
 HexDigit ⟵ [0-9a-f]i
 
+// We parse out the typical numeric types, including
+// erroring on -0, etc.
+Number ⟵ ZeroErr / Float / Integer / ZeroVal
+Float ⟵ Neg? Flt {
+    fmt.Printf("Float capturing '%s'\n", c.text)
+    return strconv.ParseFloat(string(c.text), 64)
+}
+Integer ⟵ Neg? Int {
+    fmt.Printf("Integer capturing\n")
+    return strconv.ParseInt(string(c.text), 10, 64)
+}
+Flt ⟵ Int Dot Int / Int Dot ZeroStr / ZeroStr Dot Int / ZeroStr Dot / Int Dot {
+    fmt.Printf("Flt capturing\n")
+    return strconv.ParseFloat(string(c.text), 64)
+}
+Int ⟵ [1-9][0-9]* {
+    fmt.Printf("Int capturing\n")
+    return c.text, nil
+}
+ZeroStr ⟵ "0" {
+    return "0", nil
+}
+ZeroVal ⟵ "0" {
+    return int64(0), nil
+}
+ZeroErr ⟵ Neg? "0.0" {
+    return nil, errors.New("Invalid 0.0")
+}
+Dot ⟵ "."
+Neg ⟵ "-"
+
 // That's all folks
 EOF ⟵ !.

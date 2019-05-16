@@ -381,12 +381,276 @@ var g = &grammar{
 			},
 		},
 		{
+			name: "Number",
+			pos:  position{line: 38, col: 1, offset: 1351},
+			expr: &choiceExpr{
+				pos: position{line: 38, col: 10, offset: 1362},
+				alternatives: []interface{}{
+					&ruleRefExpr{
+						pos:  position{line: 38, col: 10, offset: 1362},
+						name: "ZeroErr",
+					},
+					&ruleRefExpr{
+						pos:  position{line: 38, col: 20, offset: 1372},
+						name: "Float",
+					},
+					&ruleRefExpr{
+						pos:  position{line: 38, col: 28, offset: 1380},
+						name: "Integer",
+					},
+					&ruleRefExpr{
+						pos:  position{line: 38, col: 38, offset: 1390},
+						name: "ZeroVal",
+					},
+				},
+			},
+		},
+		{
+			name: "Float",
+			pos:  position{line: 39, col: 1, offset: 1399},
+			expr: &actionExpr{
+				pos: position{line: 39, col: 9, offset: 1409},
+				run: (*parser).callonFloat1,
+				expr: &seqExpr{
+					pos: position{line: 39, col: 9, offset: 1409},
+					exprs: []interface{}{
+						&zeroOrOneExpr{
+							pos: position{line: 39, col: 9, offset: 1409},
+							expr: &ruleRefExpr{
+								pos:  position{line: 39, col: 9, offset: 1409},
+								name: "Neg",
+							},
+						},
+						&ruleRefExpr{
+							pos:  position{line: 39, col: 14, offset: 1414},
+							name: "Flt",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Integer",
+			pos:  position{line: 43, col: 1, offset: 1525},
+			expr: &actionExpr{
+				pos: position{line: 43, col: 11, offset: 1537},
+				run: (*parser).callonInteger1,
+				expr: &seqExpr{
+					pos: position{line: 43, col: 11, offset: 1537},
+					exprs: []interface{}{
+						&zeroOrOneExpr{
+							pos: position{line: 43, col: 11, offset: 1537},
+							expr: &ruleRefExpr{
+								pos:  position{line: 43, col: 11, offset: 1537},
+								name: "Neg",
+							},
+						},
+						&ruleRefExpr{
+							pos:  position{line: 43, col: 16, offset: 1542},
+							name: "Int",
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Flt",
+			pos:  position{line: 47, col: 1, offset: 1644},
+			expr: &choiceExpr{
+				pos: position{line: 47, col: 7, offset: 1652},
+				alternatives: []interface{}{
+					&seqExpr{
+						pos: position{line: 47, col: 7, offset: 1652},
+						exprs: []interface{}{
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 7, offset: 1652},
+								name: "Int",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 11, offset: 1656},
+								name: "Dot",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 15, offset: 1660},
+								name: "Int",
+							},
+						},
+					},
+					&seqExpr{
+						pos: position{line: 47, col: 21, offset: 1666},
+						exprs: []interface{}{
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 21, offset: 1666},
+								name: "Int",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 25, offset: 1670},
+								name: "Dot",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 29, offset: 1674},
+								name: "ZeroStr",
+							},
+						},
+					},
+					&seqExpr{
+						pos: position{line: 47, col: 39, offset: 1684},
+						exprs: []interface{}{
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 39, offset: 1684},
+								name: "ZeroStr",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 47, offset: 1692},
+								name: "Dot",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 51, offset: 1696},
+								name: "Int",
+							},
+						},
+					},
+					&seqExpr{
+						pos: position{line: 47, col: 57, offset: 1702},
+						exprs: []interface{}{
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 57, offset: 1702},
+								name: "ZeroStr",
+							},
+							&ruleRefExpr{
+								pos:  position{line: 47, col: 65, offset: 1710},
+								name: "Dot",
+							},
+						},
+					},
+					&actionExpr{
+						pos: position{line: 47, col: 71, offset: 1716},
+						run: (*parser).callonFlt17,
+						expr: &seqExpr{
+							pos: position{line: 47, col: 71, offset: 1716},
+							exprs: []interface{}{
+								&ruleRefExpr{
+									pos:  position{line: 47, col: 71, offset: 1716},
+									name: "Int",
+								},
+								&ruleRefExpr{
+									pos:  position{line: 47, col: 75, offset: 1720},
+									name: "Dot",
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Int",
+			pos:  position{line: 51, col: 1, offset: 1816},
+			expr: &actionExpr{
+				pos: position{line: 51, col: 7, offset: 1824},
+				run: (*parser).callonInt1,
+				expr: &seqExpr{
+					pos: position{line: 51, col: 7, offset: 1824},
+					exprs: []interface{}{
+						&charClassMatcher{
+							pos:             position{line: 51, col: 7, offset: 1824},
+							val:             "[1-9]",
+							ranges:          []rune{'1', '9'},
+							basicLatinChars: [128]bool{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+							ignoreCase:      false,
+							inverted:        false,
+						},
+						&zeroOrMoreExpr{
+							pos: position{line: 51, col: 12, offset: 1829},
+							expr: &charClassMatcher{
+								pos:             position{line: 51, col: 12, offset: 1829},
+								val:             "[0-9]",
+								ranges:          []rune{'0', '9'},
+								basicLatinChars: [128]bool{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true, true, true, true, true, true, true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false},
+								ignoreCase:      false,
+								inverted:        false,
+							},
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "ZeroStr",
+			pos:  position{line: 55, col: 1, offset: 1901},
+			expr: &actionExpr{
+				pos: position{line: 55, col: 11, offset: 1913},
+				run: (*parser).callonZeroStr1,
+				expr: &litMatcher{
+					pos:        position{line: 55, col: 11, offset: 1913},
+					val:        "0",
+					ignoreCase: false,
+				},
+			},
+		},
+		{
+			name: "ZeroVal",
+			pos:  position{line: 58, col: 1, offset: 1944},
+			expr: &actionExpr{
+				pos: position{line: 58, col: 11, offset: 1956},
+				run: (*parser).callonZeroVal1,
+				expr: &litMatcher{
+					pos:        position{line: 58, col: 11, offset: 1956},
+					val:        "0",
+					ignoreCase: false,
+				},
+			},
+		},
+		{
+			name: "ZeroErr",
+			pos:  position{line: 61, col: 1, offset: 1992},
+			expr: &actionExpr{
+				pos: position{line: 61, col: 11, offset: 2004},
+				run: (*parser).callonZeroErr1,
+				expr: &seqExpr{
+					pos: position{line: 61, col: 11, offset: 2004},
+					exprs: []interface{}{
+						&zeroOrOneExpr{
+							pos: position{line: 61, col: 11, offset: 2004},
+							expr: &ruleRefExpr{
+								pos:  position{line: 61, col: 11, offset: 2004},
+								name: "Neg",
+							},
+						},
+						&litMatcher{
+							pos:        position{line: 61, col: 16, offset: 2009},
+							val:        "0.0",
+							ignoreCase: false,
+						},
+					},
+				},
+			},
+		},
+		{
+			name: "Dot",
+			pos:  position{line: 64, col: 1, offset: 2064},
+			expr: &litMatcher{
+				pos:        position{line: 64, col: 7, offset: 2072},
+				val:        ".",
+				ignoreCase: false,
+			},
+		},
+		{
+			name: "Neg",
+			pos:  position{line: 65, col: 1, offset: 2077},
+			expr: &litMatcher{
+				pos:        position{line: 65, col: 7, offset: 2085},
+				val:        "-",
+				ignoreCase: false,
+			},
+		},
+		{
 			name: "EOF",
-			pos:  position{line: 37, col: 1, offset: 1293},
+			pos:  position{line: 68, col: 1, offset: 2113},
 			expr: &notExpr{
-				pos: position{line: 37, col: 7, offset: 1301},
+				pos: position{line: 68, col: 7, offset: 2121},
 				expr: &anyMatcher{
-					line: 37, col: 8, offset: 1302,
+					line: 68, col: 8, offset: 2122,
 				},
 			},
 		},
@@ -435,6 +699,87 @@ func (p *parser) callonWhitespace1() (interface{}, error) {
 	stack := p.vstack[len(p.vstack)-1]
 	_ = stack
 	return p.cur.onWhitespace1()
+}
+
+func (c *current) onFloat1() (interface{}, error) {
+
+	fmt.Printf("Float capturing '%s'\n", c.text)
+	return strconv.ParseFloat(string(c.text), 64)
+}
+
+func (p *parser) callonFloat1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onFloat1()
+}
+
+func (c *current) onInteger1() (interface{}, error) {
+
+	fmt.Printf("Integer capturing\n")
+	return strconv.ParseInt(string(c.text), 10, 64)
+}
+
+func (p *parser) callonInteger1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onInteger1()
+}
+
+func (c *current) onFlt17() (interface{}, error) {
+
+	fmt.Printf("Flt capturing\n")
+	return strconv.ParseFloat(string(c.text), 64)
+}
+
+func (p *parser) callonFlt17() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onFlt17()
+}
+
+func (c *current) onInt1() (interface{}, error) {
+
+	fmt.Printf("Int capturing\n")
+	return c.text, nil
+}
+
+func (p *parser) callonInt1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onInt1()
+}
+
+func (c *current) onZeroStr1() (interface{}, error) {
+
+	return "0", nil
+}
+
+func (p *parser) callonZeroStr1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onZeroStr1()
+}
+
+func (c *current) onZeroVal1() (interface{}, error) {
+
+	return int64(0), nil
+}
+
+func (p *parser) callonZeroVal1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onZeroVal1()
+}
+
+func (c *current) onZeroErr1() (interface{}, error) {
+
+	return nil, errors.New("Invalid 0.0")
+}
+
+func (p *parser) callonZeroErr1() (interface{}, error) {
+	stack := p.vstack[len(p.vstack)-1]
+	_ = stack
+	return p.cur.onZeroErr1()
 }
 
 var (
