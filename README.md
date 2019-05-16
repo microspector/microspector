@@ -1,2 +1,2 @@
 # microspector
-Micro service integration test tool. Micro Server Inspector
+Micro service integration test tool. Micro Service Inspector
