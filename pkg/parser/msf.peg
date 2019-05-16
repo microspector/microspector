@@ -1,0 +1,37 @@
+{
+package parser
+
+}
+// We handle quoted strings using PHP style ' or " characters, and unquoting
+// as required
+String ⟵ DoubleString / SingleString / UnquotedString
+// Single quoted string follow PHPs rules for escpaing
+SingleString ⟵ SingleQuote chr:( !SingleEscapedChar . / '\\' SingleEscapeSequence )* SingleQuote {
+    return strunquote(string(c.text))
+}
+SingleEscapedChar ⟵ [\x00-\x1f'\\]
+SingleEscapeSequence ⟵ SingleCharEscape / UnicodeEscape
+SingleCharEscape ⟵ ['bfnrt]
+SingleQuote ⟵ "'"
+// DoubleQuotedStrings also follow PHPs rules for escaping
+DoubleString ⟵ DoubleQuote ( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* DoubleQuote {
+    return strunquote(string(c.text))
+}
+DoubleEscapedChar ⟵ [\x00-\x1f"\\]
+DoubleEscapeSequence ⟵ DoubleCharEscape / UnicodeEscape
+DoubleCharEscape ⟵ ["bfnrt]
+DoubleQuote ⟵ "\""
+// Unquoted strings are only valid as standalone double braced specifiers
+UnquotedString ⟵ "{{" Whitespace? UnquotedIdentifier Whitespace? "}}" {
+    return string(c.text), nil
+}
+UnquotedIdentifier ⟵ [0-9a-zA-Z._\\-]+
+// Helper types for strings
+Whitespace ⟵ [\t\n\v\f\r ]+ {
+    return " ", nil
+}
+UnicodeEscape ⟵ 'u' HexDigit HexDigit HexDigit HexDigit
+HexDigit ⟵ [0-9a-f]i
+
+// That's all folks
+EOF ⟵ !.
