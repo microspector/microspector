@@ -1,8 +1,9 @@
 package parser
 
 import (
-"strconv"
-"unicode/utf8"
+	"strconv"
+	"text/template/parse"
+	"unicode/utf8"
 )
 
 // Helper functions
@@ -70,4 +71,36 @@ func contains(s string, c byte) bool {
 	return false
 }
 
+func hasTemplate(s string) (bool, error) {
+	nodes, err := parse.Parse("inline", s, "{{", "}}")
+	if err != nil {
+		return false, err
+	}
+	return !isStaticTree(nodes["inline"].Root), nil
+}
 
+func isStaticTree(n parse.Node) bool {
+	switch n := n.(type) {
+	case nil:
+		return true
+	case *parse.ActionNode:
+	case *parse.IfNode:
+	case *parse.ListNode:
+		for _, node := range n.Nodes {
+			if !isStaticTree(node) {
+				return false
+			}
+		}
+		return true
+	case *parse.RangeNode:
+	case *parse.TemplateNode:
+		return false
+	case *parse.TextNode:
+		return true
+	case *parse.WithNode:
+	default:
+		// NOTE: If this gets hit, it might mean that the underlying parse package has added a new type
+		panic("unknown node: " + n.String())
+	}
+	return false
+}

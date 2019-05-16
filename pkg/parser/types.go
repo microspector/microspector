@@ -3,6 +3,7 @@ package parser
 type ValType int
 const (
 	ValTypeString ValType = iota
+	ValTypeTemplate
 	ValTypeFloat
 	ValTypeInt
 	ValTypeBool
@@ -12,6 +13,8 @@ func(v ValType) String() string {
 	switch v {
 	case ValTypeString:
 		return "String"
+	case ValTypeTemplate:
+		return "Template"
 	case ValTypeFloat:
 		return "Float"
 	case ValTypeInt:
@@ -52,6 +55,10 @@ func (v Val) Equals(o Valueable) bool {
 		return v.flt == o.GetVal().(float64)
 	case ValTypeInt:
 		return v.itg == o.GetVal().(int64)
+	case ValTypeBool:
+		return v.bl == o.GetVal().(bool)
+	case ValTypeNil:
+		return true // All nils are equal
 	default:
 		panic("impossible value type")
 	}
@@ -59,6 +66,8 @@ func (v Val) Equals(o Valueable) bool {
 func (v Val) GetVal() interface{} {
 	switch v.typ {
 	case ValTypeString:
+		return v.str
+	case ValTypeTemplate:
 		return v.str
 	case ValTypeFloat:
 		return v.flt

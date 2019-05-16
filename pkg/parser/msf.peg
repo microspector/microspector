@@ -23,7 +23,11 @@ LVNil ⟵ "nil"i {
 
 // We include a Val{} form of strings
 StringVal ⟵ str:String {
-    return Val{typ: ValTypeString, str: str.(string)}, nil
+    if ok, _ := hasTemplate(str.(string)); ok {
+        return Val{typ: ValTypeTemplate, str: str.(string)}, nil
+    } else {
+        return Val{typ: ValTypeString, str: str.(string)}, nil
+    }
 }
 
 // We handle quoted strings using PHP style ' or " characters, and unquoting
