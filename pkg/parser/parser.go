@@ -56,7 +56,7 @@ func NewParser(file string) *Parser {
 				break
 
 			case "DEBUG":
-				p.Commands = append(p.Commands, &Debug{
+				p.Commands = append(p.Commands, &Debug2{
 					Token: t,
 				})
 				break
