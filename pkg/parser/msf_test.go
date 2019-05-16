@@ -115,3 +115,31 @@ func TestParse_UnquotedString(t *testing.T) {
 		t.Run(s.input, doTest(s, Entrypoint("UnquotedString")))
 	}
 }
+
+func TestParse_Value(t *testing.T) {
+	var tests = []tst {
+		{"1", true, Val{typ:ValTypeInt, itg:1}},
+		{"1.0", true, Val{typ:ValTypeFloat, flt:1.0}},
+		{"0", true, Val{typ:ValTypeInt, itg:0}},
+		{"0.0", false, nil},
+		{"'hello'", true, Val{typ:ValTypeString, str:"hello"}},
+		{"hello", false, nil},
+		{"true", true, Val{typ: ValTypeBool, bl: true}},
+		{"false",true, Val{typ: ValTypeBool, bl: false}},
+		{"nil", true, Val{typ: ValTypeNil}},
+		{"null", true, Val{typ: ValTypeNil}},
+		{"{{ hello }}", true, Val{typ: ValTypeString, str: "{{ hello }}"}},
+		{"True", true, Val{typ: ValTypeBool, bl: true}},
+		{"TRUE", true, Val{typ: ValTypeBool, bl: true}},
+		{"False", true, Val{typ: ValTypeBool, bl: false}},
+		{"FALSE", true, Val{typ: ValTypeBool, bl: false}},
+		{"Nil", true, Val{typ: ValTypeNil}},
+		{"Null", true, Val{typ: ValTypeNil}},
+		{"NIL", true, Val{typ: ValTypeNil}},
+		{"NULL", true, Val{typ: ValTypeNil}},
+	}
+
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Value")))
+	}
+}

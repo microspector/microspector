@@ -2,6 +2,30 @@
 package parser
 
 }
+
+// We have values, which are the basic unit of predicates, and consist of a string, number or boolean
+Value ⟵ StringVal / NumberVal / LiteralVal
+
+// We include true, false and nil, directly as Val types, not as raw data
+LiteralVal ⟵ LVTrue / LVFalse / LVNull / LVNil
+LVTrue ⟵ "true"i {
+    return Val{typ: ValTypeBool, bl: true}, nil
+}
+LVFalse ⟵ "false"i {
+    return Val{typ: ValTypeBool, bl: false}, nil
+}
+LVNull ⟵ "null"i {
+    return Val{typ: ValTypeNil}, nil
+}
+LVNil ⟵ "nil"i {
+    return Val{typ: ValTypeNil}, nil
+}
+
+// We include a Val{} form of strings
+StringVal ⟵ str:String {
+    return Val{typ: ValTypeString, str: str.(string)}, nil
+}
+
 // We handle quoted strings using PHP style ' or " characters, and unquoting
 // as required
 String ⟵ DoubleString / SingleString / UnquotedString
@@ -32,6 +56,16 @@ Whitespace ⟵ [\t\n\v\f\r ]+ {
 }
 UnicodeEscape ⟵ 'u' HexDigit HexDigit HexDigit HexDigit
 HexDigit ⟵ [0-9a-f]i
+
+// We create a type incorporating numbers into
+// a Val{} struct for usage in more complex constructs
+NumberVal ⟵ ZeroErr / FloatVal / IntegerVal
+FloatVal ⟵ flt:Float {
+    return Val{typ: ValTypeFloat, flt: flt.(float64)}, nil
+}
+IntegerVal ⟵ itg:(Integer / ZeroVal) {
+    return Val{typ: ValTypeInt, itg: itg.(int64)}, nil
+}
 
 // We parse out the typical numeric types, including
 // erroring on -0, etc.
