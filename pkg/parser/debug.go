@@ -5,11 +5,11 @@ import (
 	"log"
 )
 
-type Debug struct {
+type Debug2 struct {
 	Token Token
 }
 
-func (s *Debug) Run(state *State) error {
+func (s *Debug2) Run(state *State) error {
 
 	for i := 0; i < len(s.Token.Tree); i++ {
 		token := s.Token.Tree[i]
