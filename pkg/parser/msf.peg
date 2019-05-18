@@ -120,19 +120,15 @@ IntegerVal ⟵ itg:(Integer / ZeroVal) {
 // erroring on -0, etc.
 Number ⟵ ZeroErr / Float / Integer / ZeroVal
 Float ⟵ Neg? Flt {
-    fmt.Printf("Float capturing '%s'\n", c.text)
     return strconv.ParseFloat(string(c.text), 64)
 }
 Integer ⟵ Neg? Int {
-    fmt.Printf("Integer capturing\n")
     return strconv.ParseInt(string(c.text), 10, 64)
 }
 Flt ⟵ Int Dot Int / Int Dot ZeroStr / ZeroStr Dot Int / ZeroStr Dot / Int Dot {
-    fmt.Printf("Flt capturing\n")
     return strconv.ParseFloat(string(c.text), 64)
 }
 Int ⟵ [1-9][0-9]* {
-    fmt.Printf("Int capturing\n")
     return c.text, nil
 }
 ZeroStr ⟵ "0" {
