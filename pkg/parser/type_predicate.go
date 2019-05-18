@@ -19,6 +19,8 @@ const (
 	PredTypeEqualGreaterThen
 	PredTypeEqualLessThen
 	PredTypeNilCheck
+	PredTypeTrueCheck
+	PredTypeFalseCheck
 )
 
 func (p PredType) String() string {
@@ -51,6 +53,10 @@ func (p PredType) String() string {
 		return "Less Then Equal"
 	case PredTypeNilCheck:
 		return "Null Check"
+	case PredTypeTrueCheck:
+		return "True Check"
+	case PredTypeFalseCheck:
+		return "False Check"
 	default:
 		panic("Impossible predicate type")
 	}
@@ -113,16 +119,16 @@ func (p PredLogicOp) enforceTypes() {
 // A simple unary NOT operation. Although we don't explicitly support an '!' style not operator (that is to say,
 // we cannot just drop a '!' anywhere in the grammar), it simplifies greatly reasoning about the parsed syntax
 // to emit the normal type wrapped in a NOT for these cases
-type PredNot struct {
+type PredNotOp struct {
 	v Evaluable
 }
-func (p PredNot) Type() PredType {
+func (p PredNotOp) Type() PredType {
 	return PredTypeNot
 }
-func (p PredNot) Eval() bool {
+func (p PredNotOp) Eval() bool {
 	return !p.v.Eval()
 }
-func (p PredNot) ErrorString() string {
+func (p PredNotOp) ErrorString() string {
 	return fmt.Sprintf("the opposite of %s", p.v.ErrorString())
 }
 
@@ -235,20 +241,51 @@ func (p PredNumericOp) enforceTypes() {
 	}
 }
 
-// A simple unary op which determines if its value evaluates to null
+// A simple unary op which determines if its value evaluates to null, true or false
 // Precondition: v is a ValTypeTemplate(single evaluation only)
-type PredNilCheckOp struct {
+type PredBoolCheckOp struct {
+	t PredType
 	v	Valueable
 }
-func (p PredNilCheckOp) Type() PredType {
-	return PredTypeNilCheck
+func (p PredBoolCheckOp) Type() PredType {
+	p.enforceTypes()
+	return p.t
 }
-func (p PredNilCheckOp) Eval() bool {
-	return p.v.GetVal() == nil
-}
-func (p PredNilCheckOp) ErrorString() string {
-	if p.v.GetVal() == nil {
-		return "nil to be nil"
+func (p PredBoolCheckOp) Eval() bool {
+	p.enforceTypes()
+	if p.t == PredTypeNilCheck {
+		return p.v.GetVal() == nil
 	}
-	return fmt.Sprintf("the value %v to be nil", p.v.GetVal())
+	b, ok := p.v.GetVal().(bool)
+	if !ok {
+		panic("tried to corece a bool from a non-bool value")
+	}
+	if p.t == PredTypeTrueCheck {
+		return b == true
+	} else { // PredTypeFalseCheck
+		return b == false
+	}
+}
+func (p PredBoolCheckOp) ErrorString() string {
+	p.enforceTypes()
+	switch p.t {
+	case PredTypeNilCheck:
+		if p.v.GetVal() == nil {
+			return "nil to be nil"
+		}
+		return fmt.Sprintf("the value %v to be nil", p.v.GetVal())
+	case PredTypeTrueCheck:
+		// TODO: Better message formatting (including type check) for these
+		return fmt.Sprintf("the value of %v to be true", p.v.GetVal())
+	case PredTypeFalseCheck:
+		return fmt.Sprintf("the value of %v to be false", p.v.GetVal())
+	default:
+		panic(fmt.Sprintf("impossible predicate type %s", p.t.String()))
+	}
+
+}
+func (p PredBoolCheckOp) enforceTypes() {
+	if p.t != PredTypeNilCheck && p.t != PredTypeTrueCheck && p.t != PredTypeFalseCheck {
+		panic(fmt.Sprintf("Predicate type %s is not a valid type for a bool operation", p.t.String()))
+	}
 }

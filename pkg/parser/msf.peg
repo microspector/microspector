@@ -2,9 +2,50 @@
 package parser
 
 }
+// We handle basic predicates
+Predicate ⟵ PredNumericEqual / PredNumericNotEqual / PredBoolNotEqual / PredBoolEqual / PredNumericWrongTypes / PredBoolWrongTypes
+PredNumericEqual ⟵ left:(NumberVal / TemplateVal) OpNumericEqual right:(NumberVal / TemplateVal) {
+    return PredNumericOp{t: PredTypeNumberEqual, left: left.(Valueable), right: right.(Valueable)}, nil
+}
+PredNumericNotEqual ⟵ left:(NumberVal / TemplateVal) OpNumericNotEqual right:(NumberVal / TemplateVal) {
+    return PredNotOp{v: PredNumericOp{t: PredTypeNumberEqual, left: left.(Valueable), right: right.(Valueable)}}, nil
+}
+PredBoolNotEqual ⟵ left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ (LVNull / LVNil) {
+    return PredNotOp{v: PredBoolCheckOp{t: PredTypeNilCheck, v: left.(Valueable)}}, nil
+} / left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ LVTrue {
+    return PredNotOp{v: PredBoolCheckOp{t: PredTypeTrueCheck, v: left.(Valueable)}}, nil
+} / left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ LVFalse {
+    return PredNotOp{v: PredBoolCheckOp{t: PredTypeFalseCheck, v: left.(Valueable)}}, nil
+}
+PredBoolEqual ⟵ left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ (LVNull / LVNil) {
+    return PredBoolCheckOp{t: PredTypeNilCheck, v: left.(Valueable)}, nil
+} / left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ LVTrue {
+    return PredBoolCheckOp{t: PredTypeTrueCheck, v: left.(Valueable)}, nil
+} / left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ LVFalse {
+    return PredBoolCheckOp{t: PredTypeFalseCheck, v: left.(Valueable)}, nil
+}
+
+
+// Need to be very low priority so that more specific rules match first
+PredNumericWrongTypes ⟵ Value cmbn:(OpNumericNotEqual / OpNumericEqual) Value {
+    // TODO: cmbn is an annoying []interface{} of []interface{}, make a helper to parse out the message more cleanly
+    return nil, errors.New(fmt.Sprintf("an operation involving '%#v' may only have numbers or singular template references as its arguments", cmbn))
+}
+PredBoolWrongTypes ⟵ Value op:(OpBoolEqual / OpBoolNotEqual) Value {
+    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have ar singular template references as its arguments left hand argument and NULL, TRUE or FALSE as it's right hand side", op.(string)))
+}
+
+// We have the actual operators for the different types
+OpNumericEqual ⟵  (Ws+ ("equals"i / "equal"i) Ws+) / Ws* "==" Ws*
+OpNumericNotEqual ⟵ (Ws+ ("not"i Ws+ "equals"i / "not"i Ws+ "equal"i) Ws+) / Ws* "!=" Ws*
+// TODO: think about this verb, there's ambiguity in parsing order. Does the user mean numeric equals or string equals?
+OpStringEquals ⟵ "equals"i / "equal"i
+OpStringNotEqual ⟵ "not"i Whitespace+ "equals"i / "not"i Whitespace+ "equal"i
+OpBoolEqual ⟵ "is"i
+OpBoolNotEqual ⟵ "is"i Ws+ "not"i
 
 // We have values, which are the basic unit of predicates, and consist of a string, number or boolean
-Value ⟵ StringVal / NumberVal / LiteralVal
+Value ⟵ StringVal / TemplateVal / NumberVal / LiteralVal
 
 // We include true, false and nil, directly as Val types, not as raw data
 LiteralVal ⟵ LVTrue / LVFalse / LVNull / LVNil
@@ -21,8 +62,11 @@ LVNil ⟵ "nil"i {
     return Val{typ: ValTypeNil}, nil
 }
 
-// We include a Val{} form of strings
-StringVal ⟵ str:String {
+// We include a Val{} form of strings and isolated templates
+TemplateVal ⟵ str:UnquotedString {
+    return Val{typ: ValTypeTemplate, str: str.(string)}, nil
+}
+StringVal ⟵ str:(DoubleString / SingleString) {
     if ok, _ := hasTemplate(str.(string)); ok {
         return Val{typ: ValTypeTemplate, str: str.(string)}, nil
     } else {
@@ -55,6 +99,7 @@ UnquotedString ⟵ "{{" Whitespace? UnquotedIdentifier Whitespace? "}}" {
 }
 UnquotedIdentifier ⟵ [0-9a-zA-Z._\\-]+
 // Helper types for strings
+Ws ⟵ Whitespace
 Whitespace ⟵ [\t\n\v\f\r ]+ {
     return " ", nil
 }

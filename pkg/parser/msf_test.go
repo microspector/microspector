@@ -12,7 +12,7 @@ type tst struct {
 	output interface{}
 }
 
-func doTest(s tst, opts ...Option) (func(t *testing.T)) {
+func doTest(s tst, opts ...Option) func(t *testing.T) {
 	return func(t *testing.T) {
 		//t.Parallel()
 		fmt.Printf("Testing \"%s\"\n", s.input)
@@ -26,7 +26,7 @@ func doTest(s tst, opts ...Option) (func(t *testing.T)) {
 			t.Fail()
 			return
 		} else if err != nil && !s.success {
-			fmt.Printf("Successfully got an error\n")
+			fmt.Printf("Successfully got an error: %s\n", err.Error())
 			return
 		}
 		typ := "nil"
@@ -143,5 +143,112 @@ func TestParse_Value(t *testing.T) {
 
 	for _, s := range tests {
 		t.Run(s.input, doTest(s, Entrypoint("Value")))
+	}
+}
+
+func TestParse_PredNumericOp_Equal(t *testing.T) {
+	var arg = map[string]Val {
+		"0":            {typ: ValTypeInt, itg: 0},
+		"1":            {typ: ValTypeInt, itg: 1},
+		"1.1":          {typ: ValTypeFloat, flt: 1.1},
+		"2":            {typ: ValTypeInt, itg: 2},
+		"2.0":          {typ: ValTypeFloat, flt: 2.0},
+		"{{ .hello }}": {typ: ValTypeTemplate, str: "{{ .hello }}"},
+	}
+	var combiner = map[string]bool {
+		"==": true, " ==": true, "== ": true, " == ": true, " equal ": true, " equals ": true, " Equal ": true, " Equals ": true, " EQUAL ": true, " EQUALS ": true, " EqUaLs ": true,
+		"equal": false, "equal ": false, " equal": false, "equals": false,
+		"	equal	": true, "     equal     ": true,
+	}
+	tests := make([]tst, 0)
+	for i := range arg {
+		for j := range combiner {
+			for k := range arg{
+				tests = append(tests, tst{fmt.Sprintf("%s%s%s", i, j, k), combiner[j], PredNumericOp{t: PredTypeNumberEqual, left: arg[i], right: arg[k]}})
+			}
+		}
+	}
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Predicate")))
+	}
+}
+
+func TestParse_PredNumericOp_Equal_WrongTypes(t *testing.T) {
+	var arg = map[string]Val {
+		"hello":   {typ: ValTypeString, str: "hello"},
+		"\"1\"":   {typ: ValTypeString, str: "1"},
+		"\"1.1\"": {typ: ValTypeString, str: "1.1"},
+		"TRUE":    {},
+		"False":   {},
+		"Null":    {},
+		"nil":     {},
+	}
+	var combiner = map[string]bool {
+		"==": false, " ==": false, " equal ": false, " equals ": false, " Equal ": false, " Equals ": false, " EQUAL ": false,
+	}
+	tests := make([]tst, 0)
+	for i := range arg {
+		for j := range combiner {
+			for k := range arg{
+				tests = append(tests, tst{fmt.Sprintf("%s%s%s", i, j, k), false, nil})
+			}
+		}
+	}
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Predicate")))
+	}
+}
+
+
+func TestParse_PredNumericOp_NotEqual(t *testing.T) {
+	var arg = map[string]Val {
+		"0":            {typ: ValTypeInt, itg: 0},
+		"1":            {typ: ValTypeInt, itg: 1},
+		"1.1":          {typ: ValTypeFloat, flt: 1.1},
+		"2":            {typ: ValTypeInt, itg: 2},
+		"2.0":          {typ: ValTypeFloat, flt: 2.0},
+		"{{ .hello }}": {typ: ValTypeTemplate, str: "{{ .hello }}"},
+	}
+	var combiner = map[string]bool {
+		"!=": true, " !=": true, "!= ": true, " != ": true, " not equal ": true, " not equals ": true, " Not Equal ": true, " Not Equals ": true, " NOT EQUAL ": true, " NOT EQUALS ": true, " NoT EqUaLs ": true,
+		"not equal": false, "notequal ": false, " not equal": false, "not equals": false, " notequal ": false,
+		"	not equal	": true, "     not equal     ": true, "   not   equal   ": true,
+	}
+	tests := make([]tst, 0)
+	for i := range arg {
+		for j := range combiner {
+			for k := range arg{
+				tests = append(tests, tst{fmt.Sprintf("%s%s%s", i, j, k), combiner[j], PredNotOp{v: PredNumericOp{t: PredTypeNumberEqual, left: arg[i], right: arg[k]}}})
+			}
+		}
+	}
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Predicate")))
+	}
+}
+
+func TestParse_PredNumericOp_NotEqual_WrongTypes(t *testing.T) {
+	var arg = map[string]Val {
+		"hello":   {typ: ValTypeString, str: "hello"},
+		"\"1\"":   {typ: ValTypeString, str: "1"},
+		"\"1.1\"": {typ: ValTypeString, str: "1.1"},
+		"TRUE":    {},
+		"False":   {},
+		"Null":    {},
+		"nil":     {},
+	}
+	var combiner = map[string]bool {
+		"!=": false, " !=": false, " not equal ": false, " not equals ": false, " Not Equal ": false, " Not Equals ": false, " NOT EQUAL ": false,
+	}
+	tests := make([]tst, 0)
+	for i := range arg {
+		for j := range combiner {
+			for k := range arg{
+				tests = append(tests, tst{fmt.Sprintf("%s%s%s", i, j, k), false, nil})
+			}
+		}
+	}
+	for _, s := range tests {
+		t.Run(s.input, doTest(s, Entrypoint("Predicate")))
 	}
 }
