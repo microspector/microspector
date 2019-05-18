@@ -76,18 +76,22 @@ StringVal ⟵ str:(DoubleString / SingleString) {
 
 // We handle quoted strings using PHP style ' or " characters, and unquoting
 // as required
-String ⟵ DoubleString / SingleString / UnquotedString
+String ⟵ UnquotedString / DoubleString / SingleString
 // Single quoted string follow PHPs rules for escpaing
 SingleString ⟵ SingleQuote chr:( !SingleEscapedChar . / '\\' SingleEscapeSequence )* SingleQuote {
     return strunquote(string(c.text))
+} / SingleQuote chr:( !SingleEscapedChar . / '\\' SingleEscapeSequence )* !SingleQuote {
+    return nil, errors.New(fmt.Sprintf("The string '%s appears to be missing a closing ' symbol", opStringer(chr)))
 }
 SingleEscapedChar ⟵ [\x00-\x1f'\\]
 SingleEscapeSequence ⟵ SingleCharEscape / UnicodeEscape
 SingleCharEscape ⟵ ['bfnrt]
 SingleQuote ⟵ "'"
 // DoubleQuotedStrings also follow PHPs rules for escaping
-DoubleString ⟵ DoubleQuote ( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* DoubleQuote {
+DoubleString ⟵ DoubleQuote chr:( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* DoubleQuote {
     return strunquote(string(c.text))
+} / DoubleQuote chr:( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* !DoubleQuote {
+    return nil, errors.New(fmt.Sprintf("The string \"%s appears to be missing a closing \" symbol", opStringer(chr)))
 }
 DoubleEscapedChar ⟵ [\x00-\x1f"\\]
 DoubleEscapeSequence ⟵ DoubleCharEscape / UnicodeEscape
