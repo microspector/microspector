@@ -1,7 +1,10 @@
 package parser
 
 import (
+	"fmt"
+	"go/types"
 	"strconv"
+	"strings"
 	"text/template/parse"
 	"unicode/utf8"
 )
@@ -103,4 +106,25 @@ func isStaticTree(n parse.Node) bool {
 		panic("unknown node: " + n.String())
 	}
 	return false
+}
+
+func opStringer(op []interface{}) string {
+	ret := strings.Builder{}
+
+	for i := range op {
+		switch op[i].(type) {
+		case []interface{}:
+			ret.WriteString(opStringer(op[i].([]interface{})))
+		case string:
+			ret.WriteString(op[i].(string))
+		case types.Nil:
+			break
+		case []uint8:
+			ret.Write(op[i].([]uint8))
+		default:
+			fmt.Printf("Unknown type %#v\n", op[i])
+		}
+	}
+
+	return ret.String()
 }

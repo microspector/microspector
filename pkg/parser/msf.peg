@@ -29,7 +29,7 @@ PredBoolEqual ⟵ left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ (LVNull /
 // Need to be very low priority so that more specific rules match first
 PredNumericWrongTypes ⟵ Value cmbn:(OpNumericNotEqual / OpNumericEqual) Value {
     // TODO: cmbn is an annoying []interface{} of []interface{}, make a helper to parse out the message more cleanly
-    return nil, errors.New(fmt.Sprintf("an operation involving '%#v' may only have numbers or singular template references as its arguments", cmbn))
+    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have numbers or singular template references as its arguments", opStringer(cmbn.([]interface{}))))
 }
 PredBoolWrongTypes ⟵ Value op:(OpBoolEqual / OpBoolNotEqual) Value {
     return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have ar singular template references as its arguments left hand argument and NULL, TRUE or FALSE as it's right hand side", op.(string)))
