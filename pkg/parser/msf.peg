@@ -27,17 +27,36 @@ PredBoolEqual ⟵ left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ (LVNull /
 
 
 // Need to be very low priority so that more specific rules match first
-PredNumericWrongTypes ⟵ Value cmbn:(OpNumericNotEqual / OpNumericEqual) Value {
-    // TODO: cmbn is an annoying []interface{} of []interface{}, make a helper to parse out the message more cleanly
-    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have numbers or singular template references as its arguments", opStringer(cmbn.([]interface{}))))
+PredNumericWrongTypes ⟵ Value op:(OpNumericNotEqual / OpNumericEqual) Value {
+    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have numbers or singular template references as its arguments", opStringer(op)))
 }
 PredBoolWrongTypes ⟵ Value op:(OpBoolEqual / OpBoolNotEqual) Value {
-    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have ar singular template references as its arguments left hand argument and NULL, TRUE or FALSE as it's right hand side", op.(string)))
+    return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have ar singular template references as its arguments left hand argument and NULL, TRUE or FALSE as it's right hand side", opStringer(op)))
 }
 
 // We have the actual operators for the different types
-OpNumericEqual ⟵  (Ws+ ("equals"i / "equal"i) Ws+) / Ws* "==" Ws*
-OpNumericNotEqual ⟵ (Ws+ ("not"i Ws+ "equals"i / "not"i Ws+ "equal"i) Ws+) / Ws* "!=" Ws*
+// For word version, like "equal", "not equals", "is", etc, we require surrounding whitespace
+OpNumericEqual ⟵  lhws:Ws* eq:("equals"i / "equal"i)  rhws:Ws* {
+  if len(lhws.([]interface{})) < 1 {
+      return nil, errors.New(fmt.Sprintf("'%s' must have at least one space before it", opStringer(eq)))
+  }
+  if len(rhws.([]interface{})) < 1 {
+      return nil, errors.New(fmt.Sprintf("'%s' must have at least one space after it", opStringer(eq)))
+  }
+  return fmt.Sprintf(" %s ", opStringer(eq)), nil
+} / Ws* "==" Ws*
+OpNumericNotEqual ⟵ lhws:Ws* "not"i chs:Ws* eq:("equals"i / "equal"i)  rhws:Ws* {
+    if len(lhws.([]interface{})) < 1 {
+        return nil, errors.New(fmt.Sprintf("'not %s' must have at least one space before it", opStringer(eq)))
+    }
+    if len(chs.([]interface{})) < 1 {
+        return nil, errors.New(fmt.Sprintf("'not %s' must have at least one space after 'not'", opStringer(eq)))
+    }
+    if len(rhws.([]interface{})) < 1 {
+        return nil, errors.New(fmt.Sprintf("'not %s' must have at least one space after it", opStringer(eq)))
+    }
+    return fmt.Sprintf(" not %s ", opStringer(eq)), nil
+} / Ws* "!=" Ws*
 // TODO: think about this verb, there's ambiguity in parsing order. Does the user mean numeric equals or string equals?
 OpStringEquals ⟵ "equals"i / "equal"i
 OpStringNotEqual ⟵ "not"i Whitespace+ "equals"i / "not"i Whitespace+ "equal"i

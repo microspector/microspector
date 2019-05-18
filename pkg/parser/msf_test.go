@@ -175,7 +175,7 @@ func TestParse_PredNumericOp_Equal(t *testing.T) {
 
 func TestParse_PredNumericOp_Equal_WrongTypes(t *testing.T) {
 	var arg = map[string]Val {
-		"hello":   {typ: ValTypeString, str: "hello"},
+		"\"hello":   {typ: ValTypeString, str: "\"hello"},
 		"\"1\"":   {typ: ValTypeString, str: "1"},
 		"\"1.1\"": {typ: ValTypeString, str: "1.1"},
 		"TRUE":    {},
@@ -229,7 +229,7 @@ func TestParse_PredNumericOp_NotEqual(t *testing.T) {
 
 func TestParse_PredNumericOp_NotEqual_WrongTypes(t *testing.T) {
 	var arg = map[string]Val {
-		"hello":   {typ: ValTypeString, str: "hello"},
+		"\"hello":   {typ: ValTypeString, str: "\"hello"},
 		"\"1\"":   {typ: ValTypeString, str: "1"},
 		"\"1.1\"": {typ: ValTypeString, str: "1.1"},
 		"TRUE":    {},
