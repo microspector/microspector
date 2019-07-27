@@ -2,14 +2,17 @@
 package parser
 
 }
+
 // We handle basic predicates
 Predicate ⟵ PredNumericEqual / PredNumericNotEqual / PredBoolNotEqual / PredBoolEqual / PredNumericWrongTypes / PredBoolWrongTypes
+
 PredNumericEqual ⟵ left:(NumberVal / TemplateVal) OpNumericEqual right:(NumberVal / TemplateVal) {
     return PredNumericOp{t: PredTypeNumberEqual, left: left.(Valueable), right: right.(Valueable)}, nil
 }
 PredNumericNotEqual ⟵ left:(NumberVal / TemplateVal) OpNumericNotEqual right:(NumberVal / TemplateVal) {
     return PredNotOp{v: PredNumericOp{t: PredTypeNumberEqual, left: left.(Valueable), right: right.(Valueable)}}, nil
 }
+
 PredBoolNotEqual ⟵ left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ (LVNull / LVNil) {
     return PredNotOp{v: PredBoolCheckOp{t: PredTypeNilCheck, v: left.(Valueable)}}, nil
 } / left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ LVTrue {
@@ -17,6 +20,8 @@ PredBoolNotEqual ⟵ left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ (LV
 } / left:TemplateVal Whitespace+ OpBoolNotEqual Whitespace+ LVFalse {
     return PredNotOp{v: PredBoolCheckOp{t: PredTypeFalseCheck, v: left.(Valueable)}}, nil
 }
+
+
 PredBoolEqual ⟵ left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ (LVNull / LVNil) {
     return PredBoolCheckOp{t: PredTypeNilCheck, v: left.(Valueable)}, nil
 } / left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ LVTrue {
@@ -30,6 +35,7 @@ PredBoolEqual ⟵ left:TemplateVal Whitespace+ OpBoolEqual Whitespace+ (LVNull /
 PredNumericWrongTypes ⟵ Value op:(OpNumericNotEqual / OpNumericEqual) Value {
     return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have numbers or singular template references as its arguments", opStringer(op)))
 }
+
 PredBoolWrongTypes ⟵ Value op:(OpBoolEqual / OpBoolNotEqual) Value {
     return nil, errors.New(fmt.Sprintf("an operation involving '%s' may only have ar singular template references as its arguments left hand argument and NULL, TRUE or FALSE as it's right hand side", opStringer(op)))
 }
@@ -45,6 +51,8 @@ OpNumericEqual ⟵  lhws:Ws* eq:("equals"i / "equal"i)  rhws:Ws* {
   }
   return fmt.Sprintf(" %s ", opStringer(eq)), nil
 } / Ws* "==" Ws*
+
+
 OpNumericNotEqual ⟵ lhws:Ws* "not"i chs:Ws* eq:("equals"i / "equal"i)  rhws:Ws* {
     if len(lhws.([]interface{})) < 1 {
         return nil, errors.New(fmt.Sprintf("'not %s' must have at least one space before it", opStringer(eq)))
@@ -57,10 +65,14 @@ OpNumericNotEqual ⟵ lhws:Ws* "not"i chs:Ws* eq:("equals"i / "equal"i)  rhws:Ws
     }
     return fmt.Sprintf(" not %s ", opStringer(eq)), nil
 } / Ws* "!=" Ws*
+
 // TODO: think about this verb, there's ambiguity in parsing order. Does the user mean numeric equals or string equals?
 OpStringEquals ⟵ "equals"i / "equal"i
+
 OpStringNotEqual ⟵ "not"i Whitespace+ "equals"i / "not"i Whitespace+ "equal"i
+
 OpBoolEqual ⟵ "is"i
+
 OpBoolNotEqual ⟵ "is"i Ws+ "not"i
 
 // We have values, which are the basic unit of predicates, and consist of a string, number or boolean
@@ -68,15 +80,19 @@ Value ⟵ StringVal / TemplateVal / NumberVal / LiteralVal
 
 // We include true, false and nil, directly as Val types, not as raw data
 LiteralVal ⟵ LVTrue / LVFalse / LVNull / LVNil
+
 LVTrue ⟵ "true"i {
     return Val{typ: ValTypeBool, bl: true}, nil
 }
+
 LVFalse ⟵ "false"i {
     return Val{typ: ValTypeBool, bl: false}, nil
 }
+
 LVNull ⟵ "null"i {
     return Val{typ: ValTypeNil}, nil
 }
+
 LVNil ⟵ "nil"i {
     return Val{typ: ValTypeNil}, nil
 }
@@ -85,6 +101,7 @@ LVNil ⟵ "nil"i {
 TemplateVal ⟵ str:UnquotedString {
     return Val{typ: ValTypeTemplate, str: str.(string)}, nil
 }
+
 StringVal ⟵ str:(DoubleString / SingleString) {
     if ok, _ := hasTemplate(str.(string)); ok {
         return Val{typ: ValTypeTemplate, str: str.(string)}, nil
@@ -93,48 +110,66 @@ StringVal ⟵ str:(DoubleString / SingleString) {
     }
 }
 
+
 // We handle quoted strings using PHP style ' or " characters, and unquoting
 // as required
 String ⟵ UnquotedString / DoubleString / SingleString
 // Single quoted string follow PHPs rules for escpaing
+
 SingleString ⟵ SingleQuote chr:( !SingleEscapedChar . / '\\' SingleEscapeSequence )* SingleQuote {
     return strunquote(string(c.text))
 } / SingleQuote chr:( !SingleEscapedChar . / '\\' SingleEscapeSequence )* !SingleQuote {
     return nil, errors.New(fmt.Sprintf("The string '%s appears to be missing a closing ' symbol", opStringer(chr)))
 }
+
 SingleEscapedChar ⟵ [\x00-\x1f'\\]
+
 SingleEscapeSequence ⟵ SingleCharEscape / UnicodeEscape
+
 SingleCharEscape ⟵ ['bfnrt]
+
 SingleQuote ⟵ "'"
+
 // DoubleQuotedStrings also follow PHPs rules for escaping
 DoubleString ⟵ DoubleQuote chr:( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* DoubleQuote {
     return strunquote(string(c.text))
 } / DoubleQuote chr:( !DoubleEscapedChar . / '\\' DoubleEscapeSequence )* !DoubleQuote {
     return nil, errors.New(fmt.Sprintf("The string \"%s appears to be missing a closing \" symbol", opStringer(chr)))
 }
+
 DoubleEscapedChar ⟵ [\x00-\x1f"\\]
+
 DoubleEscapeSequence ⟵ DoubleCharEscape / UnicodeEscape
+
 DoubleCharEscape ⟵ ["bfnrt]
+
 DoubleQuote ⟵ "\""
+
 // Unquoted strings are only valid as standalone double braced specifiers
 UnquotedString ⟵ "{{" Whitespace? UnquotedIdentifier Whitespace? "}}" {
     return string(c.text), nil
 }
+
 UnquotedIdentifier ⟵ [0-9a-zA-Z._\\-]+
+
 // Helper types for strings
 Ws ⟵ Whitespace
+
 Whitespace ⟵ [\t\n\v\f\r ]+ {
     return " ", nil
 }
+
 UnicodeEscape ⟵ 'u' HexDigit HexDigit HexDigit HexDigit
 HexDigit ⟵ [0-9a-f]i
 
 // We create a type incorporating numbers into
 // a Val{} struct for usage in more complex constructs
 NumberVal ⟵ ZeroErr / FloatVal / IntegerVal
+
 FloatVal ⟵ flt:Float {
     return Val{typ: ValTypeFloat, flt: flt.(float64)}, nil
 }
+
 IntegerVal ⟵ itg:(Integer / ZeroVal) {
     return Val{typ: ValTypeInt, itg: itg.(int64)}, nil
 }
@@ -145,25 +180,33 @@ Number ⟵ ZeroErr / Float / Integer / ZeroVal
 Float ⟵ Neg? Flt {
     return strconv.ParseFloat(string(c.text), 64)
 }
+
 Integer ⟵ Neg? Int {
     return strconv.ParseInt(string(c.text), 10, 64)
 }
+
 Flt ⟵ Int Dot Int / Int Dot ZeroStr / ZeroStr Dot Int / ZeroStr Dot / Int Dot {
     return strconv.ParseFloat(string(c.text), 64)
 }
+
 Int ⟵ [1-9][0-9]* {
     return c.text, nil
 }
+
 ZeroStr ⟵ "0" {
     return "0", nil
 }
+
 ZeroVal ⟵ "0" {
     return int64(0), nil
 }
+
 ZeroErr ⟵ Neg? "0.0" {
     return nil, errors.New("Invalid 0.0")
 }
+
 Dot ⟵ "."
+
 Neg ⟵ "-"
 
 // That's all folks
