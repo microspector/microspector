@@ -7,6 +7,7 @@ import (
     "encoding/json"
     "github.com/thedevsaddam/gojsonq"
     "strings"
+    "strconv"
    "github.com/tufanbarisyildirim/microspector/pkg/command"
 
 )
@@ -280,7 +281,7 @@ condition {
   $$ = $1
 }
 | variable {
- $$ = isTrue($1)
+ $$ = IsTrue($1)
 }
 
 
@@ -303,6 +304,22 @@ func runop(left, operator,right interface{}) bool {
   		return left == right
   	case "CONTAINS":
         	return strings.Contains(left.(string), right.(string))
+        case "LT","GT":
+  		ll, err := strconv.Atoi(left.(string))
+  		if err != nil {
+                  			fmt.Println(err)
+                  		}
+  		rr, err := strconv.Atoi(right.(string))
+  		if err != nil {
+  			fmt.Println(err)
+  		}
+
+		if operator == "GT"{
+		return ll  > rr
+		}else{
+        	return ll  < rr
+        	}
+
   }
 
   return false

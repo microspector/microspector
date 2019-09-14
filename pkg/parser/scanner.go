@@ -35,6 +35,8 @@ var keywords = map[string]int{
 	"STARTSWITH": STARTSWITH,
 	"MUST":       MUST,
 	"SHOULD":     SHOULD,
+	"LT":         LT,
+	"GT":         GT,
 }
 
 func NewScanner(r io.Reader) *Scanner {

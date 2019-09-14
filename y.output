@@ -366,9 +366,10 @@ state 27 // SET '{' '{' IDENTIFIER '}'
 
 state 28 // SET '{' '{' IDENTIFIER '}' '}'
 
-   37 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, ')', '{', AND, CONTAINS, EQUALS, FALSE, FLOAT, GT, HEADER, HTTP, INTEGER, INTO, LT, MUST, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
+   37 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '(', ')', '{', AND, CONTAINS, EQUALS, FALSE, FLOAT, GT, HEADER, HTTP, INTEGER, INTO, LT, MUST, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
 
     $end        reduce using rule 37 (variable)
+    '('         reduce using rule 37 (variable)
     ')'         reduce using rule 37 (variable)
     '{'         reduce using rule 37 (variable)
     AND         reduce using rule 37 (variable)
@@ -818,8 +819,9 @@ state 55 // MUST FALSE [AND]
 
 state 56 // MUST FALSE EQUALS
 
-   38 operator: EQUALS .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   38 operator: EQUALS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 38 (operator)
     '{'      reduce using rule 38 (operator)
     FALSE    reduce using rule 38 (operator)
     FLOAT    reduce using rule 38 (operator)
@@ -829,8 +831,9 @@ state 56 // MUST FALSE EQUALS
 
 state 57 // MUST FALSE GT
 
-   39 operator: GT .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   39 operator: GT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 39 (operator)
     '{'      reduce using rule 39 (operator)
     FALSE    reduce using rule 39 (operator)
     FLOAT    reduce using rule 39 (operator)
@@ -840,8 +843,9 @@ state 57 // MUST FALSE GT
 
 state 58 // MUST FALSE LT
 
-   40 operator: LT .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   40 operator: LT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 40 (operator)
     '{'      reduce using rule 40 (operator)
     FALSE    reduce using rule 40 (operator)
     FLOAT    reduce using rule 40 (operator)
@@ -851,8 +855,9 @@ state 58 // MUST FALSE LT
 
 state 59 // MUST FALSE CONTAINS
 
-   41 operator: CONTAINS .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   41 operator: CONTAINS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 41 (operator)
     '{'      reduce using rule 41 (operator)
     FALSE    reduce using rule 41 (operator)
     FLOAT    reduce using rule 41 (operator)
@@ -862,8 +867,9 @@ state 59 // MUST FALSE CONTAINS
 
 state 60 // MUST FALSE STARTSWITH
 
-   42 operator: STARTSWITH .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   42 operator: STARTSWITH .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 42 (operator)
     '{'      reduce using rule 42 (operator)
     FALSE    reduce using rule 42 (operator)
     FLOAT    reduce using rule 42 (operator)
@@ -873,8 +879,9 @@ state 60 // MUST FALSE STARTSWITH
 
 state 61 // MUST FALSE AND
 
-   43 operator: AND .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   43 operator: AND .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 43 (operator)
     '{'      reduce using rule 43 (operator)
     FALSE    reduce using rule 43 (operator)
     FLOAT    reduce using rule 43 (operator)
@@ -884,8 +891,9 @@ state 61 // MUST FALSE AND
 
 state 62 // MUST FALSE OR
 
-   44 operator: OR .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+   44 operator: OR .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
+    '('      reduce using rule 44 (operator)
     '{'      reduce using rule 44 (operator)
     FALSE    reduce using rule 44 (operator)
     FLOAT    reduce using rule 44 (operator)
@@ -893,7 +901,7 @@ state 62 // MUST FALSE OR
     STRING   reduce using rule 44 (operator)
     TRUE     reduce using rule 44 (operator)
 
-state 63 // MUST FALSE AND ['{']
+state 63 // MUST FALSE AND ['(']
 
    49 condition: any_value operator . any_value
 

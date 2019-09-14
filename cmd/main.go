@@ -16,6 +16,7 @@ HTTP GET  {{ BillingUrl }} HEADER "Host:billing.tenta.io" QUERY "username=tufan&
 MUST {{ BillingUrl }} CONTAINS "test"
 MUST {{ BillingUrl }} EQUALS "test"
 SHOULD {{ BillingUrl }} EQUALS "test" OR {{ BillingUrl }} EQUALS "aa"
+MUST 1 LT 2
 `)
 
 }
