@@ -57,6 +57,7 @@ EQUALS
 GT
 LT
 CONTAINS
+STARTSWITH
 WHEN
 AND
 OR
@@ -108,6 +109,19 @@ command | command WHEN boolean_exp
 command:
 set_command
 |http_command
+|must_command
+
+must_command:
+MUST boolean_exp
+{
+fmt.Println("MUST",$2)
+	//if $2 is false, fail
+}
+| SHOULD boolean_exp
+{
+fmt.Println("SHOULD",$2)
+	//if $2 is false, write a warning
+}
 
 set_command:
 SET variable any_value {
@@ -248,6 +262,7 @@ EQUALS { $$ = $1 }
 | GT {  $$ = $1 }
 | LT {  $$ = $1 }
 | CONTAINS {  $$ = $1 }
+| STARTSWITH {  $$ = $1 }
 
 
 boolean_exp:
@@ -266,7 +281,7 @@ TRUE {
 }
 | any_value operator any_value{
 	//what should we do here?
-
+	$$ = runop($1,$2,$3)
 }
 
 
@@ -280,6 +295,17 @@ boolean_exp AND boolean_exp {
 }
 
 %%
+
+func runop(left, operator,right interface{}) bool {
+  switch(operator){
+  	case "EQUALS":
+  		return left == right
+  	case "CONTAINS":
+        	return strings.Contains(left.(string), right.(string))
+  }
+
+  return false
+}
 
 
 func query(fieldPath string, thevars map[string]interface{}) interface{} {

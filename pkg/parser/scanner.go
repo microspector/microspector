@@ -31,6 +31,10 @@ var keywords = map[string]int{
 	"OR":         OR,
 	"SET":        SET,
 	"EQUALS":     EQUALS,
+	"CONTAINS":   CONTAINS,
+	"STARTSWITH": STARTSWITH,
+	"MUST":       MUST,
+	"SHOULD":     SHOULD,
 }
 
 func NewScanner(r io.Reader) *Scanner {
@@ -63,15 +67,17 @@ func (s *Scanner) Scan() Token {
 func (s *Scanner) getNextToken() Token {
 	ch := s.Peek()
 
-	if isSpace(ch) {
-		s.skipWhitespace() // consume and ignore whitespace
-		ch = s.Peek()
-	} else if isComma(ch) {
-		s.read() // comsume comma
-		ch = s.Peek()
-	} else if isEndOfLine(ch) {
-		s.skipEndOfLine()
-		ch = s.Peek()
+	for isSpace(ch) || isEndOfLine(ch) {
+
+		if isSpace(ch) {
+			s.skipWhitespace() // consume and ignore whitespace
+			ch = s.Peek()
+		}
+
+		if isEndOfLine(ch) {
+			s.skipEndOfLine()
+			ch = s.Peek()
+		}
 	}
 
 	if isOperator(ch) {
@@ -268,4 +274,3 @@ func isAlphaNumeric(ch rune) bool { return ch == '_' || unicode.IsLetter(ch) || 
 func isOperator(ch rune) bool     { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
 func isVarStart(ch rune) bool     { return ch == '{' }
 func isVarEnd(ch rune) bool       { return ch == '}' }
-func isComma(ch rune) bool        { return ch == ',' }
