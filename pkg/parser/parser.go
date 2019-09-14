@@ -736,7 +736,7 @@ yynewstate:
 		}
 	case 48:
 		{
-			yyVAL.boolean = yyS[yypt-0].variable.(bool)
+			yyVAL.boolean = isTrue(yyS[yypt-0].variable)
 		}
 	case 49:
 		{

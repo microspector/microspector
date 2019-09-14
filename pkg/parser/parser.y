@@ -280,7 +280,7 @@ condition {
   $$ = $1
 }
 | variable {
- $$ = $1
+ $$ = isTrue($1)
 }
 
 
