@@ -26,7 +26,7 @@ state 1 // HTTP [$end]
     SHOULD  shift, and goto state 8
 
     command                     goto state 3
-    command_with_condition_opt  goto state 71
+    command_with_condition_opt  goto state 70
     http_command                goto state 5
     must_command                goto state 6
     set_command                 goto state 4
@@ -51,7 +51,7 @@ state 3 // HTTP [$end]
     MUST    reduce using rule 3 (command_with_condition_opt)
     SET     reduce using rule 3 (command_with_condition_opt)
     SHOULD  reduce using rule 3 (command_with_condition_opt)
-    WHEN    shift, and goto state 69
+    WHEN    shift, and goto state 68
 
 state 4 // SET '{' '{' IDENTIFIER '}' '}' [$end]
 
@@ -90,37 +90,37 @@ state 7 // MUST
 
     8 must_command: MUST . boolean_exp
 
-    '('      shift, and goto state 52
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     INTEGER  shift, and goto state 47
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
 
-    any_value      goto state 54
-    boolean_exp    goto state 68
-    condition      goto state 51
+    any_value      goto state 55
+    boolean_exp    goto state 67
+    condition      goto state 52
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
 state 8 // SHOULD
 
     9 must_command: SHOULD . boolean_exp
 
-    '('      shift, and goto state 52
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     INTEGER  shift, and goto state 47
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
 
-    any_value      goto state 54
-    boolean_exp    goto state 67
-    condition      goto state 51
+    any_value      goto state 55
+    boolean_exp    goto state 66
+    condition      goto state 52
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
 state 9 // SET
 
@@ -304,27 +304,19 @@ state 21 // HTTP CONNECT STRING [HEADER]
     http_command_param   goto state 32
     http_command_params  goto state 29
 
-state 22 // MUST '{' '{' IDENTIFIER '}' '}' [$end]
+state 22 // HTTP CONNECT '{' '{' IDENTIFIER '}' '}' [$end]
 
-   35 string_or_var: variable .  [$end, ')', AND, CONTAINS, EQUALS, GT, HEADER, HTTP, INTO, LT, MUST, OR, QUERY, SET, SHOULD, STARTSWITH, WHEN]
+   35 string_or_var: variable .  [$end, HEADER, HTTP, INTO, MUST, QUERY, SET, SHOULD, WHEN]
 
-    $end        reduce using rule 35 (string_or_var)
-    ')'         reduce using rule 35 (string_or_var)
-    AND         reduce using rule 35 (string_or_var)
-    CONTAINS    reduce using rule 35 (string_or_var)
-    EQUALS      reduce using rule 35 (string_or_var)
-    GT          reduce using rule 35 (string_or_var)
-    HEADER      reduce using rule 35 (string_or_var)
-    HTTP        reduce using rule 35 (string_or_var)
-    INTO        reduce using rule 35 (string_or_var)
-    LT          reduce using rule 35 (string_or_var)
-    MUST        reduce using rule 35 (string_or_var)
-    OR          reduce using rule 35 (string_or_var)
-    QUERY       reduce using rule 35 (string_or_var)
-    SET         reduce using rule 35 (string_or_var)
-    SHOULD      reduce using rule 35 (string_or_var)
-    STARTSWITH  reduce using rule 35 (string_or_var)
-    WHEN        reduce using rule 35 (string_or_var)
+    $end    reduce using rule 35 (string_or_var)
+    HEADER  reduce using rule 35 (string_or_var)
+    HTTP    reduce using rule 35 (string_or_var)
+    INTO    reduce using rule 35 (string_or_var)
+    MUST    reduce using rule 35 (string_or_var)
+    QUERY   reduce using rule 35 (string_or_var)
+    SET     reduce using rule 35 (string_or_var)
+    SHOULD  reduce using rule 35 (string_or_var)
+    WHEN    reduce using rule 35 (string_or_var)
 
 state 23 // MUST STRING
 
@@ -374,10 +366,9 @@ state 27 // SET '{' '{' IDENTIFIER '}'
 
 state 28 // SET '{' '{' IDENTIFIER '}' '}'
 
-   37 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '(', ')', '{', AND, CONTAINS, EQUALS, FALSE, FLOAT, GT, HEADER, HTTP, INTEGER, INTO, LT, MUST, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
+   37 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, ')', '{', AND, CONTAINS, EQUALS, FALSE, FLOAT, GT, HEADER, HTTP, INTEGER, INTO, LT, MUST, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
 
     $end        reduce using rule 37 (variable)
-    '('         reduce using rule 37 (variable)
     ')'         reduce using rule 37 (variable)
     '{'         reduce using rule 37 (variable)
     AND         reduce using rule 37 (variable)
@@ -572,9 +563,9 @@ state 43 // SET '{' '{' IDENTIFIER '}' '}' [$end]
    11 set_command: SET variable .  [$end, HTTP, MUST, SET, SHOULD, WHEN]
 
     $end     reduce using rule 11 (set_command)
-    '('      shift, and goto state 52
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     HTTP     reduce using rule 11 (set_command)
     INTEGER  shift, and goto state 47
@@ -582,33 +573,35 @@ state 43 // SET '{' '{' IDENTIFIER '}' '}' [$end]
     SET      reduce using rule 11 (set_command)
     SHOULD   reduce using rule 11 (set_command)
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
     WHEN     reduce using rule 11 (set_command)
 
     any_value      goto state 44
     boolean_exp    goto state 48
-    condition      goto state 51
+    condition      goto state 52
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
 state 44 // SET '{' '{' IDENTIFIER '}' '}' FALSE [$end]
 
    10 set_command: SET variable any_value .  [$end, HTTP, MUST, SET, SHOULD, WHEN]
-   47 boolean_exp: any_value . operator any_value
+   49 condition: any_value . operator any_value
 
     $end        reduce using rule 10 (set_command)
-    CONTAINS    shift, and goto state 58
-    EQUALS      shift, and goto state 55
-    GT          shift, and goto state 56
+    AND         shift, and goto state 61
+    CONTAINS    shift, and goto state 59
+    EQUALS      shift, and goto state 56
+    GT          shift, and goto state 57
     HTTP        reduce using rule 10 (set_command)
-    LT          shift, and goto state 57
+    LT          shift, and goto state 58
     MUST        reduce using rule 10 (set_command)
+    OR          shift, and goto state 62
     SET         reduce using rule 10 (set_command)
     SHOULD      reduce using rule 10 (set_command)
-    STARTSWITH  shift, and goto state 59
+    STARTSWITH  shift, and goto state 60
     WHEN        reduce using rule 10 (set_command)
 
-    operator  goto state 60
+    operator  goto state 63
 
 state 45 // MUST STRING [$end]
 
@@ -670,67 +663,59 @@ state 47 // MUST INTEGER
 state 48 // SHOULD '(' FALSE [$end]
 
    34 any_value: boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
-   48 condition: boolean_exp . AND boolean_exp
-   49 condition: boolean_exp . OR boolean_exp
 
     $end        reduce using rule 34 (any_value)
     ')'         reduce using rule 34 (any_value)
-    AND         shift, and goto state 63
+    AND         reduce using rule 34 (any_value)
     CONTAINS    reduce using rule 34 (any_value)
     EQUALS      reduce using rule 34 (any_value)
     GT          reduce using rule 34 (any_value)
     HTTP        reduce using rule 34 (any_value)
     LT          reduce using rule 34 (any_value)
     MUST        reduce using rule 34 (any_value)
-    OR          shift, and goto state 64
+    OR          reduce using rule 34 (any_value)
     SET         reduce using rule 34 (any_value)
     SHOULD      reduce using rule 34 (any_value)
     STARTSWITH  reduce using rule 34 (any_value)
     WHEN        reduce using rule 34 (any_value)
-    conflict on AND, shift, and goto state 63, reduce using rule 34
-    conflict on OR, shift, and goto state 64, reduce using rule 34
 
-state 49 // MUST TRUE
+state 49 // SHOULD '{' '{' IDENTIFIER '}' '}' [$end]
 
-   43 boolean_exp: TRUE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+   35 string_or_var: variable .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+   48 boolean_exp: variable .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
 
-    $end        reduce using rule 43 (boolean_exp)
-    ')'         reduce using rule 43 (boolean_exp)
-    AND         reduce using rule 43 (boolean_exp)
-    CONTAINS    reduce using rule 43 (boolean_exp)
-    EQUALS      reduce using rule 43 (boolean_exp)
-    GT          reduce using rule 43 (boolean_exp)
-    HTTP        reduce using rule 43 (boolean_exp)
-    LT          reduce using rule 43 (boolean_exp)
-    MUST        reduce using rule 43 (boolean_exp)
-    OR          reduce using rule 43 (boolean_exp)
-    SET         reduce using rule 43 (boolean_exp)
-    SHOULD      reduce using rule 43 (boolean_exp)
-    STARTSWITH  reduce using rule 43 (boolean_exp)
-    WHEN        reduce using rule 43 (boolean_exp)
+    $end        reduce using rule 35 (string_or_var)
+    ')'         reduce using rule 35 (string_or_var)
+    AND         reduce using rule 35 (string_or_var)
+    CONTAINS    reduce using rule 35 (string_or_var)
+    EQUALS      reduce using rule 35 (string_or_var)
+    GT          reduce using rule 35 (string_or_var)
+    HTTP        reduce using rule 35 (string_or_var)
+    LT          reduce using rule 35 (string_or_var)
+    MUST        reduce using rule 35 (string_or_var)
+    OR          reduce using rule 35 (string_or_var)
+    SET         reduce using rule 35 (string_or_var)
+    SHOULD      reduce using rule 35 (string_or_var)
+    STARTSWITH  reduce using rule 35 (string_or_var)
+    WHEN        reduce using rule 35 (string_or_var)
+    conflict on $end, reduce using rule 35, reduce using rule 48
+    conflict on ')', reduce using rule 35, reduce using rule 48
+    conflict on AND, reduce using rule 35, reduce using rule 48
+    conflict on CONTAINS, reduce using rule 35, reduce using rule 48
+    conflict on EQUALS, reduce using rule 35, reduce using rule 48
+    conflict on GT, reduce using rule 35, reduce using rule 48
+    conflict on HTTP, reduce using rule 35, reduce using rule 48
+    conflict on LT, reduce using rule 35, reduce using rule 48
+    conflict on MUST, reduce using rule 35, reduce using rule 48
+    conflict on OR, reduce using rule 35, reduce using rule 48
+    conflict on SET, reduce using rule 35, reduce using rule 48
+    conflict on SHOULD, reduce using rule 35, reduce using rule 48
+    conflict on STARTSWITH, reduce using rule 35, reduce using rule 48
+    conflict on WHEN, reduce using rule 35, reduce using rule 48
 
-state 50 // MUST FALSE
+state 50 // MUST TRUE
 
-   44 boolean_exp: FALSE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
-
-    $end        reduce using rule 44 (boolean_exp)
-    ')'         reduce using rule 44 (boolean_exp)
-    AND         reduce using rule 44 (boolean_exp)
-    CONTAINS    reduce using rule 44 (boolean_exp)
-    EQUALS      reduce using rule 44 (boolean_exp)
-    GT          reduce using rule 44 (boolean_exp)
-    HTTP        reduce using rule 44 (boolean_exp)
-    LT          reduce using rule 44 (boolean_exp)
-    MUST        reduce using rule 44 (boolean_exp)
-    OR          reduce using rule 44 (boolean_exp)
-    SET         reduce using rule 44 (boolean_exp)
-    SHOULD      reduce using rule 44 (boolean_exp)
-    STARTSWITH  reduce using rule 44 (boolean_exp)
-    WHEN        reduce using rule 44 (boolean_exp)
-
-state 51 // SHOULD FALSE AND FALSE [$end]
-
-   45 boolean_exp: condition .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+   45 boolean_exp: TRUE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
 
     $end        reduce using rule 45 (boolean_exp)
     ')'         reduce using rule 45 (boolean_exp)
@@ -747,159 +732,9 @@ state 51 // SHOULD FALSE AND FALSE [$end]
     STARTSWITH  reduce using rule 45 (boolean_exp)
     WHEN        reduce using rule 45 (boolean_exp)
 
-state 52 // SHOULD '('
+state 51 // MUST FALSE
 
-   46 boolean_exp: '(' . condition ')'
-
-    '('      shift, and goto state 52
-    '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
-    FLOAT    shift, and goto state 46
-    INTEGER  shift, and goto state 47
-    STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
-
-    any_value      goto state 54
-    boolean_exp    goto state 48
-    condition      goto state 53
-    string_or_var  goto state 45
-    variable       goto state 22
-
-state 53 // SHOULD '(' FALSE AND FALSE [')']
-
-   45 boolean_exp: condition .  [AND, CONTAINS, EQUALS, GT, LT, OR, STARTSWITH]
-   46 boolean_exp: '(' condition . ')'
-
-    ')'         shift, and goto state 62
-    AND         reduce using rule 45 (boolean_exp)
-    CONTAINS    reduce using rule 45 (boolean_exp)
-    EQUALS      reduce using rule 45 (boolean_exp)
-    GT          reduce using rule 45 (boolean_exp)
-    LT          reduce using rule 45 (boolean_exp)
-    OR          reduce using rule 45 (boolean_exp)
-    STARTSWITH  reduce using rule 45 (boolean_exp)
-
-state 54 // MUST FALSE [CONTAINS]
-
-   47 boolean_exp: any_value . operator any_value
-
-    CONTAINS    shift, and goto state 58
-    EQUALS      shift, and goto state 55
-    GT          shift, and goto state 56
-    LT          shift, and goto state 57
-    STARTSWITH  shift, and goto state 59
-
-    operator  goto state 60
-
-state 55 // MUST FALSE EQUALS
-
-   38 operator: EQUALS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
-
-    '('      reduce using rule 38 (operator)
-    '{'      reduce using rule 38 (operator)
-    FALSE    reduce using rule 38 (operator)
-    FLOAT    reduce using rule 38 (operator)
-    INTEGER  reduce using rule 38 (operator)
-    STRING   reduce using rule 38 (operator)
-    TRUE     reduce using rule 38 (operator)
-
-state 56 // MUST FALSE GT
-
-   39 operator: GT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
-
-    '('      reduce using rule 39 (operator)
-    '{'      reduce using rule 39 (operator)
-    FALSE    reduce using rule 39 (operator)
-    FLOAT    reduce using rule 39 (operator)
-    INTEGER  reduce using rule 39 (operator)
-    STRING   reduce using rule 39 (operator)
-    TRUE     reduce using rule 39 (operator)
-
-state 57 // MUST FALSE LT
-
-   40 operator: LT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
-
-    '('      reduce using rule 40 (operator)
-    '{'      reduce using rule 40 (operator)
-    FALSE    reduce using rule 40 (operator)
-    FLOAT    reduce using rule 40 (operator)
-    INTEGER  reduce using rule 40 (operator)
-    STRING   reduce using rule 40 (operator)
-    TRUE     reduce using rule 40 (operator)
-
-state 58 // MUST FALSE CONTAINS
-
-   41 operator: CONTAINS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
-
-    '('      reduce using rule 41 (operator)
-    '{'      reduce using rule 41 (operator)
-    FALSE    reduce using rule 41 (operator)
-    FLOAT    reduce using rule 41 (operator)
-    INTEGER  reduce using rule 41 (operator)
-    STRING   reduce using rule 41 (operator)
-    TRUE     reduce using rule 41 (operator)
-
-state 59 // MUST FALSE STARTSWITH
-
-   42 operator: STARTSWITH .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
-
-    '('      reduce using rule 42 (operator)
-    '{'      reduce using rule 42 (operator)
-    FALSE    reduce using rule 42 (operator)
-    FLOAT    reduce using rule 42 (operator)
-    INTEGER  reduce using rule 42 (operator)
-    STRING   reduce using rule 42 (operator)
-    TRUE     reduce using rule 42 (operator)
-
-state 60 // MUST FALSE CONTAINS ['(']
-
-   47 boolean_exp: any_value operator . any_value
-
-    '('      shift, and goto state 52
-    '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
-    FLOAT    shift, and goto state 46
-    INTEGER  shift, and goto state 47
-    STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
-
-    any_value      goto state 61
-    boolean_exp    goto state 48
-    condition      goto state 51
-    string_or_var  goto state 45
-    variable       goto state 22
-
-state 61 // MUST FALSE CONTAINS FALSE [$end]
-
-   47 boolean_exp: any_value . operator any_value
-   47 boolean_exp: any_value operator any_value .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
-
-    $end        reduce using rule 47 (boolean_exp)
-    ')'         reduce using rule 47 (boolean_exp)
-    AND         reduce using rule 47 (boolean_exp)
-    CONTAINS    shift, and goto state 58
-    EQUALS      shift, and goto state 55
-    GT          shift, and goto state 56
-    HTTP        reduce using rule 47 (boolean_exp)
-    LT          shift, and goto state 57
-    MUST        reduce using rule 47 (boolean_exp)
-    OR          reduce using rule 47 (boolean_exp)
-    SET         reduce using rule 47 (boolean_exp)
-    SHOULD      reduce using rule 47 (boolean_exp)
-    STARTSWITH  shift, and goto state 59
-    WHEN        reduce using rule 47 (boolean_exp)
-
-    operator  goto state 60
-
-    conflict on CONTAINS, shift, and goto state 58, reduce using rule 47
-    conflict on EQUALS, shift, and goto state 55, reduce using rule 47
-    conflict on GT, shift, and goto state 56, reduce using rule 47
-    conflict on LT, shift, and goto state 57, reduce using rule 47
-    conflict on STARTSWITH, shift, and goto state 59, reduce using rule 47
-
-state 62 // SHOULD '(' FALSE AND FALSE ')'
-
-   46 boolean_exp: '(' condition ')' .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+   46 boolean_exp: FALSE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
 
     $end        reduce using rule 46 (boolean_exp)
     ')'         reduce using rule 46 (boolean_exp)
@@ -916,181 +751,290 @@ state 62 // SHOULD '(' FALSE AND FALSE ')'
     STARTSWITH  reduce using rule 46 (boolean_exp)
     WHEN        reduce using rule 46 (boolean_exp)
 
-state 63 // MUST FALSE AND
+state 52 // MUST FALSE AND FALSE [$end]
 
-   48 condition: boolean_exp AND . boolean_exp
+   47 boolean_exp: condition .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
 
-    '('      shift, and goto state 52
+    $end        reduce using rule 47 (boolean_exp)
+    ')'         reduce using rule 47 (boolean_exp)
+    AND         reduce using rule 47 (boolean_exp)
+    CONTAINS    reduce using rule 47 (boolean_exp)
+    EQUALS      reduce using rule 47 (boolean_exp)
+    GT          reduce using rule 47 (boolean_exp)
+    HTTP        reduce using rule 47 (boolean_exp)
+    LT          reduce using rule 47 (boolean_exp)
+    MUST        reduce using rule 47 (boolean_exp)
+    OR          reduce using rule 47 (boolean_exp)
+    SET         reduce using rule 47 (boolean_exp)
+    SHOULD      reduce using rule 47 (boolean_exp)
+    STARTSWITH  reduce using rule 47 (boolean_exp)
+    WHEN        reduce using rule 47 (boolean_exp)
+
+state 53 // SHOULD '('
+
+   50 condition: '(' . condition ')'
+
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     INTEGER  shift, and goto state 47
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
 
-    any_value      goto state 54
-    boolean_exp    goto state 66
-    condition      goto state 51
+    any_value      goto state 55
+    boolean_exp    goto state 48
+    condition      goto state 54
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
-state 64 // SHOULD FALSE OR
+state 54 // SHOULD '(' FALSE AND FALSE [')']
 
-   49 condition: boolean_exp OR . boolean_exp
+   47 boolean_exp: condition .  [AND, CONTAINS, EQUALS, GT, LT, OR, STARTSWITH]
+   50 condition: '(' condition . ')'
 
-    '('      shift, and goto state 52
+    ')'         shift, and goto state 65
+    AND         reduce using rule 47 (boolean_exp)
+    CONTAINS    reduce using rule 47 (boolean_exp)
+    EQUALS      reduce using rule 47 (boolean_exp)
+    GT          reduce using rule 47 (boolean_exp)
+    LT          reduce using rule 47 (boolean_exp)
+    OR          reduce using rule 47 (boolean_exp)
+    STARTSWITH  reduce using rule 47 (boolean_exp)
+
+state 55 // MUST FALSE [AND]
+
+   49 condition: any_value . operator any_value
+
+    AND         shift, and goto state 61
+    CONTAINS    shift, and goto state 59
+    EQUALS      shift, and goto state 56
+    GT          shift, and goto state 57
+    LT          shift, and goto state 58
+    OR          shift, and goto state 62
+    STARTSWITH  shift, and goto state 60
+
+    operator  goto state 63
+
+state 56 // MUST FALSE EQUALS
+
+   38 operator: EQUALS .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 38 (operator)
+    FALSE    reduce using rule 38 (operator)
+    FLOAT    reduce using rule 38 (operator)
+    INTEGER  reduce using rule 38 (operator)
+    STRING   reduce using rule 38 (operator)
+    TRUE     reduce using rule 38 (operator)
+
+state 57 // MUST FALSE GT
+
+   39 operator: GT .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 39 (operator)
+    FALSE    reduce using rule 39 (operator)
+    FLOAT    reduce using rule 39 (operator)
+    INTEGER  reduce using rule 39 (operator)
+    STRING   reduce using rule 39 (operator)
+    TRUE     reduce using rule 39 (operator)
+
+state 58 // MUST FALSE LT
+
+   40 operator: LT .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 40 (operator)
+    FALSE    reduce using rule 40 (operator)
+    FLOAT    reduce using rule 40 (operator)
+    INTEGER  reduce using rule 40 (operator)
+    STRING   reduce using rule 40 (operator)
+    TRUE     reduce using rule 40 (operator)
+
+state 59 // MUST FALSE CONTAINS
+
+   41 operator: CONTAINS .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 41 (operator)
+    FALSE    reduce using rule 41 (operator)
+    FLOAT    reduce using rule 41 (operator)
+    INTEGER  reduce using rule 41 (operator)
+    STRING   reduce using rule 41 (operator)
+    TRUE     reduce using rule 41 (operator)
+
+state 60 // MUST FALSE STARTSWITH
+
+   42 operator: STARTSWITH .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 42 (operator)
+    FALSE    reduce using rule 42 (operator)
+    FLOAT    reduce using rule 42 (operator)
+    INTEGER  reduce using rule 42 (operator)
+    STRING   reduce using rule 42 (operator)
+    TRUE     reduce using rule 42 (operator)
+
+state 61 // MUST FALSE AND
+
+   43 operator: AND .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 43 (operator)
+    FALSE    reduce using rule 43 (operator)
+    FLOAT    reduce using rule 43 (operator)
+    INTEGER  reduce using rule 43 (operator)
+    STRING   reduce using rule 43 (operator)
+    TRUE     reduce using rule 43 (operator)
+
+state 62 // MUST FALSE OR
+
+   44 operator: OR .  ['{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '{'      reduce using rule 44 (operator)
+    FALSE    reduce using rule 44 (operator)
+    FLOAT    reduce using rule 44 (operator)
+    INTEGER  reduce using rule 44 (operator)
+    STRING   reduce using rule 44 (operator)
+    TRUE     reduce using rule 44 (operator)
+
+state 63 // MUST FALSE AND ['{']
+
+   49 condition: any_value operator . any_value
+
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     INTEGER  shift, and goto state 47
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
 
-    any_value      goto state 54
-    boolean_exp    goto state 65
-    condition      goto state 51
+    any_value      goto state 64
+    boolean_exp    goto state 48
+    condition      goto state 52
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
-state 65 // SHOULD FALSE OR FALSE [$end]
+state 64 // MUST FALSE AND FALSE [$end]
 
-   34 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT, STARTSWITH]
-   48 condition: boolean_exp . AND boolean_exp
-   49 condition: boolean_exp . OR boolean_exp
-   49 condition: boolean_exp OR boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+   49 condition: any_value . operator any_value
+   49 condition: any_value operator any_value .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
 
     $end        reduce using rule 49 (condition)
     ')'         reduce using rule 49 (condition)
-    AND         shift, and goto state 63
-    CONTAINS    reduce using rule 34 (any_value)
-    EQUALS      reduce using rule 34 (any_value)
-    GT          reduce using rule 34 (any_value)
+    AND         shift, and goto state 61
+    CONTAINS    shift, and goto state 59
+    EQUALS      shift, and goto state 56
+    GT          shift, and goto state 57
     HTTP        reduce using rule 49 (condition)
-    LT          reduce using rule 34 (any_value)
+    LT          shift, and goto state 58
     MUST        reduce using rule 49 (condition)
-    OR          shift, and goto state 64
+    OR          shift, and goto state 62
     SET         reduce using rule 49 (condition)
     SHOULD      reduce using rule 49 (condition)
-    STARTSWITH  reduce using rule 34 (any_value)
+    STARTSWITH  shift, and goto state 60
     WHEN        reduce using rule 49 (condition)
-    conflict on AND, shift, and goto state 63, reduce using rule 49
-    conflict on CONTAINS, reduce using rule 34, reduce using rule 49
-    conflict on EQUALS, reduce using rule 34, reduce using rule 49
-    conflict on GT, reduce using rule 34, reduce using rule 49
-    conflict on LT, reduce using rule 34, reduce using rule 49
-    conflict on OR, shift, and goto state 64, reduce using rule 49
-    conflict on STARTSWITH, reduce using rule 34, reduce using rule 49
 
-state 66 // MUST FALSE AND FALSE [$end]
+    operator  goto state 63
 
-   34 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT, STARTSWITH]
-   48 condition: boolean_exp . AND boolean_exp
-   48 condition: boolean_exp AND boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
-   49 condition: boolean_exp . OR boolean_exp
+    conflict on AND, shift, and goto state 61, reduce using rule 49
+    conflict on CONTAINS, shift, and goto state 59, reduce using rule 49
+    conflict on EQUALS, shift, and goto state 56, reduce using rule 49
+    conflict on GT, shift, and goto state 57, reduce using rule 49
+    conflict on LT, shift, and goto state 58, reduce using rule 49
+    conflict on OR, shift, and goto state 62, reduce using rule 49
+    conflict on STARTSWITH, shift, and goto state 60, reduce using rule 49
 
-    $end        reduce using rule 48 (condition)
-    ')'         reduce using rule 48 (condition)
-    AND         shift, and goto state 63
-    CONTAINS    reduce using rule 34 (any_value)
-    EQUALS      reduce using rule 34 (any_value)
-    GT          reduce using rule 34 (any_value)
-    HTTP        reduce using rule 48 (condition)
-    LT          reduce using rule 34 (any_value)
-    MUST        reduce using rule 48 (condition)
-    OR          shift, and goto state 64
-    SET         reduce using rule 48 (condition)
-    SHOULD      reduce using rule 48 (condition)
-    STARTSWITH  reduce using rule 34 (any_value)
-    WHEN        reduce using rule 48 (condition)
-    conflict on AND, shift, and goto state 63, reduce using rule 48
-    conflict on CONTAINS, reduce using rule 34, reduce using rule 48
-    conflict on EQUALS, reduce using rule 34, reduce using rule 48
-    conflict on GT, reduce using rule 34, reduce using rule 48
-    conflict on LT, reduce using rule 34, reduce using rule 48
-    conflict on OR, shift, and goto state 64, reduce using rule 48
-    conflict on STARTSWITH, reduce using rule 34, reduce using rule 48
+state 65 // SHOULD '(' FALSE AND FALSE ')'
 
-state 67 // SHOULD FALSE [$end]
+   50 condition: '(' condition ')' .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, MUST, OR, SET, SHOULD, STARTSWITH, WHEN]
+
+    $end        reduce using rule 50 (condition)
+    ')'         reduce using rule 50 (condition)
+    AND         reduce using rule 50 (condition)
+    CONTAINS    reduce using rule 50 (condition)
+    EQUALS      reduce using rule 50 (condition)
+    GT          reduce using rule 50 (condition)
+    HTTP        reduce using rule 50 (condition)
+    LT          reduce using rule 50 (condition)
+    MUST        reduce using rule 50 (condition)
+    OR          reduce using rule 50 (condition)
+    SET         reduce using rule 50 (condition)
+    SHOULD      reduce using rule 50 (condition)
+    STARTSWITH  reduce using rule 50 (condition)
+    WHEN        reduce using rule 50 (condition)
+
+state 66 // SHOULD FALSE [$end]
 
     9 must_command: SHOULD boolean_exp .  [$end, HTTP, MUST, SET, SHOULD, WHEN]
-   34 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT, STARTSWITH]
-   48 condition: boolean_exp . AND boolean_exp
-   49 condition: boolean_exp . OR boolean_exp
+   34 any_value: boolean_exp .  [AND, CONTAINS, EQUALS, GT, LT, OR, STARTSWITH]
 
     $end        reduce using rule 9 (must_command)
-    AND         shift, and goto state 63
+    AND         reduce using rule 34 (any_value)
     CONTAINS    reduce using rule 34 (any_value)
     EQUALS      reduce using rule 34 (any_value)
     GT          reduce using rule 34 (any_value)
     HTTP        reduce using rule 9 (must_command)
     LT          reduce using rule 34 (any_value)
     MUST        reduce using rule 9 (must_command)
-    OR          shift, and goto state 64
+    OR          reduce using rule 34 (any_value)
     SET         reduce using rule 9 (must_command)
     SHOULD      reduce using rule 9 (must_command)
     STARTSWITH  reduce using rule 34 (any_value)
     WHEN        reduce using rule 9 (must_command)
 
-state 68 // MUST FALSE [$end]
+state 67 // MUST FALSE [$end]
 
     8 must_command: MUST boolean_exp .  [$end, HTTP, MUST, SET, SHOULD, WHEN]
-   34 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT, STARTSWITH]
-   48 condition: boolean_exp . AND boolean_exp
-   49 condition: boolean_exp . OR boolean_exp
+   34 any_value: boolean_exp .  [AND, CONTAINS, EQUALS, GT, LT, OR, STARTSWITH]
 
     $end        reduce using rule 8 (must_command)
-    AND         shift, and goto state 63
+    AND         reduce using rule 34 (any_value)
     CONTAINS    reduce using rule 34 (any_value)
     EQUALS      reduce using rule 34 (any_value)
     GT          reduce using rule 34 (any_value)
     HTTP        reduce using rule 8 (must_command)
     LT          reduce using rule 34 (any_value)
     MUST        reduce using rule 8 (must_command)
-    OR          shift, and goto state 64
+    OR          reduce using rule 34 (any_value)
     SET         reduce using rule 8 (must_command)
     SHOULD      reduce using rule 8 (must_command)
     STARTSWITH  reduce using rule 34 (any_value)
     WHEN        reduce using rule 8 (must_command)
 
-state 69 // HTTP WHEN
+state 68 // HTTP WHEN
 
     4 command_with_condition_opt: command WHEN . boolean_exp
 
-    '('      shift, and goto state 52
+    '('      shift, and goto state 53
     '{'      shift, and goto state 24
-    FALSE    shift, and goto state 50
+    FALSE    shift, and goto state 51
     FLOAT    shift, and goto state 46
     INTEGER  shift, and goto state 47
     STRING   shift, and goto state 23
-    TRUE     shift, and goto state 49
+    TRUE     shift, and goto state 50
 
-    any_value      goto state 54
-    boolean_exp    goto state 70
-    condition      goto state 51
+    any_value      goto state 55
+    boolean_exp    goto state 69
+    condition      goto state 52
     string_or_var  goto state 45
-    variable       goto state 22
+    variable       goto state 49
 
-state 70 // HTTP WHEN FALSE [$end]
+state 69 // HTTP WHEN FALSE [$end]
 
     4 command_with_condition_opt: command WHEN boolean_exp .  [$end, HTTP, MUST, SET, SHOULD]
-   34 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT, STARTSWITH]
-   48 condition: boolean_exp . AND boolean_exp
-   49 condition: boolean_exp . OR boolean_exp
+   34 any_value: boolean_exp .  [AND, CONTAINS, EQUALS, GT, LT, OR, STARTSWITH]
 
     $end        reduce using rule 4 (command_with_condition_opt)
-    AND         shift, and goto state 63
+    AND         reduce using rule 34 (any_value)
     CONTAINS    reduce using rule 34 (any_value)
     EQUALS      reduce using rule 34 (any_value)
     GT          reduce using rule 34 (any_value)
     HTTP        reduce using rule 4 (command_with_condition_opt)
     LT          reduce using rule 34 (any_value)
     MUST        reduce using rule 4 (command_with_condition_opt)
-    OR          shift, and goto state 64
+    OR          reduce using rule 34 (any_value)
     SET         reduce using rule 4 (command_with_condition_opt)
     SHOULD      reduce using rule 4 (command_with_condition_opt)
     STARTSWITH  reduce using rule 34 (any_value)
 
-state 71 // HTTP HTTP [$end]
+state 70 // HTTP HTTP [$end]
 
     2 any_command: any_command command_with_condition_opt .  [$end, HTTP, MUST, SET, SHOULD]
 

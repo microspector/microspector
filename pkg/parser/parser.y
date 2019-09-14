@@ -258,11 +258,13 @@ variable: '{''{' IDENTIFIER '}''}'{
 }
 
 operator:
-EQUALS { $$ = $1 }
-| GT {  $$ = $1 }
-| LT {  $$ = $1 }
-| CONTAINS {  $$ = $1 }
-| STARTSWITH {  $$ = $1 }
+EQUALS
+| GT
+| LT
+| CONTAINS
+| STARTSWITH
+| AND
+| OR
 
 
 boolean_exp:
@@ -273,26 +275,25 @@ TRUE {
 | FALSE {
  $$ = false
 }
-| condition {
+|
+condition {
   $$ = $1
 }
-| '(' condition ')' {
-  $$ = $2
+| variable {
+ $$ = $1
 }
-| any_value operator any_value{
-	//what should we do here?
-	$$ = runop($1,$2,$3)
-}
+
 
 
 condition :
-boolean_exp AND boolean_exp {
-//boolean_exp AND boolean_exp
-  $$ = $1 && $3
+any_value operator any_value{
+	//what should we do here?
+	$$ = runop($1,$2,$3)
 }
-| boolean_exp OR boolean_exp{
-  $$ = $1 || $3
+| '(' condition ')' {
+   	$$ = $2
 }
+
 
 %%
 
