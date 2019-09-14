@@ -1,0 +1,894 @@
+state 0 //
+
+    0 $accept: . any_command
+
+    HTTP  shift, and goto state 7
+    SET   shift, and goto state 6
+
+    any_command                 goto state 1
+    command                     goto state 3
+    command_with_condition_opt  goto state 2
+    http_command                goto state 5
+    set_command                 goto state 4
+
+state 1 // HTTP [$end]
+
+    0 $accept: any_command .  [$end]
+    2 any_command: any_command . command_with_condition_opt
+
+    $end  accept
+    HTTP  shift, and goto state 7
+    SET   shift, and goto state 6
+
+    command                     goto state 3
+    command_with_condition_opt  goto state 65
+    http_command                goto state 5
+    set_command                 goto state 4
+
+state 2 // HTTP [$end]
+
+    1 any_command: command_with_condition_opt .  [$end, HTTP, SET]
+
+    $end  reduce using rule 1 (any_command)
+    HTTP  reduce using rule 1 (any_command)
+    SET   reduce using rule 1 (any_command)
+
+state 3 // HTTP [$end]
+
+    3 command_with_condition_opt: command .  [$end, HTTP, SET]
+    4 command_with_condition_opt: command . WHEN boolean_exp
+
+    $end  reduce using rule 3 (command_with_condition_opt)
+    HTTP  reduce using rule 3 (command_with_condition_opt)
+    SET   reduce using rule 3 (command_with_condition_opt)
+    WHEN  shift, and goto state 63
+
+state 4 // SET '{' '{' IDENTIFIER '}' '}' [$end]
+
+    5 command: set_command .  [$end, HTTP, SET, WHEN]
+
+    $end  reduce using rule 5 (command)
+    HTTP  reduce using rule 5 (command)
+    SET   reduce using rule 5 (command)
+    WHEN  reduce using rule 5 (command)
+
+state 5 // HTTP [$end]
+
+    6 command: http_command .  [$end, HTTP, SET, WHEN]
+
+    $end  reduce using rule 6 (command)
+    HTTP  reduce using rule 6 (command)
+    SET   reduce using rule 6 (command)
+    WHEN  reduce using rule 6 (command)
+
+state 6 // SET
+
+    7 set_command: SET . variable any_value
+    8 set_command: SET . variable
+
+    '{'  shift, and goto state 21
+
+    variable  goto state 40
+
+state 7 // HTTP
+
+    9 http_command: HTTP . http_method string_or_var http_command_params INTO variable
+   10 http_command: HTTP . http_method string_or_var INTO variable
+   11 http_command: HTTP . http_method string_or_var http_command_params
+   13 http_command: HTTP . http_method string_or_var $@1 HTTP http_method
+   14 http_command: HTTP .  [$end, HTTP, SET, WHEN]
+
+    $end     reduce using rule 14 (http_command)
+    CONNECT  shift, and goto state 14
+    DELETE   shift, and goto state 13
+    GET      shift, and goto state 9
+    HEAD     shift, and goto state 10
+    HTTP     reduce using rule 14 (http_command)
+    OPTIONS  shift, and goto state 15
+    PATCH    shift, and goto state 17
+    POST     shift, and goto state 11
+    PUT      shift, and goto state 12
+    SET      reduce using rule 14 (http_command)
+    TRACE    shift, and goto state 16
+    WHEN     reduce using rule 14 (http_command)
+
+    http_method  goto state 8
+
+state 8 // HTTP CONNECT ['{']
+
+    9 http_command: HTTP http_method . string_or_var http_command_params INTO variable
+   10 http_command: HTTP http_method . string_or_var INTO variable
+   11 http_command: HTTP http_method . string_or_var http_command_params
+   13 http_command: HTTP http_method . string_or_var $@1 HTTP http_method
+
+    '{'     shift, and goto state 21
+    STRING  shift, and goto state 20
+
+    string_or_var  goto state 18
+    variable       goto state 19
+
+state 9 // HTTP GET
+
+   19 http_method: GET .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 19 (http_method)
+    '{'     reduce using rule 19 (http_method)
+    HTTP    reduce using rule 19 (http_method)
+    SET     reduce using rule 19 (http_method)
+    STRING  reduce using rule 19 (http_method)
+    WHEN    reduce using rule 19 (http_method)
+
+state 10 // HTTP HEAD
+
+   20 http_method: HEAD .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 20 (http_method)
+    '{'     reduce using rule 20 (http_method)
+    HTTP    reduce using rule 20 (http_method)
+    SET     reduce using rule 20 (http_method)
+    STRING  reduce using rule 20 (http_method)
+    WHEN    reduce using rule 20 (http_method)
+
+state 11 // HTTP POST
+
+   21 http_method: POST .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 21 (http_method)
+    '{'     reduce using rule 21 (http_method)
+    HTTP    reduce using rule 21 (http_method)
+    SET     reduce using rule 21 (http_method)
+    STRING  reduce using rule 21 (http_method)
+    WHEN    reduce using rule 21 (http_method)
+
+state 12 // HTTP PUT
+
+   22 http_method: PUT .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 22 (http_method)
+    '{'     reduce using rule 22 (http_method)
+    HTTP    reduce using rule 22 (http_method)
+    SET     reduce using rule 22 (http_method)
+    STRING  reduce using rule 22 (http_method)
+    WHEN    reduce using rule 22 (http_method)
+
+state 13 // HTTP DELETE
+
+   23 http_method: DELETE .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 23 (http_method)
+    '{'     reduce using rule 23 (http_method)
+    HTTP    reduce using rule 23 (http_method)
+    SET     reduce using rule 23 (http_method)
+    STRING  reduce using rule 23 (http_method)
+    WHEN    reduce using rule 23 (http_method)
+
+state 14 // HTTP CONNECT
+
+   24 http_method: CONNECT .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 24 (http_method)
+    '{'     reduce using rule 24 (http_method)
+    HTTP    reduce using rule 24 (http_method)
+    SET     reduce using rule 24 (http_method)
+    STRING  reduce using rule 24 (http_method)
+    WHEN    reduce using rule 24 (http_method)
+
+state 15 // HTTP OPTIONS
+
+   25 http_method: OPTIONS .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 25 (http_method)
+    '{'     reduce using rule 25 (http_method)
+    HTTP    reduce using rule 25 (http_method)
+    SET     reduce using rule 25 (http_method)
+    STRING  reduce using rule 25 (http_method)
+    WHEN    reduce using rule 25 (http_method)
+
+state 16 // HTTP TRACE
+
+   26 http_method: TRACE .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 26 (http_method)
+    '{'     reduce using rule 26 (http_method)
+    HTTP    reduce using rule 26 (http_method)
+    SET     reduce using rule 26 (http_method)
+    STRING  reduce using rule 26 (http_method)
+    WHEN    reduce using rule 26 (http_method)
+
+state 17 // HTTP PATCH
+
+   27 http_method: PATCH .  [$end, '{', HTTP, SET, STRING, WHEN]
+
+    $end    reduce using rule 27 (http_method)
+    '{'     reduce using rule 27 (http_method)
+    HTTP    reduce using rule 27 (http_method)
+    SET     reduce using rule 27 (http_method)
+    STRING  reduce using rule 27 (http_method)
+    WHEN    reduce using rule 27 (http_method)
+
+state 18 // HTTP CONNECT STRING [HEADER]
+
+    9 http_command: HTTP http_method string_or_var . http_command_params INTO variable
+   10 http_command: HTTP http_method string_or_var . INTO variable
+   11 http_command: HTTP http_method string_or_var . http_command_params
+   13 http_command: HTTP http_method string_or_var . $@1 HTTP http_method
+   12 $@1: .  [HTTP]
+
+    HEADER  shift, and goto state 30
+    HTTP    reduce using rule 12 ($@1)
+    INTO    shift, and goto state 27
+    QUERY   shift, and goto state 31
+
+    $@1                  goto state 28
+    http_command_param   goto state 29
+    http_command_params  goto state 26
+
+state 19 // HTTP CONNECT '{' '{' IDENTIFIER '}' '}' [$end]
+
+   32 string_or_var: variable .  [$end, ')', AND, CONTAINS, EQUALS, GT, HEADER, HTTP, INTO, LT, OR, QUERY, SET, WHEN]
+
+    $end      reduce using rule 32 (string_or_var)
+    ')'       reduce using rule 32 (string_or_var)
+    AND       reduce using rule 32 (string_or_var)
+    CONTAINS  reduce using rule 32 (string_or_var)
+    EQUALS    reduce using rule 32 (string_or_var)
+    GT        reduce using rule 32 (string_or_var)
+    HEADER    reduce using rule 32 (string_or_var)
+    HTTP      reduce using rule 32 (string_or_var)
+    INTO      reduce using rule 32 (string_or_var)
+    LT        reduce using rule 32 (string_or_var)
+    OR        reduce using rule 32 (string_or_var)
+    QUERY     reduce using rule 32 (string_or_var)
+    SET       reduce using rule 32 (string_or_var)
+    WHEN      reduce using rule 32 (string_or_var)
+
+state 20 // HTTP CONNECT STRING
+
+   33 string_or_var: STRING .  [$end, ')', AND, CONTAINS, EQUALS, GT, HEADER, HTTP, INTO, LT, OR, QUERY, SET, WHEN]
+
+    $end      reduce using rule 33 (string_or_var)
+    ')'       reduce using rule 33 (string_or_var)
+    AND       reduce using rule 33 (string_or_var)
+    CONTAINS  reduce using rule 33 (string_or_var)
+    EQUALS    reduce using rule 33 (string_or_var)
+    GT        reduce using rule 33 (string_or_var)
+    HEADER    reduce using rule 33 (string_or_var)
+    HTTP      reduce using rule 33 (string_or_var)
+    INTO      reduce using rule 33 (string_or_var)
+    LT        reduce using rule 33 (string_or_var)
+    OR        reduce using rule 33 (string_or_var)
+    QUERY     reduce using rule 33 (string_or_var)
+    SET       reduce using rule 33 (string_or_var)
+    WHEN      reduce using rule 33 (string_or_var)
+
+state 21 // SET '{'
+
+   34 variable: '{' . '{' IDENTIFIER '}' '}'
+
+    '{'  shift, and goto state 22
+
+state 22 // SET '{' '{'
+
+   34 variable: '{' '{' . IDENTIFIER '}' '}'
+
+    IDENTIFIER  shift, and goto state 23
+
+state 23 // SET '{' '{' IDENTIFIER
+
+   34 variable: '{' '{' IDENTIFIER . '}' '}'
+
+    '}'  shift, and goto state 24
+
+state 24 // SET '{' '{' IDENTIFIER '}'
+
+   34 variable: '{' '{' IDENTIFIER '}' . '}'
+
+    '}'  shift, and goto state 25
+
+state 25 // SET '{' '{' IDENTIFIER '}' '}'
+
+   34 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '(', ')', '{', AND, CONTAINS, EQUALS, FALSE, FLOAT, GT, HEADER, HTTP, INTEGER, INTO, LT, OR, QUERY, SET, STRING, TRUE, WHEN]
+
+    $end      reduce using rule 34 (variable)
+    '('       reduce using rule 34 (variable)
+    ')'       reduce using rule 34 (variable)
+    '{'       reduce using rule 34 (variable)
+    AND       reduce using rule 34 (variable)
+    CONTAINS  reduce using rule 34 (variable)
+    EQUALS    reduce using rule 34 (variable)
+    FALSE     reduce using rule 34 (variable)
+    FLOAT     reduce using rule 34 (variable)
+    GT        reduce using rule 34 (variable)
+    HEADER    reduce using rule 34 (variable)
+    HTTP      reduce using rule 34 (variable)
+    INTEGER   reduce using rule 34 (variable)
+    INTO      reduce using rule 34 (variable)
+    LT        reduce using rule 34 (variable)
+    OR        reduce using rule 34 (variable)
+    QUERY     reduce using rule 34 (variable)
+    SET       reduce using rule 34 (variable)
+    STRING    reduce using rule 34 (variable)
+    TRUE      reduce using rule 34 (variable)
+    WHEN      reduce using rule 34 (variable)
+
+state 26 // HTTP CONNECT STRING HEADER STRING [$end]
+
+    9 http_command: HTTP http_method string_or_var http_command_params . INTO variable
+   11 http_command: HTTP http_method string_or_var http_command_params .  [$end, HTTP, SET, WHEN]
+   16 http_command_params: http_command_params . http_command_param
+
+    $end    reduce using rule 11 (http_command)
+    HEADER  shift, and goto state 30
+    HTTP    reduce using rule 11 (http_command)
+    INTO    shift, and goto state 37
+    QUERY   shift, and goto state 31
+    SET     reduce using rule 11 (http_command)
+    WHEN    reduce using rule 11 (http_command)
+
+    http_command_param  goto state 38
+
+state 27 // HTTP CONNECT STRING INTO
+
+   10 http_command: HTTP http_method string_or_var INTO . variable
+
+    '{'  shift, and goto state 21
+
+    variable  goto state 36
+
+state 28 // HTTP CONNECT STRING [HTTP]
+
+   13 http_command: HTTP http_method string_or_var $@1 . HTTP http_method
+
+    HTTP  shift, and goto state 34
+
+state 29 // HTTP CONNECT STRING HEADER STRING [$end]
+
+   15 http_command_params: http_command_param .  [$end, HEADER, HTTP, INTO, QUERY, SET, WHEN]
+
+    $end    reduce using rule 15 (http_command_params)
+    HEADER  reduce using rule 15 (http_command_params)
+    HTTP    reduce using rule 15 (http_command_params)
+    INTO    reduce using rule 15 (http_command_params)
+    QUERY   reduce using rule 15 (http_command_params)
+    SET     reduce using rule 15 (http_command_params)
+    WHEN    reduce using rule 15 (http_command_params)
+
+state 30 // HTTP CONNECT STRING HEADER
+
+   17 http_command_param: HEADER . string_or_var
+
+    '{'     shift, and goto state 21
+    STRING  shift, and goto state 20
+
+    string_or_var  goto state 33
+    variable       goto state 19
+
+state 31 // HTTP CONNECT STRING QUERY
+
+   18 http_command_param: QUERY . string_or_var
+
+    '{'     shift, and goto state 21
+    STRING  shift, and goto state 20
+
+    string_or_var  goto state 32
+    variable       goto state 19
+
+state 32 // HTTP CONNECT STRING QUERY STRING [$end]
+
+   18 http_command_param: QUERY string_or_var .  [$end, HEADER, HTTP, INTO, QUERY, SET, WHEN]
+
+    $end    reduce using rule 18 (http_command_param)
+    HEADER  reduce using rule 18 (http_command_param)
+    HTTP    reduce using rule 18 (http_command_param)
+    INTO    reduce using rule 18 (http_command_param)
+    QUERY   reduce using rule 18 (http_command_param)
+    SET     reduce using rule 18 (http_command_param)
+    WHEN    reduce using rule 18 (http_command_param)
+
+state 33 // HTTP CONNECT STRING HEADER STRING [$end]
+
+   17 http_command_param: HEADER string_or_var .  [$end, HEADER, HTTP, INTO, QUERY, SET, WHEN]
+
+    $end    reduce using rule 17 (http_command_param)
+    HEADER  reduce using rule 17 (http_command_param)
+    HTTP    reduce using rule 17 (http_command_param)
+    INTO    reduce using rule 17 (http_command_param)
+    QUERY   reduce using rule 17 (http_command_param)
+    SET     reduce using rule 17 (http_command_param)
+    WHEN    reduce using rule 17 (http_command_param)
+
+state 34 // HTTP CONNECT STRING HTTP
+
+   13 http_command: HTTP http_method string_or_var $@1 HTTP . http_method
+
+    CONNECT  shift, and goto state 14
+    DELETE   shift, and goto state 13
+    GET      shift, and goto state 9
+    HEAD     shift, and goto state 10
+    OPTIONS  shift, and goto state 15
+    PATCH    shift, and goto state 17
+    POST     shift, and goto state 11
+    PUT      shift, and goto state 12
+    TRACE    shift, and goto state 16
+
+    http_method  goto state 35
+
+state 35 // HTTP CONNECT STRING HTTP CONNECT [$end]
+
+   13 http_command: HTTP http_method string_or_var $@1 HTTP http_method .  [$end, HTTP, SET, WHEN]
+
+    $end  reduce using rule 13 (http_command)
+    HTTP  reduce using rule 13 (http_command)
+    SET   reduce using rule 13 (http_command)
+    WHEN  reduce using rule 13 (http_command)
+
+state 36 // HTTP CONNECT STRING INTO '{' '{' IDENTIFIER '}' '}' [$end]
+
+   10 http_command: HTTP http_method string_or_var INTO variable .  [$end, HTTP, SET, WHEN]
+
+    $end  reduce using rule 10 (http_command)
+    HTTP  reduce using rule 10 (http_command)
+    SET   reduce using rule 10 (http_command)
+    WHEN  reduce using rule 10 (http_command)
+
+state 37 // HTTP CONNECT STRING HEADER STRING INTO
+
+    9 http_command: HTTP http_method string_or_var http_command_params INTO . variable
+
+    '{'  shift, and goto state 21
+
+    variable  goto state 39
+
+state 38 // HTTP CONNECT STRING HEADER STRING HEADER STRING [$end]
+
+   16 http_command_params: http_command_params http_command_param .  [$end, HEADER, HTTP, INTO, QUERY, SET, WHEN]
+
+    $end    reduce using rule 16 (http_command_params)
+    HEADER  reduce using rule 16 (http_command_params)
+    HTTP    reduce using rule 16 (http_command_params)
+    INTO    reduce using rule 16 (http_command_params)
+    QUERY   reduce using rule 16 (http_command_params)
+    SET     reduce using rule 16 (http_command_params)
+    WHEN    reduce using rule 16 (http_command_params)
+
+state 39 // HTTP CONNECT STRING HEADER STRING INTO '{' '{' IDENTIFIER '}' '}' [$end]
+
+    9 http_command: HTTP http_method string_or_var http_command_params INTO variable .  [$end, HTTP, SET, WHEN]
+
+    $end  reduce using rule 9 (http_command)
+    HTTP  reduce using rule 9 (http_command)
+    SET   reduce using rule 9 (http_command)
+    WHEN  reduce using rule 9 (http_command)
+
+state 40 // SET '{' '{' IDENTIFIER '}' '}' [$end]
+
+    7 set_command: SET variable . any_value
+    8 set_command: SET variable .  [$end, HTTP, SET, WHEN]
+
+    $end     reduce using rule 8 (set_command)
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    HTTP     reduce using rule 8 (set_command)
+    INTEGER  shift, and goto state 44
+    SET      reduce using rule 8 (set_command)
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+    WHEN     reduce using rule 8 (set_command)
+
+    any_value      goto state 41
+    boolean_exp    goto state 45
+    condition      goto state 48
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 41 // SET '{' '{' IDENTIFIER '}' '}' FALSE [$end]
+
+    7 set_command: SET variable any_value .  [$end, HTTP, SET, WHEN]
+   43 boolean_exp: any_value . operator any_value
+
+    $end      reduce using rule 7 (set_command)
+    CONTAINS  shift, and goto state 55
+    EQUALS    shift, and goto state 52
+    GT        shift, and goto state 53
+    HTTP      reduce using rule 7 (set_command)
+    LT        shift, and goto state 54
+    SET       reduce using rule 7 (set_command)
+    WHEN      reduce using rule 7 (set_command)
+
+    operator  goto state 56
+
+state 42 // HTTP WHEN STRING [$end]
+
+   28 any_value: string_or_var .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 28 (any_value)
+    ')'       reduce using rule 28 (any_value)
+    AND       reduce using rule 28 (any_value)
+    CONTAINS  reduce using rule 28 (any_value)
+    EQUALS    reduce using rule 28 (any_value)
+    GT        reduce using rule 28 (any_value)
+    HTTP      reduce using rule 28 (any_value)
+    LT        reduce using rule 28 (any_value)
+    OR        reduce using rule 28 (any_value)
+    SET       reduce using rule 28 (any_value)
+    WHEN      reduce using rule 28 (any_value)
+
+state 43 // HTTP WHEN FLOAT
+
+   29 any_value: FLOAT .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 29 (any_value)
+    ')'       reduce using rule 29 (any_value)
+    AND       reduce using rule 29 (any_value)
+    CONTAINS  reduce using rule 29 (any_value)
+    EQUALS    reduce using rule 29 (any_value)
+    GT        reduce using rule 29 (any_value)
+    HTTP      reduce using rule 29 (any_value)
+    LT        reduce using rule 29 (any_value)
+    OR        reduce using rule 29 (any_value)
+    SET       reduce using rule 29 (any_value)
+    WHEN      reduce using rule 29 (any_value)
+
+state 44 // HTTP WHEN INTEGER
+
+   30 any_value: INTEGER .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 30 (any_value)
+    ')'       reduce using rule 30 (any_value)
+    AND       reduce using rule 30 (any_value)
+    CONTAINS  reduce using rule 30 (any_value)
+    EQUALS    reduce using rule 30 (any_value)
+    GT        reduce using rule 30 (any_value)
+    HTTP      reduce using rule 30 (any_value)
+    LT        reduce using rule 30 (any_value)
+    OR        reduce using rule 30 (any_value)
+    SET       reduce using rule 30 (any_value)
+    WHEN      reduce using rule 30 (any_value)
+
+state 45 // HTTP WHEN '(' FALSE [$end]
+
+   31 any_value: boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+   44 condition: boolean_exp . AND boolean_exp
+   45 condition: boolean_exp . OR boolean_exp
+
+    $end      reduce using rule 31 (any_value)
+    ')'       reduce using rule 31 (any_value)
+    AND       shift, and goto state 59
+    CONTAINS  reduce using rule 31 (any_value)
+    EQUALS    reduce using rule 31 (any_value)
+    GT        reduce using rule 31 (any_value)
+    HTTP      reduce using rule 31 (any_value)
+    LT        reduce using rule 31 (any_value)
+    OR        shift, and goto state 60
+    SET       reduce using rule 31 (any_value)
+    WHEN      reduce using rule 31 (any_value)
+    conflict on AND, shift, and goto state 59, reduce using rule 31
+    conflict on OR, shift, and goto state 60, reduce using rule 31
+
+state 46 // HTTP WHEN TRUE
+
+   39 boolean_exp: TRUE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 39 (boolean_exp)
+    ')'       reduce using rule 39 (boolean_exp)
+    AND       reduce using rule 39 (boolean_exp)
+    CONTAINS  reduce using rule 39 (boolean_exp)
+    EQUALS    reduce using rule 39 (boolean_exp)
+    GT        reduce using rule 39 (boolean_exp)
+    HTTP      reduce using rule 39 (boolean_exp)
+    LT        reduce using rule 39 (boolean_exp)
+    OR        reduce using rule 39 (boolean_exp)
+    SET       reduce using rule 39 (boolean_exp)
+    WHEN      reduce using rule 39 (boolean_exp)
+
+state 47 // HTTP WHEN FALSE
+
+   40 boolean_exp: FALSE .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 40 (boolean_exp)
+    ')'       reduce using rule 40 (boolean_exp)
+    AND       reduce using rule 40 (boolean_exp)
+    CONTAINS  reduce using rule 40 (boolean_exp)
+    EQUALS    reduce using rule 40 (boolean_exp)
+    GT        reduce using rule 40 (boolean_exp)
+    HTTP      reduce using rule 40 (boolean_exp)
+    LT        reduce using rule 40 (boolean_exp)
+    OR        reduce using rule 40 (boolean_exp)
+    SET       reduce using rule 40 (boolean_exp)
+    WHEN      reduce using rule 40 (boolean_exp)
+
+state 48 // HTTP WHEN FALSE AND FALSE [$end]
+
+   41 boolean_exp: condition .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 41 (boolean_exp)
+    ')'       reduce using rule 41 (boolean_exp)
+    AND       reduce using rule 41 (boolean_exp)
+    CONTAINS  reduce using rule 41 (boolean_exp)
+    EQUALS    reduce using rule 41 (boolean_exp)
+    GT        reduce using rule 41 (boolean_exp)
+    HTTP      reduce using rule 41 (boolean_exp)
+    LT        reduce using rule 41 (boolean_exp)
+    OR        reduce using rule 41 (boolean_exp)
+    SET       reduce using rule 41 (boolean_exp)
+    WHEN      reduce using rule 41 (boolean_exp)
+
+state 49 // HTTP WHEN '('
+
+   42 boolean_exp: '(' . condition ')'
+
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    INTEGER  shift, and goto state 44
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+
+    any_value      goto state 51
+    boolean_exp    goto state 45
+    condition      goto state 50
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 50 // HTTP WHEN '(' FALSE AND FALSE [')']
+
+   41 boolean_exp: condition .  [AND, CONTAINS, EQUALS, GT, LT, OR]
+   42 boolean_exp: '(' condition . ')'
+
+    ')'       shift, and goto state 58
+    AND       reduce using rule 41 (boolean_exp)
+    CONTAINS  reduce using rule 41 (boolean_exp)
+    EQUALS    reduce using rule 41 (boolean_exp)
+    GT        reduce using rule 41 (boolean_exp)
+    LT        reduce using rule 41 (boolean_exp)
+    OR        reduce using rule 41 (boolean_exp)
+
+state 51 // HTTP WHEN FALSE [CONTAINS]
+
+   43 boolean_exp: any_value . operator any_value
+
+    CONTAINS  shift, and goto state 55
+    EQUALS    shift, and goto state 52
+    GT        shift, and goto state 53
+    LT        shift, and goto state 54
+
+    operator  goto state 56
+
+state 52 // HTTP WHEN FALSE EQUALS
+
+   35 operator: EQUALS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '('      reduce using rule 35 (operator)
+    '{'      reduce using rule 35 (operator)
+    FALSE    reduce using rule 35 (operator)
+    FLOAT    reduce using rule 35 (operator)
+    INTEGER  reduce using rule 35 (operator)
+    STRING   reduce using rule 35 (operator)
+    TRUE     reduce using rule 35 (operator)
+
+state 53 // HTTP WHEN FALSE GT
+
+   36 operator: GT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '('      reduce using rule 36 (operator)
+    '{'      reduce using rule 36 (operator)
+    FALSE    reduce using rule 36 (operator)
+    FLOAT    reduce using rule 36 (operator)
+    INTEGER  reduce using rule 36 (operator)
+    STRING   reduce using rule 36 (operator)
+    TRUE     reduce using rule 36 (operator)
+
+state 54 // HTTP WHEN FALSE LT
+
+   37 operator: LT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '('      reduce using rule 37 (operator)
+    '{'      reduce using rule 37 (operator)
+    FALSE    reduce using rule 37 (operator)
+    FLOAT    reduce using rule 37 (operator)
+    INTEGER  reduce using rule 37 (operator)
+    STRING   reduce using rule 37 (operator)
+    TRUE     reduce using rule 37 (operator)
+
+state 55 // HTTP WHEN FALSE CONTAINS
+
+   38 operator: CONTAINS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
+
+    '('      reduce using rule 38 (operator)
+    '{'      reduce using rule 38 (operator)
+    FALSE    reduce using rule 38 (operator)
+    FLOAT    reduce using rule 38 (operator)
+    INTEGER  reduce using rule 38 (operator)
+    STRING   reduce using rule 38 (operator)
+    TRUE     reduce using rule 38 (operator)
+
+state 56 // HTTP WHEN FALSE CONTAINS ['(']
+
+   43 boolean_exp: any_value operator . any_value
+
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    INTEGER  shift, and goto state 44
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+
+    any_value      goto state 57
+    boolean_exp    goto state 45
+    condition      goto state 48
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 57 // HTTP WHEN FALSE CONTAINS FALSE [$end]
+
+   43 boolean_exp: any_value . operator any_value
+   43 boolean_exp: any_value operator any_value .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 43 (boolean_exp)
+    ')'       reduce using rule 43 (boolean_exp)
+    AND       reduce using rule 43 (boolean_exp)
+    CONTAINS  shift, and goto state 55
+    EQUALS    shift, and goto state 52
+    GT        shift, and goto state 53
+    HTTP      reduce using rule 43 (boolean_exp)
+    LT        shift, and goto state 54
+    OR        reduce using rule 43 (boolean_exp)
+    SET       reduce using rule 43 (boolean_exp)
+    WHEN      reduce using rule 43 (boolean_exp)
+
+    operator  goto state 56
+
+    conflict on CONTAINS, shift, and goto state 55, reduce using rule 43
+    conflict on EQUALS, shift, and goto state 52, reduce using rule 43
+    conflict on GT, shift, and goto state 53, reduce using rule 43
+    conflict on LT, shift, and goto state 54, reduce using rule 43
+
+state 58 // HTTP WHEN '(' FALSE AND FALSE ')'
+
+   42 boolean_exp: '(' condition ')' .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 42 (boolean_exp)
+    ')'       reduce using rule 42 (boolean_exp)
+    AND       reduce using rule 42 (boolean_exp)
+    CONTAINS  reduce using rule 42 (boolean_exp)
+    EQUALS    reduce using rule 42 (boolean_exp)
+    GT        reduce using rule 42 (boolean_exp)
+    HTTP      reduce using rule 42 (boolean_exp)
+    LT        reduce using rule 42 (boolean_exp)
+    OR        reduce using rule 42 (boolean_exp)
+    SET       reduce using rule 42 (boolean_exp)
+    WHEN      reduce using rule 42 (boolean_exp)
+
+state 59 // HTTP WHEN FALSE AND
+
+   44 condition: boolean_exp AND . boolean_exp
+
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    INTEGER  shift, and goto state 44
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+
+    any_value      goto state 51
+    boolean_exp    goto state 62
+    condition      goto state 48
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 60 // HTTP WHEN FALSE OR
+
+   45 condition: boolean_exp OR . boolean_exp
+
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    INTEGER  shift, and goto state 44
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+
+    any_value      goto state 51
+    boolean_exp    goto state 61
+    condition      goto state 48
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 61 // HTTP WHEN FALSE OR FALSE [$end]
+
+   31 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT]
+   44 condition: boolean_exp . AND boolean_exp
+   45 condition: boolean_exp . OR boolean_exp
+   45 condition: boolean_exp OR boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+
+    $end      reduce using rule 45 (condition)
+    ')'       reduce using rule 45 (condition)
+    AND       shift, and goto state 59
+    CONTAINS  reduce using rule 31 (any_value)
+    EQUALS    reduce using rule 31 (any_value)
+    GT        reduce using rule 31 (any_value)
+    HTTP      reduce using rule 45 (condition)
+    LT        reduce using rule 31 (any_value)
+    OR        shift, and goto state 60
+    SET       reduce using rule 45 (condition)
+    WHEN      reduce using rule 45 (condition)
+    conflict on AND, shift, and goto state 59, reduce using rule 45
+    conflict on CONTAINS, reduce using rule 31, reduce using rule 45
+    conflict on EQUALS, reduce using rule 31, reduce using rule 45
+    conflict on GT, reduce using rule 31, reduce using rule 45
+    conflict on LT, reduce using rule 31, reduce using rule 45
+    conflict on OR, shift, and goto state 60, reduce using rule 45
+
+state 62 // HTTP WHEN FALSE AND FALSE [$end]
+
+   31 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT]
+   44 condition: boolean_exp . AND boolean_exp
+   44 condition: boolean_exp AND boolean_exp .  [$end, ')', AND, CONTAINS, EQUALS, GT, HTTP, LT, OR, SET, WHEN]
+   45 condition: boolean_exp . OR boolean_exp
+
+    $end      reduce using rule 44 (condition)
+    ')'       reduce using rule 44 (condition)
+    AND       shift, and goto state 59
+    CONTAINS  reduce using rule 31 (any_value)
+    EQUALS    reduce using rule 31 (any_value)
+    GT        reduce using rule 31 (any_value)
+    HTTP      reduce using rule 44 (condition)
+    LT        reduce using rule 31 (any_value)
+    OR        shift, and goto state 60
+    SET       reduce using rule 44 (condition)
+    WHEN      reduce using rule 44 (condition)
+    conflict on AND, shift, and goto state 59, reduce using rule 44
+    conflict on CONTAINS, reduce using rule 31, reduce using rule 44
+    conflict on EQUALS, reduce using rule 31, reduce using rule 44
+    conflict on GT, reduce using rule 31, reduce using rule 44
+    conflict on LT, reduce using rule 31, reduce using rule 44
+    conflict on OR, shift, and goto state 60, reduce using rule 44
+
+state 63 // HTTP WHEN
+
+    4 command_with_condition_opt: command WHEN . boolean_exp
+
+    '('      shift, and goto state 49
+    '{'      shift, and goto state 21
+    FALSE    shift, and goto state 47
+    FLOAT    shift, and goto state 43
+    INTEGER  shift, and goto state 44
+    STRING   shift, and goto state 20
+    TRUE     shift, and goto state 46
+
+    any_value      goto state 51
+    boolean_exp    goto state 64
+    condition      goto state 48
+    string_or_var  goto state 42
+    variable       goto state 19
+
+state 64 // HTTP WHEN FALSE [$end]
+
+    4 command_with_condition_opt: command WHEN boolean_exp .  [$end, HTTP, SET]
+   31 any_value: boolean_exp .  [CONTAINS, EQUALS, GT, LT]
+   44 condition: boolean_exp . AND boolean_exp
+   45 condition: boolean_exp . OR boolean_exp
+
+    $end      reduce using rule 4 (command_with_condition_opt)
+    AND       shift, and goto state 59
+    CONTAINS  reduce using rule 31 (any_value)
+    EQUALS    reduce using rule 31 (any_value)
+    GT        reduce using rule 31 (any_value)
+    HTTP      reduce using rule 4 (command_with_condition_opt)
+    LT        reduce using rule 31 (any_value)
+    OR        shift, and goto state 60
+    SET       reduce using rule 4 (command_with_condition_opt)
+
+state 65 // HTTP HTTP [$end]
+
+    2 any_command: any_command command_with_condition_opt .  [$end, HTTP, SET]
+
+    $end  reduce using rule 2 (any_command)
+    HTTP  reduce using rule 2 (any_command)
+    SET   reduce using rule 2 (any_command)
+
