@@ -817,7 +817,6 @@ yynewstate:
 	case 55:
 		{
 			//what should we do here?
-			fmt.Println(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
 			operator_result := runop(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
 			yyVAL.boolean = operator_result
 		}

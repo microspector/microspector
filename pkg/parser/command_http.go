@@ -5,7 +5,6 @@ import (
 	"net/url"
 )
 
-//HTTP http_method string_or_var http_command_params INTO variable
 type HttpCommand struct {
 	Method        string
 	CommandParams []HttpCommandParam //HEADER, QUERY etc.

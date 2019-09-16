@@ -17,6 +17,13 @@ var keywords = map[string]int{
 	"EOL":        EOL,
 	"EOF":        EOF,
 	"GET":        GET,
+	"HEAD":       HEAD,
+	"POST":       POST,
+	"PUT":        PUT,
+	"DELETE":     DELETE,
+	"CONNECT":    CONNECT,
+	"OPTIONS":    OPTIONS,
+	"TRACE":      TRACE,
 	"HEADER":     HEADER,
 	"INTO":       INTO,
 	"HTTP":       HTTP,
@@ -271,13 +278,13 @@ func (s *Scanner) read() rune {
 
 var eof = rune(0)
 
-func isDoubleQuote(ch rune) bool  { return ch == '"' }
-func isSpace(ch rune) bool        { return ch == ' ' || ch == '\t' }
-func isEndOfLine(ch rune) bool    { return ch == '\r' || ch == '\n' }
-func isDigit(ch rune) bool        { return unicode.IsDigit(ch) }
-func isLetter(ch rune) bool       { return ch == '_' || unicode.IsLetter(ch) }
-func isAlphaNumeric(ch rune) bool { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isIdentifierChar(ch rune) bool   { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isOperator(ch rune) bool     { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
-func isVarStart(ch rune) bool     { return ch == '{' }
-func isVarEnd(ch rune) bool       { return ch == '}' }
+func isDoubleQuote(ch rune) bool    { return ch == '"' }
+func isSpace(ch rune) bool          { return ch == ' ' || ch == '\t' }
+func isEndOfLine(ch rune) bool      { return ch == '\r' || ch == '\n' }
+func isDigit(ch rune) bool          { return unicode.IsDigit(ch) }
+func isLetter(ch rune) bool         { return ch == '_' || unicode.IsLetter(ch) }
+func isAlphaNumeric(ch rune) bool   { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isIdentifierChar(ch rune) bool { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isOperator(ch rune) bool       { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
+func isVarStart(ch rune) bool       { return ch == '{' }
+func isVarEnd(ch rune) bool         { return ch == '}' }

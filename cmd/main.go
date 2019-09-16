@@ -11,7 +11,7 @@ func main() {
 
 	parser.Parse(`
 SET {{ BillingUrl }} "https://billing.tenta.io" 
-HTTP GET  {{ BillingUrl }} 
+HTTP POST  {{ BillingUrl }} 
 HTTP GET  {{ BillingUrl }} INTO {{ GetResult }} 
 HTTP GET  {{ BillingUrl }} WHEN {{ BillingUrl }} CONTAINS "billing" AND TRUE
 HTTP GET  {{ BillingUrl }} INTO {{ GetResult }} WHEN {{ BillingUrl}} EQUALS "test2" AND TRUE

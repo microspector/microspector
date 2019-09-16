@@ -346,7 +346,6 @@ boolean_exp OR boolean_exp {
 |
 any_value operator any_value {
  	//what should we do here?
- 	fmt.Println($1,$2,$3)
  	operator_result := runop($1,$2,$3)
  	$$ = operator_result
 }
