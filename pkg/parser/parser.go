@@ -623,7 +623,7 @@ yynewstate:
 			if strings.Contains(yyS[yypt-0].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
-			yyS[yypt-0].variable.value = yyS[yypt-2].cmd.Run()
+			globalvars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run()
 		}
 	case 5:
 		{
@@ -684,11 +684,20 @@ yynewstate:
 	case 21:
 		{
 			//call http with header here.
-			yyVAL.cmd = &HttpCommand{}
+			fmt.Println(yyS[yypt-3].val, yyS[yypt-2].val, yyS[yypt-1].val)
+			yyVAL.cmd = &HttpCommand{
+				Method:        yyS[yypt-2].val.(string),
+				CommandParams: yyS[yypt-0].http_command_params,
+				Url:           yyS[yypt-1].val.(string),
+			}
 		}
 	case 22:
 		{
-			yyVAL.cmd = &HttpCommand{}
+			fmt.Println(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
+			yyVAL.cmd = &HttpCommand{
+				Method: yyS[yypt-1].val.(string),
+				Url:    yyS[yypt-0].val.(string),
+			}
 		}
 	case 23:
 		{
@@ -760,15 +769,12 @@ yynewstate:
 		}
 	case 36:
 		{
-			yyVAL.val = yyS[yypt-0].val
-		}
-	case 37:
-		{
-			yyVAL.val = yyS[yypt-0].val
-		}
-	case 38:
-		{
-			yyVAL.val = yyS[yypt-0].val
+			if isTemplate(yyS[yypt-0].val.(string)) {
+				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), globalvars)
+			} else {
+				yyVAL.val = yyS[yypt-0].val
+			}
+
 		}
 	case 39:
 		{
@@ -776,17 +782,43 @@ yynewstate:
 		}
 	case 40:
 		{
-			yyVAL.val = yyS[yypt-0].variable.value
+			switch yyS[yypt-0].variable.value.(type) {
+			case string:
+				if isTemplate(yyS[yypt-0].variable.value.(string)) {
+					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), globalvars)
+				} else {
+					yyVAL.val = yyS[yypt-0].variable.value
+				}
+			default:
+				yyVAL.val = yyS[yypt-0].variable.value
+			}
 		}
 	case 41:
 		{
 			//found variable
-			yyVAL.val = yyS[yypt-0].variable.value
+
+			switch yyS[yypt-0].variable.value.(type) {
+			case string:
+				if isTemplate(yyS[yypt-0].variable.value.(string)) {
+					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), globalvars)
+				} else {
+					yyVAL.val = yyS[yypt-0].variable.value
+				}
+			default:
+				yyVAL.val = yyS[yypt-0].variable.value
+			}
+
 		}
 	case 42:
 		{
 			//found string
-			yyVAL.val = yyS[yypt-0].val
+			if isTemplate(yyS[yypt-0].val.(string)) {
+				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), globalvars)
+			} else {
+				yyVAL.val = yyS[yypt-0].val
+			}
+
+			fmt.Println(yyVAL.val)
 		}
 	case 43:
 		{
@@ -888,6 +920,7 @@ func Parse(text string) {
 
 	for {
 		token := s.Scan()
+		//fmt.Println(token)
 		if token.Type == EOF || token.Type == -1 {
 			break
 		}

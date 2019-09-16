@@ -24,6 +24,10 @@ func executeTemplate(text string, state map[string]interface{}) (string, error) 
 	return tpl.String(), nil
 }
 
+func isTemplate(text string) bool {
+	return strings.Contains(text, "{{") && strings.Contains(text, "}}")
+}
+
 func makeTimestamp() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }

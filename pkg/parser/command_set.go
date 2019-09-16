@@ -15,7 +15,7 @@ func (hc *SetCommand) Run() interface{} {
 		panic(fmt.Errorf("nested variables are not supported yet"))
 
 	}
-	globalvars[hc.Name] = hc.Value
-	return "we got a SET Command here"
 
+	globalvars[hc.Name] = hc.Value
+	return hc.Value
 }

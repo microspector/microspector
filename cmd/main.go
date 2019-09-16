@@ -10,22 +10,12 @@ func main() {
 	//flag.Parse()
 
 	parser.Parse(`
-SET {{ BillingUrl }} "https://billing.tenta.io"
-HTTP POST  {{ BillingUrl }} 
-HTTP GET  {{ BillingUrl }} INTO {{ GetResult }} 
-HTTP GET  {{ BillingUrl }} WHEN {{ BillingUrl }} CONTAINS "billing" AND TRUE
-HTTP GET  {{ BillingUrl }} INTO {{ GetResult }} WHEN {{ BillingUrl}} EQUALS "test2" AND TRUE
-
-HTTP GET  {{ BillingUrl }} HEADER
-"Host:billing.tenta.io\nContent-Type:application/json" 
-QUERY "username=tufan&password=1" 
-INTO {{ GetResult }} WHEN TRUE AND TRUE
-
-MUST {{ BillingUrl }} CONTAINS "test"
-MUST {{ BillingUrl }} EQUALS "test"
-SHOULD {{ BillingUrl }} EQUALS "test" OR {{ BillingUrl }} EQUALS "aa"
-MUST 1 LT 2
+SET {{ BillingDomain }} "billing.tenta.io"
+SET {{ BillingUrl }} "https://{{ .BillingDomain }}"
+DEBUG {{ BillingDomain }}
 DEBUG {{ BillingUrl }}
+HTTP GET {{ BillingUrl }} INTO {{ BillingResult }} 
+DEBUG {{ BillingResult.Took }}
 DEBUG "this line will work"
 END {{ BillingUrl }} CONTAINS "tentax"
 DEBUG "this line will work too"

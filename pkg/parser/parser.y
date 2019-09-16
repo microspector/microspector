@@ -131,7 +131,7 @@ command INTO variable {
 	if strings.Contains($3.name,".") {
            yylex.Error("nested variables are not supported yet")
         }
-	$3.value = $1.Run()
+	globalvars[$3.name] = $1.Run()
 }
 |
 command WHEN boolean_exp
@@ -209,14 +209,19 @@ SET variable any_value {
 http_command:
 HTTP http_method string_or_var http_command_params  {
   //call http with header here.
+  fmt.Println($1,$2,$3)
   $$ = &HttpCommand{
-
+	Method : $2.(string),
+	CommandParams: $4,
+	Url: $3.(string),
   }
 }
 | HTTP http_method string_or_var {
- $$ = &HttpCommand{
-
-   }
+fmt.Println($1,$2,$3)
+	$$ = &HttpCommand{
+		Method : $2.(string),
+		Url: $3.(string),
+	  }
 }
 
 http_command_params:
@@ -293,23 +298,59 @@ GET
 
 
 any_value:
- STRING { $$ = $1 }
-| FLOAT { $$ = $1 }
-| INTEGER { $$ = $1 }
+ STRING {
+   if isTemplate($1.(string)) {
+   	 	$$,_ = executeTemplate( $1.(string) , globalvars)
+   	 }else{
+   		 $$ = $1
+    	}
+
+ }
+| FLOAT
+| INTEGER
 | boolean_exp {
- 	$$ = $1
+  $$ = $1
 }
-| variable { $$ = $1.value }
+| variable {
+   switch  $1.value.(type) {
+       case string :
+  	     if isTemplate($1.value.(string)) {
+  		    $$,_ = executeTemplate( $1.value.(string) , globalvars)
+  	     }else{
+  	     	$$ = $1.value
+  	     }
+       default:
+           $$ = $1.value
+       }
+}
 //TODO: add assignemnts here?
 
 string_or_var:
 variable {
  //found variable
- $$ = $1.value
+
+ switch  $1.value.(type) {
+     case string :
+	     if isTemplate($1.value.(string)) {
+		    $$,_ = executeTemplate( $1.value.(string) , globalvars)
+	     }else{
+	     	$$ = $1.value
+	     }
+     default:
+         $$ = $1.value
+     }
+
 }
-| STRING {
-//found string
- $$ = $1
+|
+STRING {
+	//found string
+	if isTemplate($1.(string)) {
+	 	$$,_ = executeTemplate( $1.(string) , globalvars)
+	 }else{
+		 $$ = $1
+ 	}
+
+ 	fmt.Println($$)
 }
 
 variable: '{''{' IDENTIFIER '}''}'{
@@ -345,9 +386,9 @@ boolean_exp OR boolean_exp {
 }
 |
 any_value operator any_value {
- 	//what should we do here?
- 	operator_result := runop($1,$2,$3)
- 	$$ = operator_result
+	//what should we do here?
+	operator_result := runop($1,$2,$3)
+	$$ = operator_result
 }
 
 
@@ -413,6 +454,7 @@ func Parse(text string) {
 
 	for {
 		token := s.Scan()
+		//fmt.Println(token)
 		if token.Type == EOF || token.Type == -1 {
 			break
 		}
