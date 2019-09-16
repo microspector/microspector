@@ -119,6 +119,12 @@ func (s *Scanner) Peek() rune {
 	return r
 }
 
+func (s *Scanner) PeekPrev() rune {
+	s.unread()
+	r := s.read()
+	return r
+}
+
 type runeCheck func(rune) bool
 
 func (s *Scanner) readUntil(until runeCheck) string {
@@ -181,40 +187,59 @@ func (s *Scanner) skipEndOfLine() {
 	s.readWhile(isEndOfLine)
 }
 
+/**
+\” – To escape “ within double quoted string.
+\\ – To escape the backslash.
+\n – To add line breaks between string.
+\t – To add tab space.
+\r – For carriage return.
+ */
 func (s *Scanner) scanQuotedString() (tok Token) {
 
 	var buf bytes.Buffer
+
 	buf.WriteRune(s.read())
-	var latestChar rune
 
 	for {
 		ch := s.read()
+
 		if ch == eof {
-			break
-		} else if ch == '\\' {
-			latestChar = ch
-			if s.Peek() != '"' {
-				buf.WriteRune(ch)
-			}
-		} else if isDoubleQuote(ch) {
-			if latestChar == '\\' {
-				buf.WriteRune(ch)
-			} else {
-				buf.WriteRune(ch)
-				break
-			}
-		} else {
-			latestChar = ch
-			buf.WriteRune(ch)
+			panic("unexpected end of file while scanning a string, maybe an unclosed quote?")
 		}
+
+		if ch == '\\' {
+			if needsEscape(s.Peek()) {
+				switch s.read() {
+				case 'n':
+					buf.WriteRune('\n')
+				case 'r':
+					buf.WriteRune('\r')
+				case 't':
+					buf.WriteRune('\t')
+				case '\\':
+					buf.WriteRune('\\')
+				case '"':
+					buf.WriteRune('"')
+				}
+
+				continue
+			} else {
+				panic("unescaped backslash")
+			}
+		}
+
+		if isDoubleQuote(ch) {
+			buf.WriteRune(ch)
+			break
+		}
+
+		buf.WriteRune(ch)
 	}
 
 	tok = Token{
 		Type: STRING,
-		Text: buf.String(),
+		Text: strings.Trim(buf.String(), "\""),
 	}
-
-	tok.Text = strings.Trim(tok.Text, "\"")
 
 	return tok
 }
@@ -279,6 +304,7 @@ func (s *Scanner) read() rune {
 var eof = rune(0)
 
 func isDoubleQuote(ch rune) bool    { return ch == '"' }
+func needsEscape(ch rune) bool      { return ch == 'n' || ch == 't' || ch == '"' || ch == '\\' || ch == 'r' }
 func isSpace(ch rune) bool          { return ch == ' ' || ch == '\t' }
 func isEndOfLine(ch rune) bool      { return ch == '\r' || ch == '\n' }
 func isDigit(ch rune) bool          { return unicode.IsDigit(ch) }
