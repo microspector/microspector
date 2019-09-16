@@ -8,7 +8,9 @@ parser: deps
 	$(GOPATH)/bin/pigeon ./pkg/parser/msf.peg  > ./pkg/parser/msf.go
 
 yacc:
-	goyacc -o ./pkg/parser/parser.go ./pkg/parser/parser.y && go run ./cmd
+	goyacc -o ./pkg/parser/parser.go ./pkg/parser/parser.y
+	gofmt -w ./pkg/parser/parser.go
+	go run ./cmd
 
 deps:
 	go get
