@@ -75,6 +75,7 @@ IDENTIFIER
 %type <variable> variable
 %type <val> http_method operator
 %type <val> any_value string_or_var
+%type <vals> multi_any_value
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
 %type <boolean> boolean_exp
@@ -91,6 +92,7 @@ IDENTIFIER
 
 %union{
 	val interface{}
+	vals []interface{}
 	str string
 	integer int
 	boolean bool
@@ -161,9 +163,10 @@ set_command
 
 
 debug_command:
-DEBUG any_value {
- fmt.Printf("%+v\n", $2)
-  $$ = &DebugCommand{}
+DEBUG multi_any_value {
+  $$ = &DebugCommand{
+  	Values : $2,
+   }
 }
 
 end_command:
@@ -296,6 +299,14 @@ GET
       $$ = $1
 }
 
+multi_any_value:
+any_value
+{
+    $$ = append($$,$1)
+}
+| multi_any_value any_value {
+     $$ = append($$,$2)
+}
 
 any_value:
  STRING {

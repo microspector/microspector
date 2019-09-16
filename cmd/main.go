@@ -12,13 +12,16 @@ func main() {
 	parser.Parse(`
 SET {{ BillingDomain }} "billing.tenta.io"
 SET {{ BillingUrl }} "https://{{ .BillingDomain }}"
-DEBUG {{ BillingDomain }}
-DEBUG {{ BillingUrl }}
+DEBUG {{ BillingDomain }} {{ BillingUrl }} WHEN FALSE
 HTTP GET {{ BillingUrl }} INTO {{ BillingResult }} 
-DEBUG {{ BillingResult.Took }}
+DEBUG {{ BillingResult.Took }} 
+DEBUG {{ BillingResult.Headers.ContentType }} 
+DEBUG {{ BillingResult.Headers.XInfra }} 
+DEBUG {{ BillingResult.Headers.XPoweredBy }} 
 DEBUG "this line will work"
 END {{ BillingUrl }} CONTAINS "tentax"
 DEBUG "this line will work too"
+DEBUG "this line wont work" WHEN FALSE
 END WHEN {{ BillingUrl }} CONTAINS "tenta"
 DEBUG "this line wont work"
 `)
