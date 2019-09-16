@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/thedevsaddam/gojsonq"
-	"github.com/tufanbarisyildirim/microspector/pkg/command"
 	"log"
 	"strconv"
 	"strings"
@@ -24,12 +23,13 @@ type yySymType struct {
 	boolean  bool
 	flt      int64
 	bytes    []byte
+	cmd      Command
 	variable struct {
 		name  string
 		value interface{}
 	}
-	http_command_params []command.HttpCommandParam
-	http_command_param  command.HttpCommandParam
+	http_command_params []HttpCommandParam
+	http_command_param  HttpCommandParam
 }
 
 type yyXError struct {
@@ -37,112 +37,123 @@ type yyXError struct {
 }
 
 const (
-	yyDefault  = 57381
+	yyDefault  = 57383
 	yyEofCode  = 57344
-	AND        = 57376
-	CONNECT    = 57364
-	CONTAINS   = 57373
+	AND        = 57379
+	ASSERT     = 57360
+	CONNECT    = 57366
+	CONTAINS   = 57376
 	DEBUG      = 57358
-	DELETE     = 57363
+	DELETE     = 57365
+	END        = 57359
 	EOF        = 57347
 	EOL        = 57346
-	EQUALS     = 57370
+	EQUALS     = 57372
 	FALSE      = 57352
 	FLOAT      = 57350
-	GET        = 57359
-	GT         = 57371
-	HEAD       = 57360
-	HEADER     = 57368
+	GET        = 57361
+	GT         = 57374
+	HEAD       = 57362
+	HEADER     = 57370
 	HTTP       = 57355
-	IDENTIFIER = 57379
+	IDENTIFIER = 57382
 	INTEGER    = 57349
-	INTO       = 57378
+	INTO       = 57381
 	KEYWORD    = 57353
-	LT         = 57372
+	LT         = 57375
 	MUST       = 57356
-	OPTIONS    = 57365
-	OR         = 57377
-	PATCH      = 57367
-	POST       = 57361
-	PUT        = 57362
-	QUERY      = 57369
+	NOTEQUALS  = 57373
+	OPTIONS    = 57367
+	OR         = 57380
+	PATCH      = 57369
+	POST       = 57363
+	PUT        = 57364
+	QUERY      = 57371
 	SET        = 57354
 	SHOULD     = 57357
-	STARTSWITH = 57374
+	STARTSWITH = 57377
 	STRING     = 57348
-	TRACE      = 57366
+	TRACE      = 57368
 	TRUE       = 57351
-	WHEN       = 57375
+	WHEN       = 57378
 	yyErrCode  = 57345
 
 	yyMaxDepth = 200
-	yyTabOfs   = -51
+	yyTabOfs   = -56
 )
 
 var (
 	yyPrec = map[int]int{}
 
 	yyXLAT = map[int]int{
-		57355: 0,  // HTTP (46x)
-		57356: 1,  // MUST (44x)
-		57354: 2,  // SET (44x)
-		57357: 3,  // SHOULD (44x)
-		57344: 4,  // $end (43x)
-		57375: 5,  // WHEN (39x)
-		123:   6,  // '{' (30x)
-		57348: 7,  // STRING (26x)
-		57376: 8,  // AND (18x)
-		57373: 9,  // CONTAINS (18x)
-		57370: 10, // EQUALS (18x)
-		57371: 11, // GT (18x)
-		57372: 12, // LT (18x)
-		57377: 13, // OR (18x)
-		57374: 14, // STARTSWITH (18x)
-		40:    15, // '(' (14x)
-		57352: 16, // FALSE (14x)
-		57350: 17, // FLOAT (14x)
-		57349: 18, // INTEGER (14x)
-		57351: 19, // TRUE (14x)
-		41:    20, // ')' (13x)
-		57396: 21, // variable (12x)
-		57368: 22, // HEADER (9x)
-		57378: 23, // INTO (9x)
-		57369: 24, // QUERY (9x)
-		57395: 25, // string_or_var (9x)
-		57383: 26, // any_value (6x)
-		57384: 27, // boolean_exp (6x)
-		57387: 28, // condition (6x)
-		57393: 29, // operator (3x)
-		125:   30, // '}' (2x)
-		57385: 31, // command (2x)
-		57386: 32, // command_with_condition_opt (2x)
-		57364: 33, // CONNECT (2x)
-		57363: 34, // DELETE (2x)
-		57359: 35, // GET (2x)
-		57360: 36, // HEAD (2x)
-		57388: 37, // http_command (2x)
-		57389: 38, // http_command_param (2x)
-		57391: 39, // http_method (2x)
-		57392: 40, // must_command (2x)
-		57365: 41, // OPTIONS (2x)
-		57367: 42, // PATCH (2x)
-		57361: 43, // POST (2x)
-		57362: 44, // PUT (2x)
-		57394: 45, // set_command (2x)
-		57366: 46, // TRACE (2x)
-		57380: 47, // $@1 (1x)
-		57382: 48, // any_command (1x)
-		57390: 49, // http_command_params (1x)
-		57379: 50, // IDENTIFIER (1x)
-		57381: 51, // $default (0x)
-		57358: 52, // DEBUG (0x)
-		57347: 53, // EOF (0x)
-		57346: 54, // EOL (0x)
-		57345: 55, // error (0x)
-		57353: 56, // KEYWORD (0x)
+		57360: 0,  // ASSERT (42x)
+		57358: 1,  // DEBUG (42x)
+		57359: 2,  // END (42x)
+		57355: 3,  // HTTP (42x)
+		57356: 4,  // MUST (42x)
+		57354: 5,  // SET (42x)
+		57357: 6,  // SHOULD (42x)
+		57344: 7,  // $end (41x)
+		57378: 8,  // WHEN (37x)
+		123:   9,  // '{' (35x)
+		57381: 10, // INTO (35x)
+		57348: 11, // STRING (32x)
+		57376: 12, // CONTAINS (23x)
+		57372: 13, // EQUALS (23x)
+		57374: 14, // GT (23x)
+		57375: 15, // LT (23x)
+		57373: 16, // NOTEQUALS (23x)
+		57377: 17, // STARTSWITH (23x)
+		40:    18, // '(' (20x)
+		57379: 19, // AND (20x)
+		57352: 20, // FALSE (20x)
+		57350: 21, // FLOAT (20x)
+		57349: 22, // INTEGER (20x)
+		57380: 23, // OR (20x)
+		57351: 24, // TRUE (20x)
+		57401: 25, // variable (18x)
+		41:    26, // ')' (13x)
+		57385: 27, // any_value (13x)
+		57387: 28, // boolean_exp (13x)
+		57370: 29, // HEADER (9x)
+		57371: 30, // QUERY (9x)
+		57397: 31, // operator (4x)
+		57400: 32, // string_or_var (3x)
+		125:   33, // '}' (2x)
+		57386: 34, // assert_command (2x)
+		57388: 35, // command (2x)
+		57389: 36, // command_with_condition_opt (2x)
+		57390: 37, // debug_command (2x)
+		57391: 38, // end_command (2x)
+		57392: 39, // http_command (2x)
+		57393: 40, // http_command_param (2x)
+		57396: 41, // must_command (2x)
+		57398: 42, // set_command (2x)
+		57399: 43, // should_command (2x)
+		57384: 44, // any_command (1x)
+		57366: 45, // CONNECT (1x)
+		57365: 46, // DELETE (1x)
+		57361: 47, // GET (1x)
+		57362: 48, // HEAD (1x)
+		57394: 49, // http_command_params (1x)
+		57395: 50, // http_method (1x)
+		57382: 51, // IDENTIFIER (1x)
+		57367: 52, // OPTIONS (1x)
+		57369: 53, // PATCH (1x)
+		57363: 54, // POST (1x)
+		57364: 55, // PUT (1x)
+		57368: 56, // TRACE (1x)
+		57383: 57, // $default (0x)
+		57347: 58, // EOF (0x)
+		57346: 59, // EOL (0x)
+		57345: 60, // error (0x)
+		57353: 61, // KEYWORD (0x)
 	}
 
 	yySymNames = []string{
+		"ASSERT",
+		"DEBUG",
+		"END",
 		"HTTP",
 		"MUST",
 		"SET",
@@ -150,52 +161,54 @@ var (
 		"$end",
 		"WHEN",
 		"'{'",
+		"INTO",
 		"STRING",
-		"AND",
 		"CONTAINS",
 		"EQUALS",
 		"GT",
 		"LT",
-		"OR",
+		"NOTEQUALS",
 		"STARTSWITH",
 		"'('",
+		"AND",
 		"FALSE",
 		"FLOAT",
 		"INTEGER",
+		"OR",
 		"TRUE",
-		"')'",
 		"variable",
-		"HEADER",
-		"INTO",
-		"QUERY",
-		"string_or_var",
+		"')'",
 		"any_value",
 		"boolean_exp",
-		"condition",
+		"HEADER",
+		"QUERY",
 		"operator",
+		"string_or_var",
 		"'}'",
+		"assert_command",
 		"command",
 		"command_with_condition_opt",
+		"debug_command",
+		"end_command",
+		"http_command",
+		"http_command_param",
+		"must_command",
+		"set_command",
+		"should_command",
+		"any_command",
 		"CONNECT",
 		"DELETE",
 		"GET",
 		"HEAD",
-		"http_command",
-		"http_command_param",
+		"http_command_params",
 		"http_method",
-		"must_command",
+		"IDENTIFIER",
 		"OPTIONS",
 		"PATCH",
 		"POST",
 		"PUT",
-		"set_command",
 		"TRACE",
-		"$@1",
-		"any_command",
-		"http_command_params",
-		"IDENTIFIER",
 		"$default",
-		"DEBUG",
 		"EOF",
 		"EOL",
 		"error",
@@ -206,147 +219,165 @@ var (
 
 	yyReductions = map[int]struct{ xsym, components int }{
 		0:  {0, 1},
-		1:  {48, 1},
-		2:  {48, 2},
-		3:  {32, 1},
-		4:  {32, 3},
-		5:  {31, 1},
-		6:  {31, 1},
-		7:  {31, 1},
-		8:  {40, 2},
-		9:  {40, 2},
-		10: {45, 3},
-		11: {45, 2},
-		12: {37, 6},
-		13: {37, 5},
-		14: {37, 4},
-		15: {47, 0},
-		16: {37, 6},
-		17: {37, 1},
-		18: {49, 1},
-		19: {49, 2},
-		20: {38, 2},
-		21: {38, 2},
-		22: {39, 1},
-		23: {39, 1},
-		24: {39, 1},
-		25: {39, 1},
-		26: {39, 1},
-		27: {39, 1},
-		28: {39, 1},
-		29: {39, 1},
-		30: {39, 1},
-		31: {26, 1},
-		32: {26, 1},
-		33: {26, 1},
-		34: {26, 1},
-		35: {25, 1},
-		36: {25, 1},
-		37: {21, 5},
-		38: {29, 1},
-		39: {29, 1},
-		40: {29, 1},
-		41: {29, 1},
-		42: {29, 1},
-		43: {29, 1},
-		44: {29, 1},
-		45: {27, 1},
-		46: {27, 1},
-		47: {27, 1},
-		48: {27, 1},
-		49: {28, 3},
-		50: {28, 3},
+		1:  {44, 1},
+		2:  {44, 2},
+		3:  {36, 5},
+		4:  {36, 3},
+		5:  {36, 3},
+		6:  {36, 1},
+		7:  {35, 1},
+		8:  {35, 1},
+		9:  {35, 1},
+		10: {35, 1},
+		11: {35, 1},
+		12: {35, 1},
+		13: {35, 1},
+		14: {37, 2},
+		15: {38, 3},
+		16: {38, 2},
+		17: {34, 2},
+		18: {41, 2},
+		19: {43, 2},
+		20: {42, 3},
+		21: {39, 4},
+		22: {39, 3},
+		23: {49, 1},
+		24: {49, 2},
+		25: {40, 2},
+		26: {40, 2},
+		27: {50, 1},
+		28: {50, 1},
+		29: {50, 1},
+		30: {50, 1},
+		31: {50, 1},
+		32: {50, 1},
+		33: {50, 1},
+		34: {50, 1},
+		35: {50, 1},
+		36: {27, 1},
+		37: {27, 1},
+		38: {27, 1},
+		39: {27, 1},
+		40: {27, 1},
+		41: {32, 1},
+		42: {32, 1},
+		43: {25, 5},
+		44: {31, 1},
+		45: {31, 1},
+		46: {31, 1},
+		47: {31, 1},
+		48: {31, 1},
+		49: {31, 1},
+		50: {28, 1},
+		51: {28, 1},
+		52: {28, 3},
+		53: {28, 3},
+		54: {28, 3},
+		55: {28, 3},
 	}
 
 	yyXErrors = map[yyXError]string{}
 
-	yyParseTab = [71][]uint8{
+	yyParseTab = [82][]uint16{
 		// 0
-		{61, 58, 60, 59, 31: 54, 53, 37: 56, 40: 57, 45: 55, 48: 52},
-		{61, 58, 60, 59, 51, 31: 54, 121, 37: 56, 40: 57, 45: 55},
-		{50, 50, 50, 50, 50},
-		{48, 48, 48, 48, 48, 119},
-		{46, 46, 46, 46, 46, 46},
+		{69, 67, 68, 73, 70, 72, 71, 34: 64, 59, 58, 62, 63, 61, 41: 65, 60, 66, 57},
+		{69, 67, 68, 73, 70, 72, 71, 56, 34: 64, 59, 137, 62, 63, 61, 41: 65, 60, 66},
+		{55, 55, 55, 55, 55, 55, 55, 55},
+		{50, 50, 50, 50, 50, 50, 50, 50, 132, 10: 131},
+		{49, 49, 49, 49, 49, 49, 49, 49, 49, 10: 49},
 		// 5
-		{45, 45, 45, 45, 45, 45},
-		{44, 44, 44, 44, 44, 44},
-		{6: 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 106, 118, 103},
-		{6: 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 106, 117, 103},
-		{6: 75, 21: 94},
+		{48, 48, 48, 48, 48, 48, 48, 48, 48, 10: 48},
+		{47, 47, 47, 47, 47, 47, 47, 47, 47, 10: 47},
+		{46, 46, 46, 46, 46, 46, 46, 46, 46, 10: 46},
+		{45, 45, 45, 45, 45, 45, 45, 45, 45, 10: 45},
+		{44, 44, 44, 44, 44, 44, 44, 44, 44, 10: 44},
 		// 10
-		{34, 34, 34, 34, 34, 34, 33: 68, 67, 63, 64, 39: 62, 41: 69, 71, 65, 66, 46: 70},
-		{6: 75, 74, 21: 73, 25: 72},
-		{29, 29, 29, 29, 29, 29, 29, 29},
-		{28, 28, 28, 28, 28, 28, 28, 28},
-		{27, 27, 27, 27, 27, 27, 27, 27},
+		{43, 43, 43, 43, 43, 43, 43, 43, 43, 10: 43},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 130, 104},
+		{8: 127, 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 128},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 126},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 125},
 		// 15
-		{26, 26, 26, 26, 26, 26, 26, 26},
-		{25, 25, 25, 25, 25, 25, 25, 25},
-		{24, 24, 24, 24, 24, 24, 24, 24},
-		{23, 23, 23, 23, 23, 23, 23, 23},
-		{22, 22, 22, 22, 22, 22, 22, 22},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 124},
+		{9: 87, 25: 99},
+		{45: 80, 79, 75, 76, 50: 74, 52: 81, 83, 77, 78, 82},
+		{9: 87, 11: 86, 25: 85, 32: 84},
+		{9: 29, 11: 29},
 		// 20
-		{21, 21, 21, 21, 21, 21, 21, 21},
-		{36, 22: 84, 81, 85, 38: 83, 47: 82, 49: 80},
-		{16, 16, 16, 16, 16, 16, 22: 16, 16, 16},
-		{15, 15, 15, 15, 15, 15, 8: 15, 15, 15, 15, 15, 15, 15, 20: 15, 22: 15, 15, 15},
-		{6: 76},
+		{9: 28, 11: 28},
+		{9: 27, 11: 27},
+		{9: 26, 11: 26},
+		{9: 25, 11: 25},
+		{9: 24, 11: 24},
 		// 25
-		{50: 77},
-		{30: 78},
-		{30: 79},
-		{14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 22: 14, 14, 14},
-		{37, 37, 37, 37, 37, 37, 22: 84, 91, 85, 38: 92},
+		{9: 23, 11: 23},
+		{9: 22, 11: 22},
+		{9: 21, 11: 21},
+		{34, 34, 34, 34, 34, 34, 34, 34, 34, 10: 34, 29: 94, 95, 40: 93, 49: 92},
+		{15, 15, 15, 15, 15, 15, 15, 15, 15, 10: 15, 29: 15, 15},
 		// 30
-		{6: 75, 21: 90},
-		{88},
-		{33, 33, 33, 33, 33, 33, 22: 33, 33, 33},
-		{6: 75, 74, 21: 73, 25: 87},
-		{6: 75, 74, 21: 73, 25: 86},
+		{14, 14, 14, 14, 14, 14, 14, 14, 14, 10: 14, 29: 14, 14},
+		{9: 88},
+		{51: 89},
+		{33: 90},
+		{33: 91},
 		// 35
-		{30, 30, 30, 30, 30, 30, 22: 30, 30, 30},
-		{31, 31, 31, 31, 31, 31, 22: 31, 31, 31},
-		{33: 68, 67, 63, 64, 39: 89, 41: 69, 71, 65, 66, 46: 70},
-		{35, 35, 35, 35, 35, 35},
-		{38, 38, 38, 38, 38, 38},
+		{13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 26: 13, 29: 13, 13},
+		{35, 35, 35, 35, 35, 35, 35, 35, 35, 10: 35, 29: 94, 95, 40: 98},
+		{33, 33, 33, 33, 33, 33, 33, 33, 33, 10: 33, 29: 33, 33},
+		{9: 87, 11: 86, 25: 85, 32: 97},
+		{9: 87, 11: 86, 25: 85, 32: 96},
 		// 40
-		{6: 75, 21: 93},
-		{32, 32, 32, 32, 32, 32, 22: 32, 32, 32},
-		{39, 39, 39, 39, 39, 39},
-		{40, 40, 40, 40, 40, 40, 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 95, 99, 103},
-		{41, 41, 41, 41, 41, 41, 8: 112, 110, 107, 108, 109, 113, 111, 29: 114},
+		{30, 30, 30, 30, 30, 30, 30, 30, 30, 10: 30, 29: 30, 30},
+		{31, 31, 31, 31, 31, 31, 31, 31, 31, 10: 31, 29: 31, 31},
+		{32, 32, 32, 32, 32, 32, 32, 32, 32, 10: 32, 29: 32, 32},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 100, 104},
+		{36, 36, 36, 36, 36, 36, 36, 36, 36, 10: 36, 12: 115, 111, 113, 114, 112, 116, 31: 117},
 		// 45
-		{20, 20, 20, 20, 20, 20, 8: 20, 20, 20, 20, 20, 20, 20, 20: 20},
-		{19, 19, 19, 19, 19, 19, 8: 19, 19, 19, 19, 19, 19, 19, 20: 19},
-		{18, 18, 18, 18, 18, 18, 8: 18, 18, 18, 18, 18, 18, 18, 20: 18},
-		{17, 17, 17, 17, 17, 17, 8: 17, 17, 17, 17, 17, 17, 17, 20: 17},
-		{16, 16, 16, 16, 16, 16, 8: 16, 16, 16, 16, 16, 16, 16, 20: 16},
+		{20, 20, 20, 20, 20, 20, 20, 20, 20, 10: 20, 12: 20, 20, 20, 20, 20, 20, 19: 20, 23: 20, 26: 20},
+		{19, 19, 19, 19, 19, 19, 19, 19, 19, 10: 19, 12: 19, 19, 19, 19, 19, 19, 19: 19, 23: 19, 26: 19},
+		{18, 18, 18, 18, 18, 18, 18, 18, 18, 10: 18, 12: 18, 18, 18, 18, 18, 18, 19: 18, 23: 18, 26: 18},
+		{17, 17, 17, 17, 17, 17, 17, 17, 17, 10: 17, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120, 26: 17},
+		{16, 16, 16, 16, 16, 16, 16, 16, 16, 10: 16, 12: 16, 16, 16, 16, 16, 16, 19: 16, 23: 16, 26: 16},
 		// 50
-		{6, 6, 6, 6, 6, 6, 8: 6, 6, 6, 6, 6, 6, 6, 20: 6},
-		{5, 5, 5, 5, 5, 5, 8: 5, 5, 5, 5, 5, 5, 5, 20: 5},
-		{4, 4, 4, 4, 4, 4, 8: 4, 4, 4, 4, 4, 4, 4, 20: 4},
-		{6: 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 106, 99, 105},
-		{8: 4, 4, 4, 4, 4, 4, 4, 20: 116},
+		{6, 6, 6, 6, 6, 6, 6, 6, 6, 10: 6, 12: 6, 6, 6, 6, 6, 6, 19: 6, 23: 6, 26: 6},
+		{5, 5, 5, 5, 5, 5, 5, 5, 5, 10: 5, 12: 5, 5, 5, 5, 5, 5, 19: 5, 23: 5, 26: 5},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 109},
+		{12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120, 26: 121},
+		{12: 115, 111, 113, 114, 112, 116, 31: 117},
 		// 55
-		{8: 112, 110, 107, 108, 109, 113, 111, 29: 114},
-		{6: 13, 13, 15: 13, 13, 13, 13, 13},
-		{6: 12, 12, 15: 12, 12, 12, 12, 12},
-		{6: 11, 11, 15: 11, 11, 11, 11, 11},
-		{6: 10, 10, 15: 10, 10, 10, 10, 10},
+		{9: 12, 11: 12, 18: 12, 20: 12, 12, 12, 24: 12},
+		{9: 11, 11: 11, 18: 11, 20: 11, 11, 11, 24: 11},
+		{9: 10, 11: 10, 18: 10, 20: 10, 10, 10, 24: 10},
+		{9: 9, 11: 9, 18: 9, 20: 9, 9, 9, 24: 9},
+		{9: 8, 11: 8, 18: 8, 20: 8, 8, 8, 24: 8},
 		// 60
-		{6: 9, 9, 15: 9, 9, 9, 9, 9},
-		{6: 8, 8, 15: 8, 8, 8, 8, 8},
-		{6: 7, 7, 15: 7, 7, 7, 7, 7},
-		{6: 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 115, 99, 103},
-		{2, 2, 2, 2, 2, 2, 8: 112, 110, 107, 108, 109, 113, 111, 20: 2, 29: 114},
+		{9: 7, 11: 7, 18: 7, 20: 7, 7, 7, 24: 7},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 118, 104},
+		{1, 1, 1, 1, 1, 1, 1, 1, 1, 10: 1, 12: 115, 111, 113, 114, 112, 116, 19: 1, 23: 1, 26: 1, 31: 117},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 123},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 122},
 		// 65
-		{1, 1, 1, 1, 1, 1, 8: 1, 1, 1, 1, 1, 1, 1, 20: 1},
-		{42, 42, 42, 42, 42, 42, 8: 17, 17, 17, 17, 17, 17, 17},
-		{43, 43, 43, 43, 43, 43, 8: 17, 17, 17, 17, 17, 17, 17},
-		{6: 75, 74, 15: 104, 102, 97, 98, 101, 21: 100, 25: 96, 106, 120, 103},
-		{47, 47, 47, 47, 47, 8: 17, 17, 17, 17, 17, 17, 17},
+		{2, 2, 2, 2, 2, 2, 2, 2, 2, 10: 2, 12: 2, 2, 2, 2, 2, 2, 19: 2, 23: 2, 26: 2},
+		{3, 3, 3, 3, 3, 3, 3, 3, 3, 10: 3, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120, 26: 3},
+		{4, 4, 4, 4, 4, 4, 4, 4, 4, 10: 4, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120, 26: 4},
+		{37, 37, 37, 37, 37, 37, 37, 37, 37, 10: 37, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{38, 38, 38, 38, 38, 38, 38, 38, 38, 10: 38, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
 		// 70
-		{49, 49, 49, 49, 49},
+		{39, 39, 39, 39, 39, 39, 39, 39, 39, 10: 39, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 129},
+		{40, 40, 40, 40, 40, 40, 40, 40, 40, 10: 40, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{41, 41, 41, 41, 41, 41, 41, 41, 41, 10: 41, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{42, 42, 42, 42, 42, 42, 42, 42, 42, 10: 42, 12: 115, 111, 113, 114, 112, 116, 31: 117},
+		// 75
+		{9: 87, 25: 134},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 133},
+		{51, 51, 51, 51, 51, 51, 51, 51, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{52, 52, 52, 52, 52, 52, 52, 52, 135},
+		{9: 87, 11: 101, 18: 108, 20: 107, 102, 103, 24: 106, 105, 27: 110, 136},
+		// 80
+		{53, 53, 53, 53, 53, 53, 53, 53, 12: 17, 17, 17, 17, 17, 17, 19: 119, 23: 120},
+		{54, 54, 54, 54, 54, 54, 54, 54},
 	}
 )
 
@@ -387,7 +418,7 @@ func yylex1(yylex yyLexer, lval *yySymType) (n int) {
 }
 
 func yyParse(yylex yyLexer) int {
-	const yyError = 55
+	const yyError = 60
 
 	yyEx, _ := yylex.(yyLexerEx)
 	var yyn int
@@ -575,104 +606,124 @@ yynewstate:
 	}
 
 	switch r {
-	case 8:
+	case 3:
 		{
-			fmt.Println("MUST", yyS[yypt-0].boolean)
-			//if $2 is false, fail
+			//run command put result into variable WHEN boolean_exp is true
+
+			if strings.Contains(yyS[yypt-2].variable.name, ".") {
+				yylex.Error("nested variables are not supported yet")
+			}
+
+			if yyS[yypt-0].boolean {
+				globalvars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run()
+			}
 		}
-	case 9:
+	case 4:
 		{
-			fmt.Println("SHOULD", yyS[yypt-0].boolean)
-			//if $2 is false, write a warning
+			if strings.Contains(yyS[yypt-0].variable.name, ".") {
+				yylex.Error("nested variables are not supported yet")
+			}
+			yyS[yypt-0].variable.value = yyS[yypt-2].cmd.Run()
 		}
-	case 10:
+	case 5:
 		{
-			globalvars[yyS[yypt-1].variable.name] = yyS[yypt-0].val
+			//run the command only if boolean_exp is true
+			if yyS[yypt-0].boolean {
+				yyS[yypt-2].cmd.Run()
+			}
 		}
-	case 11:
+	case 6:
 		{
-			yylex.Error("syntax error, please set a valuable type to variable")
-		}
-	case 12:
-		{
-			//call http with header here.
-			fmt.Println(yyS[yypt-5].val, yyS[yypt-4].val, yyS[yypt-3].val, yyS[yypt-2].http_command_params, yyS[yypt-1].val, yyS[yypt-0].variable)
-			fmt.Println("we will ", yyS[yypt-4].val, yyS[yypt-3].val, "with ", yyS[yypt-2].http_command_params, " and put results into ", yyS[yypt-0].variable.name)
-		}
-	case 13:
-		{
-			//call http put result into variable
+			//just run the command
+			yyS[yypt-0].cmd.Run()
+			//run command without condition
+
 		}
 	case 14:
 		{
-			//call http with header here.
+			fmt.Printf("%+v\n", yyS[yypt-0].val)
+			yyVAL.cmd = &DebugCommand{}
 		}
 	case 15:
 		{
-			//just call http here.
+			if yyS[yypt-0].boolean {
+				return -1
+			}
+			yyVAL.cmd = &EndCommand{}
 		}
 	case 16:
 		{
-			yylex.Error("http command needs a url")
+			if yyS[yypt-0].boolean {
+				return -1
+			}
+
+			yyVAL.cmd = &EndCommand{}
 		}
 	case 17:
 		{
-			yylex.Error("http command needs a method")
+			yyVAL.cmd = &AssertCommand{}
 		}
 	case 18:
 		{
-			if yyVAL.http_command_params == nil {
-				yyVAL.http_command_params = make([]command.HttpCommandParam, 0)
-			}
-			yyVAL.http_command_params = append(yyVAL.http_command_params, yyS[yypt-0].http_command_param)
+			//if $2 is false, fail
+			yyVAL.cmd = &MustCommand{}
 		}
 	case 19:
 		{
-			if yyVAL.http_command_params == nil {
-				yyVAL.http_command_params = make([]command.HttpCommandParam, 0)
-			}
-
-			yyVAL.http_command_params = append(yyVAL.http_command_params, yyS[yypt-0].http_command_param)
+			//if $2 is false, write a warning
+			yyVAL.cmd = &ShouldCommand{}
 		}
 	case 20:
 		{
-			//addin header
-			yyVAL.http_command_param = command.HttpCommandParam{
-				ParamName:  yyS[yypt-1].val.(string),
-				ParamValue: yyS[yypt-0].val.(string),
+			//globalvars[$2.name] = $3
+			yyVAL.cmd = &SetCommand{
+				Name:  yyS[yypt-1].variable.name,
+				Value: yyS[yypt-0].val,
 			}
 		}
 	case 21:
 		{
-			//adding query param
-			yyVAL.http_command_param = command.HttpCommandParam{
+			//call http with header here.
+			yyVAL.cmd = &HttpCommand{}
+		}
+	case 22:
+		{
+			yyVAL.cmd = &HttpCommand{}
+		}
+	case 23:
+		{
+			if yyVAL.http_command_params == nil {
+				yyVAL.http_command_params = make([]HttpCommandParam, 0)
+			}
+			yyVAL.http_command_params = append(yyVAL.http_command_params, yyS[yypt-0].http_command_param)
+		}
+	case 24:
+		{
+			if yyVAL.http_command_params == nil {
+				yyVAL.http_command_params = make([]HttpCommandParam, 0)
+			}
+
+			yyVAL.http_command_params = append(yyVAL.http_command_params, yyS[yypt-0].http_command_param)
+		}
+	case 25:
+		{
+			//addin header
+			yyVAL.http_command_param = HttpCommandParam{
 				ParamName:  yyS[yypt-1].val.(string),
 				ParamValue: yyS[yypt-0].val.(string),
 			}
 		}
-	case 22:
-		{
-			//http get
-			yyVAL.val = yyS[yypt-0].val
-		}
-	case 23:
-		{
-			yyVAL.val = yyS[yypt-0].val
-		}
-	case 24:
-		{
-			yyVAL.val = yyS[yypt-0].val
-		}
-	case 25:
-		{
-			yyVAL.val = yyS[yypt-0].val
-		}
 	case 26:
 		{
-			yyVAL.val = yyS[yypt-0].val
+			//adding query param
+			yyVAL.http_command_param = HttpCommandParam{
+				ParamName:  yyS[yypt-1].val.(string),
+				ParamValue: yyS[yypt-0].val.(string),
+			}
 		}
 	case 27:
 		{
+			//http get
 			yyVAL.val = yyS[yypt-0].val
 		}
 	case 28:
@@ -701,52 +752,74 @@ yynewstate:
 		}
 	case 34:
 		{
-			//boolean value
-			yyVAL.val = yyS[yypt-0].boolean
+			yyVAL.val = yyS[yypt-0].val
 		}
 	case 35:
 		{
-			//found variable
-			fmt.Println(yyS[yypt-0].variable)
-			yyVAL.val = yyS[yypt-0].variable.value
+			yyVAL.val = yyS[yypt-0].val
 		}
 	case 36:
 		{
-			//found string
-			fmt.Println(yyS[yypt-0].val)
 			yyVAL.val = yyS[yypt-0].val
 		}
 	case 37:
+		{
+			yyVAL.val = yyS[yypt-0].val
+		}
+	case 38:
+		{
+			yyVAL.val = yyS[yypt-0].val
+		}
+	case 39:
+		{
+			yyVAL.val = yyS[yypt-0].boolean
+		}
+	case 40:
+		{
+			yyVAL.val = yyS[yypt-0].variable.value
+		}
+	case 41:
+		{
+			//found variable
+			yyVAL.val = yyS[yypt-0].variable.value
+		}
+	case 42:
+		{
+			//found string
+			yyVAL.val = yyS[yypt-0].val
+		}
+	case 43:
 		{
 			//getting variable
 			yyVAL.variable.name = yyS[yypt-2].val.(string)
 			yyVAL.variable.value = query(yyS[yypt-2].val.(string), globalvars)
 		}
-	case 45:
+	case 50:
 		{
-			//found true
 			yyVAL.boolean = true
 		}
-	case 46:
+	case 51:
 		{
 			yyVAL.boolean = false
 		}
-	case 47:
+	case 52:
 		{
-			yyVAL.boolean = yyS[yypt-0].boolean
+			yyVAL.boolean = yyS[yypt-2].boolean && yyS[yypt-0].boolean
 		}
-	case 48:
+	case 53:
 		{
-			yyVAL.boolean = IsTrue(yyS[yypt-0].variable)
+			yyVAL.boolean = yyS[yypt-2].boolean || yyS[yypt-0].boolean
 		}
-	case 49:
-		{
-			//what should we do here?
-			yyVAL.boolean = runop(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
-		}
-	case 50:
+	case 54:
 		{
 			yyVAL.boolean = yyS[yypt-1].boolean
+		}
+	case 55:
+		{
+			//what should we do here?
+			fmt.Println(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
+			operator_result := runop(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
+			yyVAL.boolean = operator_result
 		}
 
 	}
@@ -761,8 +834,10 @@ func runop(left, operator, right interface{}) bool {
 	switch operator {
 	case "EQUALS":
 		return left == right
+	case "NOTEQUALS":
+		return left != right
 	case "CONTAINS":
-		return strings.Contains(left.(string), right.(string))
+		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "LT", "GT":
 		ll, err := strconv.Atoi(left.(string))
 		if err != nil {
@@ -814,7 +889,6 @@ func Parse(text string) {
 
 	for {
 		token := s.Scan()
-		fmt.Printf("Token: %s, Text:%s\n", token.TypeName(), token.Text)
 		if token.Type == EOF || token.Type == -1 {
 			break
 		}

@@ -31,12 +31,16 @@ var keywords = map[string]int{
 	"OR":         OR,
 	"SET":        SET,
 	"EQUALS":     EQUALS,
+	"NOTEQUALS":  NOTEQUALS,
 	"CONTAINS":   CONTAINS,
 	"STARTSWITH": STARTSWITH,
 	"MUST":       MUST,
 	"SHOULD":     SHOULD,
 	"LT":         LT,
 	"GT":         GT,
+	"DEBUG":      DEBUG,
+	"ASSERT":     ASSERT,
+	"END":        END,
 }
 
 func NewScanner(r io.Reader) *Scanner {
@@ -211,7 +215,7 @@ func (s *Scanner) scanQuotedString() (tok Token) {
 func (s *Scanner) scanDigit() (tok Token) {
 	return Token{
 		Type: INTEGER,
-		Text: s.readUntil(isSpace),
+		Text: s.readWhile(isDigit),
 	}
 }
 
@@ -221,7 +225,7 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	if isVarStart(rune(s.Latest.Type)) {
 		return Token{
 			Type: IDENTIFIER,
-			Text: s.readWhile(isLetter),
+			Text: s.readWhile(isIdentifierChar),
 		}
 	}
 
@@ -273,6 +277,7 @@ func isEndOfLine(ch rune) bool    { return ch == '\r' || ch == '\n' }
 func isDigit(ch rune) bool        { return unicode.IsDigit(ch) }
 func isLetter(ch rune) bool       { return ch == '_' || unicode.IsLetter(ch) }
 func isAlphaNumeric(ch rune) bool { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isIdentifierChar(ch rune) bool   { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
 func isOperator(ch rune) bool     { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
 func isVarStart(ch rune) bool     { return ch == '{' }
 func isVarEnd(ch rune) bool       { return ch == '}' }

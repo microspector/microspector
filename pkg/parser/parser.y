@@ -8,7 +8,6 @@ import (
     "github.com/thedevsaddam/gojsonq"
     "strings"
     "strconv"
-   "github.com/tufanbarisyildirim/microspector/pkg/command"
 
 )
 var globalvars = map[string]interface{}{}
@@ -37,6 +36,8 @@ HTTP
 MUST
 SHOULD
 DEBUG
+END
+ASSERT
 
 //http command tokens
 %token <val>
@@ -55,6 +56,7 @@ QUERY
 //condition tokens
 %token <val>
 EQUALS
+NOTEQUALS
 GT
 LT
 CONTAINS
@@ -70,14 +72,22 @@ INTO
 IDENTIFIER
 
 
-
-
 %type <variable> variable
 %type <val> http_method operator
 %type <val> any_value string_or_var
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
-%type <boolean> boolean_exp condition
+%type <boolean> boolean_exp
+
+%type <cmd>
+	command
+	set_command
+        http_command
+	debug_command
+	end_command
+	assert_command
+	must_command
+	should_command
 
 %union{
 	val interface{}
@@ -86,12 +96,13 @@ IDENTIFIER
 	boolean bool
 	flt int64
 	bytes []byte
+	cmd Command
 	variable struct{
 		name string
 		value interface{}
 	}
-	http_command_params []command.HttpCommandParam
-	http_command_param  command.HttpCommandParam
+	http_command_params []HttpCommandParam
+	http_command_param  HttpCommandParam
 }
 
 %start any_command
@@ -104,66 +115,120 @@ command_with_condition_opt
 
 
 command_with_condition_opt:
-command | command WHEN boolean_exp
+command INTO variable WHEN boolean_exp {
+  	//run command put result into variable WHEN boolean_exp is true
+
+  	if strings.Contains($3.name,".") {
+  		yylex.Error("nested variables are not supported yet")
+  	}
+
+  	if $5 {
+  	  globalvars[$3.name] = $1.Run()
+  	}
+ }
+|
+command INTO variable {
+	if strings.Contains($3.name,".") {
+           yylex.Error("nested variables are not supported yet")
+        }
+	$3.value = $1.Run()
+}
+|
+command WHEN boolean_exp
+{
+	//run the command only if boolean_exp is true
+	if $3 {
+	  $1.Run()
+	}
+}
+|
+command {
+	//just run the command
+	$1.Run()
+	//run command without condition
+
+}
 
 
 command:
 set_command
 |http_command
+|debug_command
+|end_command
+|assert_command
 |must_command
+|should_command
+
+
+debug_command:
+DEBUG any_value {
+ fmt.Printf("%+v\n", $2)
+  $$ = &DebugCommand{}
+}
+
+end_command:
+END WHEN boolean_exp {
+	if $3 {
+	   return -1
+	 }
+	  $$ = &EndCommand{}
+}
+| END boolean_exp {
+ if $2 {
+    return -1
+ }
+
+ $$ = &EndCommand{}
+}
+assert_command:
+ASSERT boolean_exp {
+  $$ = &AssertCommand{}
+}
 
 must_command:
-MUST boolean_exp
-{
-fmt.Println("MUST",$2)
+MUST boolean_exp {
 	//if $2 is false, fail
+	$$ = &MustCommand{}
 }
-| SHOULD boolean_exp
-{
-fmt.Println("SHOULD",$2)
+
+should_command:
+SHOULD boolean_exp {
 	//if $2 is false, write a warning
+	$$ = &ShouldCommand{}
 }
 
 set_command:
 SET variable any_value {
-	globalvars[$2.name] = $3
-}
-| SET variable {
-	yylex.Error("syntax error, please set a valuable type to variable")
+	//globalvars[$2.name] = $3
+	$$ = &SetCommand{
+		Name:$2.name,
+		Value:$3,
+	}
 }
 
 http_command:
-HTTP http_method string_or_var http_command_params INTO variable {
+HTTP http_method string_or_var http_command_params  {
   //call http with header here.
-  fmt.Println($1,$2,$3,$4,$5,$6)
-  fmt.Println("we will ",$2,$3,"with ",$4," and put results into ",$6.name)
-}
-| HTTP http_method string_or_var INTO variable {
-  //call http put result into variable
-}
-| HTTP http_method string_or_var http_command_params  {
-  //call http with header here.
+  $$ = &HttpCommand{
+
+  }
 }
 | HTTP http_method string_or_var {
-  //just call http here.
-}
- HTTP http_method {
-   yylex.Error("http command needs a url")
-}
-| HTTP {
-   yylex.Error("http command needs a method")
+ $$ = &HttpCommand{
+
+   }
 }
 
 http_command_params:
 http_command_param {
 	if $$ == nil {
-	  $$ = make([]command.HttpCommandParam,0)
+	  $$ = make([]HttpCommandParam,0)
 	}
 	$$ = append($$,$1)
 }
 | http_command_params http_command_param  {
 	if $$ == nil {
-	  $$ = make([]command.HttpCommandParam,0)
+	  $$ = make([]HttpCommandParam,0)
 	}
 
 	$$ = append($$,$2)
@@ -172,7 +237,7 @@ http_command_param {
 http_command_param:
 HEADER string_or_var {
 	//addin header
-	$$ = command.HttpCommandParam{
+	$$ = HttpCommandParam{
 	 	ParamName : $1.(string),
          	ParamValue : $2.(string),
 	}
@@ -180,7 +245,7 @@ HEADER string_or_var {
 |
 QUERY string_or_var {
 	//adding query param
-     	$$ = command.HttpCommandParam{
+     	$$ = HttpCommandParam{
         	 	ParamName : $1.(string),
                  	ParamValue : $2.(string),
         	}
@@ -228,27 +293,22 @@ GET
 
 
 any_value:
-string_or_var
-{
-	$$ = $1
-}
+ STRING { $$ = $1 }
 | FLOAT { $$ = $1 }
 | INTEGER { $$ = $1 }
 | boolean_exp {
-//boolean value
  	$$ = $1
 }
+| variable { $$ = $1.value }
 //TODO: add assignemnts here?
 
 string_or_var:
 variable {
  //found variable
- fmt.Println($1)
  $$ = $1.value
 }
 | STRING {
 //found string
- fmt.Println($1)
  $$ = $1
 }
 
@@ -260,39 +320,35 @@ variable: '{''{' IDENTIFIER '}''}'{
 
 operator:
 EQUALS
+| NOTEQUALS
 | GT
 | LT
 | CONTAINS
 | STARTSWITH
-| AND
-| OR
 
 
 boolean_exp:
-TRUE {
-//found true
- $$ = true
-}
-| FALSE {
- $$ = false
+TRUE { $$ = true }
+|
+FALSE { $$ = false }
+|
+boolean_exp AND boolean_exp {
+   $$ = $1 && $3
 }
 |
-condition {
-  $$ = $1
+boolean_exp OR boolean_exp {
+   $$ = $1 || $3
 }
-| variable {
- $$ = IsTrue($1)
+|
+'(' boolean_exp ')'{
+  $$ = $2
 }
-
-
-
-condition :
-any_value operator any_value{
-	//what should we do here?
-	$$ = runop($1,$2,$3)
-}
-| '(' condition ')' {
-   	$$ = $2
+|
+any_value operator any_value {
+ 	//what should we do here?
+ 	fmt.Println($1,$2,$3)
+ 	operator_result := runop($1,$2,$3)
+ 	$$ = operator_result
 }
 
 
@@ -302,12 +358,14 @@ func runop(left, operator,right interface{}) bool {
   switch(operator){
   	case "EQUALS":
   		return left == right
+  	case "NOTEQUALS":
+          	return left != right
   	case "CONTAINS":
-        	return strings.Contains(left.(string), right.(string))
+        	return strings.Contains( fmt.Sprintf("%s", left ) ,  fmt.Sprintf("%s", right ))
         case "LT","GT":
   		ll, err := strconv.Atoi(left.(string))
   		if err != nil {
-                  			fmt.Println(err)
+                  		fmt.Println(err)
                   		}
   		rr, err := strconv.Atoi(right.(string))
   		if err != nil {
@@ -356,7 +414,6 @@ func Parse(text string) {
 
 	for {
 		token := s.Scan()
-		fmt.Printf("Token: %s, Text:%s\n", token.TypeName(), token.Text)
 		if token.Type == EOF || token.Type == -1 {
 			break
 		}

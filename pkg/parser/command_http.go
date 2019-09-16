@@ -1,4 +1,4 @@
-package command
+package parser
 
 import (
 	"net/http"
@@ -12,7 +12,7 @@ type HttpCommand struct {
 	Url           string
 }
 
-func (hc *HttpCommand) run() *http.Response {
+func (hc *HttpCommand) Run() interface{} {
 
 	u, _ := url.Parse(hc.Url)
 
