@@ -10,7 +10,7 @@ parser: deps
 yacc:
 	goyacc -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 	gofmt -w ./pkg/parser/parser.go
-	go run ./cmd
+	go run ./cmd --file="tasks/main.msf"
 
 deps:
 	go get

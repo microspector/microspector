@@ -103,7 +103,6 @@ func runop(left, operator, right interface{}) bool {
 	case "LT", "GT":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
-			fmt.Printf("Comparing integers, %d,%d\n", l, r)
 			if operator == "GT" {
 				return l > r
 			} else {
@@ -113,8 +112,6 @@ func runop(left, operator, right interface{}) bool {
 
 		if oneIsFloat(left, right) {
 			l, r := convertToFloat(left, right)
-			fmt.Printf("Comparing floats, %f,%f\n", l, r)
-
 			if operator == "GT" {
 				return l > r
 			} else {

@@ -16,6 +16,6 @@ func (hc *SetCommand) Run() interface{} {
 
 	}
 
-	globalvars[hc.Name] = hc.Value
+	GlobalVars[hc.Name] = hc.Value
 	return hc.Value
 }

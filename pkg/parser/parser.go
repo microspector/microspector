@@ -5,12 +5,11 @@ package parser
 import __yyfmt__ "fmt"
 
 import (
-	"fmt"
 	"log"
 	"strings"
 )
 
-var globalvars = map[string]interface{}{}
+var GlobalVars = map[string]interface{}{}
 
 type yySymType struct {
 	yys      int
@@ -618,7 +617,7 @@ yynewstate:
 			}
 
 			if yyS[yypt-0].boolean {
-				globalvars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run()
+				GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run()
 			}
 		}
 	case 4:
@@ -627,7 +626,7 @@ yynewstate:
 			if strings.Contains(yyS[yypt-0].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
-			globalvars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run()
+			GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run()
 		}
 	case 5:
 		{
@@ -680,7 +679,7 @@ yynewstate:
 		}
 	case 20:
 		{
-			//globalvars[$2.name] = $3
+			//GlobalVars[$2.name] = $3
 			yyVAL.cmd = &SetCommand{
 				Name:  yyS[yypt-1].variable.name,
 				Value: yyS[yypt-0].val,
@@ -784,7 +783,7 @@ yynewstate:
 	case 38:
 		{
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), globalvars)
+				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
 			} else {
 				yyVAL.val = yyS[yypt-0].val
 			}
@@ -800,7 +799,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), globalvars)
+					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), GlobalVars)
 				} else {
 					yyVAL.val = yyS[yypt-0].variable.value
 				}
@@ -814,7 +813,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), globalvars)
+					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), GlobalVars)
 				} else {
 					yyVAL.val = yyS[yypt-0].variable.value
 				}
@@ -827,7 +826,7 @@ yynewstate:
 		{
 			//found string
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), globalvars)
+				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
 			} else {
 				yyVAL.val = yyS[yypt-0].val
 			}
@@ -836,7 +835,7 @@ yynewstate:
 		{
 			//getting variable
 			yyVAL.variable.name = yyS[yypt-2].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-2].val.(string), globalvars)
+			yyVAL.variable.value = query(yyS[yypt-2].val.(string), GlobalVars)
 		}
 	case 52:
 		{
@@ -892,7 +891,7 @@ func (l *lex) Error(e string) {
 	log.Fatal(e)
 }
 
-func Parse(text string) {
+func Parse(text string) *lex {
 	s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
 	tokens := make(Tokens, 0)
 
@@ -907,6 +906,9 @@ func Parse(text string) {
 
 	l := &lex{tokens}
 
+	return l
+}
+
+func Run(l *lex) {
 	yyParse(l)
-	fmt.Printf("%+v\n", globalvars)
 }

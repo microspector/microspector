@@ -2,12 +2,11 @@
 package parser
 
 import (
-    "fmt"
     "log"
     "strings"
 
 )
-var globalvars = map[string]interface{}{}
+var GlobalVars = map[string]interface{}{}
 %}
 
 
@@ -121,7 +120,7 @@ command INTO variable WHEN boolean_exp {
   	}
 
   	if $5 {
-  	   globalvars[$3.name] = $1.Run()
+  	   GlobalVars[$3.name] = $1.Run()
   	}
  }
 |
@@ -130,7 +129,7 @@ command INTO variable {
 	if strings.Contains($3.name,".") {
            yylex.Error("nested variables are not supported yet")
         }
-	globalvars[$3.name] = $1.Run()
+	GlobalVars[$3.name] = $1.Run()
 }
 |
 command WHEN boolean_exp
@@ -200,7 +199,7 @@ SHOULD boolean_exp {
 
 set_command:
 SET variable any_value {
-	//globalvars[$2.name] = $3
+	//GlobalVars[$2.name] = $3
 	$$ = &SetCommand{
 		Name:$2.name,
 		Value:$3,
@@ -311,7 +310,7 @@ multi_any_value any_value {
 any_value:
  STRING {
    if isTemplate($1.(string)) {
-   	 	$$,_ = executeTemplate( $1.(string) , globalvars)
+   	 	$$,_ = executeTemplate( $1.(string) , GlobalVars)
    	 }else{
    		 $$ = $1
     	}
@@ -327,7 +326,7 @@ any_value:
    switch  $1.value.(type) {
        case string :
   	     if isTemplate($1.value.(string)) {
-  		    $$,_ = executeTemplate( $1.value.(string) , globalvars)
+  		    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
   	     }else{
   	     	$$ = $1.value
   	     }
@@ -342,7 +341,7 @@ variable {
  switch  $1.value.(type) {
      case string :
 	     if isTemplate($1.value.(string)) {
-		    $$,_ = executeTemplate( $1.value.(string) , globalvars)
+		    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
 	     }else{
 	     	$$ = $1.value
 	     }
@@ -355,7 +354,7 @@ variable {
 STRING {
 	//found string
 	if isTemplate($1.(string)) {
-	 	$$,_ = executeTemplate( $1.(string) , globalvars)
+	 	$$,_ = executeTemplate( $1.(string) , GlobalVars)
 	 }else{
 		 $$ = $1
  	}
@@ -364,7 +363,7 @@ STRING {
 variable: '{''{' IDENTIFIER '}''}'{
 	//getting variable
 	$$.name = $3.(string)
-	$$.value = query($3.(string),globalvars)
+	$$.value = query($3.(string),GlobalVars)
 }
 
 operator:
@@ -421,7 +420,7 @@ func (l *lex) Error(e string) {
     log.Fatal(e)
 }
 
-func Parse(text string) {
+func Parse(text string) *lex {
 	s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
 	tokens := make(Tokens,0)
 
@@ -436,6 +435,9 @@ func Parse(text string) {
 
 	 l := &lex{ tokens }
 
+	 return l
+}
+
+func Run(l *lex){
 	yyParse(l)
-	fmt.Printf("%+v\n", globalvars)
 }
