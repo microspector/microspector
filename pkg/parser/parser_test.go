@@ -43,7 +43,10 @@ SET {{ StringDigitCompare3 }} 100 GT "99"
 SET {{ StringDigitCompare4 }} {{ Hundred }} GT "99"
 SET {{ StringDigitCompare5 }} {{ Hundred }} GT "999"
 SET {{ WhenFalse }} FALSE WHEN "100" < "101"
-	`)
+SET {{ SSLRand }} "{{ openssl_rand 32 \"hex\" }}"
+SET {{ SSLRandSize }} "{{ str_len .SSLRand }}"
+SET {{ HashMd5 }} "{{ hash_md5 1 }}"
+`)
 
 	Run(lex)
 
@@ -66,6 +69,8 @@ SET {{ WhenFalse }} FALSE WHEN "100" < "101"
 	assert.Equal(t, GlobalVars["StringDigitCompare4"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare5"], false)
 	assert.Equal(t, GlobalVars["WhenFalse"], false)
+	assert.Equal(t, GlobalVars["SSLRandSize"], "64")
+	assert.Equal(t, len(GlobalVars["HashMd5"].(string)), 32)
 }
 
 func TestParser_Http(t *testing.T) {

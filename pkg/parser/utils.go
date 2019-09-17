@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/thedevsaddam/gojsonq"
+	"github.com/tufanbarisyildirim/microspector/pkg/templating"
 	"html/template"
 	"reflect"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 )
 
 func executeTemplate(text string, state map[string]interface{}) (string, error) {
-	t := template.New("microspector")
+	t := template.New("microspector").Funcs(templating.Functions)
 	_, err := t.Parse(text)
 
 	if err != nil {
