@@ -32,8 +32,8 @@ SET {{ StartsWithTrue }} "microspector.com" STARTSWITH "microspector"
 SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
-SET {{ StringDigitCompare1 }} "100" LT 101
-SET {{ StringDigitCompare2 }} "100" < 101
+SET {{ StringDigitCompare1 }} "100" LT 101 AND 100 == 100
+SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" EQUALS 100) OR (1 != 1)
 SET {{ StringDigitCompare3 }} "100" <= 101
 SET {{ StringDigitCompare4 }} "100" GT 99
 SET {{ StringDigitCompare5 }} "100" > 99

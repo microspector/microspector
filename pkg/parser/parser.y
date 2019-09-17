@@ -373,6 +373,8 @@ EQUALS
 | LE
 | CONTAINS
 | STARTSWITH
+| AND
+| OR
 
 
 boolean_exp:
@@ -380,12 +382,16 @@ TRUE { $$ = true }
 |
 FALSE { $$ = false }
 |
-any_value AND any_value {
+boolean_exp AND boolean_exp {
    $$ = IsTrue($1) && IsTrue($3)
 }
 |
-any_value OR any_value {
+boolean_exp OR boolean_exp {
    $$ = IsTrue($1) || IsTrue($3)
+}
+|
+'(' boolean_exp ')' {
+  $$ = $2
 }
 |
 any_value operator any_value {
