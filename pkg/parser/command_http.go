@@ -1,13 +1,17 @@
 package parser
 
 import (
+	"context"
+	"crypto/tls"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
 )
 
 type HttpCommand struct {
@@ -23,10 +27,16 @@ type HttpResult struct {
 	Headers       map[string]string
 	StatusCode    int
 	ContentLength int
+	Error         string
 }
 
-func NewFromResponse(response *http.Response, took int64) HttpResult {
+func NewFromResponse(response *http.Response) HttpResult {
 	var content []byte
+
+	if response == nil {
+		return HttpResult{}
+	}
+
 	content, err := ioutil.ReadAll(response.Body)
 
 	if err != nil {
@@ -36,7 +46,6 @@ func NewFromResponse(response *http.Response, took int64) HttpResult {
 	result := HttpResult{
 		ContentLength: len(content),
 		Content:       string(content),
-		Took:          took,
 		Headers:       make(map[string]string),
 		StatusCode:    response.StatusCode,
 	}
@@ -51,6 +60,8 @@ func NewFromResponse(response *http.Response, took int64) HttpResult {
 }
 
 func (hc *HttpCommand) Run() interface{} {
+
+	fmt.Println(hc)
 
 	_, urlError := url.Parse(hc.Url)
 
@@ -75,9 +86,9 @@ func (hc *HttpCommand) Run() interface{} {
 				} else {
 					if strings.ToLower(strings.TrimSpace(headerParts[0])) == "host" {
 						req.Host = strings.TrimSpace(headerParts[1])
-					} else {
-						req.Header.Set(strings.TrimSpace(headerParts[0]), strings.TrimSpace(headerParts[1]))
+						//req.URL.Host = strings.TrimSpace(headerParts[1])
 					}
+					req.Header.Set(strings.TrimSpace(headerParts[0]), strings.TrimSpace(headerParts[1]))
 				}
 
 			}
@@ -91,18 +102,38 @@ func (hc *HttpCommand) Run() interface{} {
 		}
 	}
 
-	client := &http.Client{}
-	start := makeTimestamp()
-	r, reqErr := client.Do(req)
-
-	if reqErr != nil {
-		panic(reqErr)
+	dialer := &net.Dialer{
+		Timeout:   30 * time.Second,
+		KeepAlive: 30 * time.Second,
 	}
 
-	defer r.Body.Close()
+	client := &http.Client{
+		Timeout: 30 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{
+				ServerName: req.Host, // set SNI from host header
+			},
+			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+				// redirect all connections to host specified in url
+				addr = req.URL.Host + addr[strings.LastIndex(addr, ":"):]
+				return dialer.DialContext(ctx, network, addr)
+			},
+		},
+	}
+	start := makeTimestamp()
+	r, reqErr := client.Do(req)
+	if reqErr == nil {
+		defer r.Body.Close()
+	}
 	elapsed := makeTimestamp() - start
 
-	return NewFromResponse(r, elapsed)
+	resp := NewFromResponse(r)
+	resp.Took = elapsed
+	if reqErr != nil {
+		resp.Error = reqErr.Error()
+	}
+
+	return resp
 }
 
 type HttpCommandParam struct {
