@@ -20,6 +20,20 @@ func TestScanner_Set(t *testing.T) {
 	assert.Equal(t, l.tokens[6].Type, STRING)
 	assert.Equal(t, l.tokens[6].Text, "microspector.com")
 
+
+	l = Parse(`SET {{ Domain }} 100`)
+
+	assert.Assert(t, len(l.tokens) == 7)
+	assert.Equal(t, l.tokens[0].Type, SET)
+	assert.Equal(t, l.tokens[1].Type, int('{'))
+	assert.Equal(t, l.tokens[2].Type, int('{'))
+	assert.Equal(t, l.tokens[3].Type, IDENTIFIER)
+	assert.Equal(t, l.tokens[3].Text, "Domain")
+	assert.Equal(t, l.tokens[4].Type, int('}'))
+	assert.Equal(t, l.tokens[5].Type, int('}'))
+	assert.Equal(t, l.tokens[6].Type, INTEGER)
+	assert.Equal(t, l.tokens[6].Text, "100")
+
 }
 
 func TestScanner_Must(t *testing.T) {
