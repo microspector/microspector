@@ -2,8 +2,12 @@ package parser
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
+	"github.com/thedevsaddam/gojsonq"
 	"html/template"
 	"reflect"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -22,6 +26,16 @@ func executeTemplate(text string, state map[string]interface{}) (string, error) 
 	}
 
 	return tpl.String(), nil
+}
+
+func query(fieldPath string, thevars map[string]interface{}) interface{} {
+	b, err := json.Marshal(thevars)
+	if err != nil {
+		fmt.Println("error finding variable value", err)
+	}
+	jq := gojsonq.New()
+	found := jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
+	return found
 }
 
 func isTemplate(text string) bool {
@@ -76,4 +90,105 @@ func toVariableName(str string) string {
 	}
 
 	return strings.Join(segments, "")
+}
+
+func runop(left, operator, right interface{}) bool {
+	switch operator {
+	case "EQUALS":
+		return left == right
+	case "NOTEQUALS":
+		return left != right
+	case "CONTAINS":
+		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+	case "LT", "GT":
+		if oneIsInt(left, right) {
+			l, r := convertToInt(left, right)
+			fmt.Printf("Comparing integers, %d,%d\n", l, r)
+			if operator == "GT" {
+				return l > r
+			} else {
+				return l < r
+			}
+		}
+
+		if oneIsFloat(left, right) {
+			l, r := convertToFloat(left, right)
+			fmt.Printf("Comparing floats, %f,%f\n", l, r)
+
+			if operator == "GT" {
+				return l > r
+			} else {
+				return l < r
+			}
+		}
+
+	}
+
+	return false
+}
+
+func convertToInt(left, right interface{}) (l, r int) {
+	return intVal(left), intVal(right)
+}
+
+func convertToFloat(left, right interface{}) (l, r float64) {
+	return floatVal(left), floatVal(right)
+}
+
+func floatVal(obj interface{}) float64 {
+	switch obj.(type) {
+	case int, int64, int32:
+		return obj.(float64)
+	case float32, float64:
+		return obj.(float64)
+	default:
+		f, _err := strconv.ParseFloat(fmt.Sprintf("%s", obj), 64)
+		if _err == nil {
+			return f
+		}
+		return 0
+	}
+}
+
+func intVal(obj interface{}) int {
+	switch obj.(type) {
+	case int, int64, int32:
+		return obj.(int)
+	case float32, float64:
+		return obj.(int)
+	default:
+		f, _err := strconv.Atoi(fmt.Sprintf("%s", obj))
+		if _err == nil {
+			return f
+		}
+		return 0
+	}
+}
+
+func oneIsInt(left, right interface{}) bool {
+	switch left.(type) {
+	case int, int64, int32:
+		return true
+	}
+
+	switch right.(type) {
+	case int, int64, int32:
+		return true
+	}
+
+	return false
+}
+
+func oneIsFloat(left, right interface{}) bool {
+	switch left.(type) {
+	case float32, float64:
+		return true
+	}
+
+	switch right.(type) {
+	case float32, float64:
+		return true
+	}
+
+	return false
 }

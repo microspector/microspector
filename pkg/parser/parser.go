@@ -5,11 +5,8 @@ package parser
 import __yyfmt__ "fmt"
 
 import (
-	"encoding/json"
 	"fmt"
-	"github.com/thedevsaddam/gojsonq"
 	"log"
-	"strconv"
 	"strings"
 )
 
@@ -874,45 +871,6 @@ yynewstate:
 		return -1
 	}
 	goto yystack /* stack new state and value */
-}
-
-func runop(left, operator, right interface{}) bool {
-	switch operator {
-	case "EQUALS":
-		return left == right
-	case "NOTEQUALS":
-		return left != right
-	case "CONTAINS":
-		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
-	case "LT", "GT":
-		ll, err := strconv.Atoi(left.(string))
-		if err != nil {
-			fmt.Println(err)
-		}
-		rr, err := strconv.Atoi(right.(string))
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		if operator == "GT" {
-			return ll > rr
-		} else {
-			return ll < rr
-		}
-
-	}
-
-	return false
-}
-
-func query(fieldPath string, thevars map[string]interface{}) interface{} {
-	b, err := json.Marshal(thevars)
-	if err != nil {
-		fmt.Println("error finding variable value", err)
-	}
-	jq := gojsonq.New()
-	found := jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
-	return found
 }
 
 type lex struct {
