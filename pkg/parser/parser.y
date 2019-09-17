@@ -111,8 +111,8 @@ IDENTIFIER
 %%
 
 any_command:
-command_with_condition_opt
-| command_with_condition_opt any_command
+/*empty*/
+| any_command command_with_condition_opt
 
 
 command_with_condition_opt:
@@ -211,6 +211,14 @@ SET variable any_value {
 		Value:$3,
 	}
 }
+|
+SET variable boolean_exp {
+	//GlobalVars[$2.name] = $3
+	$$ = &SetCommand{
+		Name:$2.name,
+		Value:$3,
+	}
+}
 
 http_command:
 HTTP http_method string_or_var http_command_params  {
@@ -245,7 +253,7 @@ http_command_param {
 }
 
 http_command_param:
-HEADER string_or_var {
+HEADER STRING {
 	//addin header
 	$$ = HttpCommandParam{
 	 	ParamName : $1.(string),
@@ -253,7 +261,7 @@ HEADER string_or_var {
 	}
 }
 |
-QUERY string_or_var {
+QUERY STRING {
 	//adding query param
      	$$ = HttpCommandParam{
         	 	ParamName : $1.(string),
@@ -314,34 +322,16 @@ multi_any_value any_value {
 }
 
 any_value:
- STRING {
-   if isTemplate($1.(string)) {
-   	 	$$,_ = executeTemplate( $1.(string) , GlobalVars)
-   	 }else{
-   		 $$ = $1
-    	}
-
- }
-| FLOAT
+string_or_var {
+   	$$ = $1
+}
+| FLOAT {
+    	$$ = $1
+}
 | INTEGER {
 	$$,_ = strconv.Atoi($1.(string))
 }
-| boolean_exp {
-  $$ = $1
-}
-| variable {
- //found variable in any_value token
-   switch  $1.value.(type) {
-       case string :
-  	     if isTemplate($1.value.(string)) {
-  		    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
-  	     }else{
-  	     	$$ = $1.value
-  	     }
-       default:
-           $$ = $1.value
-       }
-}
+
 
 string_or_var:
 variable {
@@ -364,7 +354,7 @@ STRING {
 	if isTemplate($1.(string)) {
 	 	$$,_ = executeTemplate( $1.(string) , GlobalVars)
 	 }else{
-		 $$ = $1
+
  	}
 }
 
@@ -390,16 +380,12 @@ TRUE { $$ = true }
 |
 FALSE { $$ = false }
 |
-boolean_exp AND boolean_exp {
-   $$ = $1 && $3
+any_value AND any_value {
+   $$ = IsTrue($1) && IsTrue($3)
 }
 |
-boolean_exp OR boolean_exp {
-   $$ = $1 || $3
-}
-|
-'(' boolean_exp ')'{
-  $$ = $2
+any_value OR any_value {
+   $$ = IsTrue($1) || IsTrue($3)
 }
 |
 any_value operator any_value {
