@@ -80,17 +80,15 @@ func (s *Scanner) Scan() Token {
 func (s *Scanner) getNextToken() Token {
 	ch := s.Peek()
 
-	for isSpace(ch) || isEndOfLine(ch) {
+	if isSpace(ch) {
+		s.skipWhitespace()
+		ch = s.Peek()
+	}
 
-		if isSpace(ch) {
-			s.skipWhitespace() // consume and ignore whitespace
-			ch = s.Peek()
-		}
-
-		if isEndOfLine(ch) {
-			s.skipEndOfLine()
-			ch = s.Peek()
-		}
+	// skip comments.
+	if ch == '#' {
+		s.readUntilWith(isEndOfLine)
+		ch = s.Peek()
 	}
 
 	if isOperator(ch) {
@@ -167,7 +165,7 @@ func (s *Scanner) readWhile(while runeCheck) string {
 	buf.WriteRune(s.read())
 
 	for {
-		ch := s.read();
+		ch := s.read()
 		if while(ch) {
 			buf.WriteRune(ch)
 		} else {
@@ -184,7 +182,7 @@ func (s *Scanner) skipWhitespace() {
 }
 
 func (s *Scanner) skipEndOfLine() {
-	s.readWhile(isEndOfLine)
+	s.readUntilWith(isEndOfLine)
 }
 
 /**
@@ -193,13 +191,10 @@ func (s *Scanner) skipEndOfLine() {
 \n – To add line breaks between string.
 \t – To add tab space.
 \r – For carriage return.
- */
+*/
 func (s *Scanner) scanQuotedString() (tok Token) {
-
 	var buf bytes.Buffer
-
 	buf.WriteRune(s.read())
-
 	for {
 		ch := s.read()
 
@@ -252,8 +247,6 @@ func (s *Scanner) scanDigit() (tok Token) {
 }
 
 func (s *Scanner) scanKeyword() (tok Token) {
-
-	//TODO: scan identifier here, identifiers support dot to reach any json value like HttpResult.data.success etc.
 	if isVarStart(rune(s.Latest.Type)) {
 		return Token{
 			Type: IDENTIFIER,
@@ -262,30 +255,40 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	}
 
 	keyword := s.readWhile(isLetter)
-
 	token, ok := keywords[keyword]
-
 	if ok {
 		return Token{
 			Type: token,
 			Text: keyword,
 		}
 	}
-
 	return Token{
 		Type: KEYWORD,
 		Text: keyword,
 	}
-
 }
 
 func (s *Scanner) scanOperator() (tok Token) {
 	ch := s.read()
-	tok = Token{
-		Type: int(ch),
-		Text: string(ch),
+	switch ch {
+	case '<':
+		tok = Token{
+			Type: LT,
+			Text: "<",
+		}
+	case '>':
+		tok = Token{
+			Type: GT,
+			Text: ">",
+		}
+	default:
+		tok = Token{
+			Type: int(ch),
+			Text: string(ch),
+		}
 	}
-	return
+
+	return tok
 }
 
 func (s *Scanner) unread() {
@@ -296,6 +299,7 @@ func (s *Scanner) read() rune {
 	ch, _, err := s.r.ReadRune()
 	if err != nil {
 		return eof
+
 	}
 
 	return ch
@@ -305,7 +309,7 @@ var eof = rune(0)
 
 func isDoubleQuote(ch rune) bool    { return ch == '"' }
 func needsEscape(ch rune) bool      { return ch == 'n' || ch == 't' || ch == '"' || ch == '\\' || ch == 'r' }
-func isSpace(ch rune) bool          { return ch == ' ' || ch == '\t' }
+func isSpace(ch rune) bool          { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
 func isEndOfLine(ch rune) bool      { return ch == '\r' || ch == '\n' }
 func isDigit(ch rune) bool          { return unicode.IsDigit(ch) }
 func isLetter(ch rune) bool         { return ch == '_' || unicode.IsLetter(ch) }

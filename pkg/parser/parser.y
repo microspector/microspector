@@ -110,7 +110,7 @@ IDENTIFIER
 
 any_command:
 command_with_condition_opt
-| any_command command_with_condition_opt
+| command_with_condition_opt any_command
 
 
 command_with_condition_opt:

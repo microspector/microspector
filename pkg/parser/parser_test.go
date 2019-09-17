@@ -8,34 +8,38 @@ import (
 	"testing"
 )
 
-func setupTest() *http.ServeMux {
+func setupTest() *httptest.Server {
 	serverMux := http.NewServeMux()
 	server := httptest.NewServer(serverMux)
-	defer server.Close()
 
 	serverMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		r.Header.Set("Host", r.Host)
-		fmt.Fprintln(w, r.Header)
+		fmt.Fprint(w, "Microspector")
+		w.Header().Set("Microspector", "Service Up")
 
 	})
 
-	return serverMux
+	return server
 }
 func TestParser_Set(t *testing.T) {
 
-	Run(Parse(`
+	lex := Parse(`
 SET {{ Domain }} "microspector.com"
-SET {{ ContainsTrue }} "microspector.com" CONTAINS "microspector"
+SET {{ ContainsTrue }}  "microspector.com" CONTAINS "microspector"
 SET {{ ContainsFalse }} "microspector.com" CONTAINS "microspectorFAIL"
-SET {{ StartsWithTrue }} "microspector.com" CONTAINS "microspector"
-SET {{ StartsWithFalse }} "microspector.com" CONTAINS "microspectorFAIL"
+SET {{ StartsWithTrue }} "microspector.com" STARTSWITH "microspector"
+SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
 SET {{ StringDigitCompare }} "100" LT 101
 SET {{ StringDigitCompare2 }} "100" GT 99
 SET {{ StringDigitCompare3 }} 100 GT "99"
 SET {{ StringDigitCompare4 }} {{ Hundred }} GT "99"
-	`))
+SET {{ StringDigitCompare5 }} {{ Hundred }} GT "999"
+SET {{ WhenFalse }} FALSE WHEN "100" < "101"
+	`)
+
+	Run(lex)
+
 	assert.Equal(t, GlobalVars["Domain"], "microspector.com")
 	assert.Equal(t, GlobalVars["ContainsTrue"], true)
 	assert.Equal(t, GlobalVars["ContainsFalse"], false)
@@ -46,4 +50,23 @@ SET {{ StringDigitCompare4 }} {{ Hundred }} GT "99"
 	assert.Equal(t, GlobalVars["StringDigitCompare2"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare3"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare4"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare5"], false)
+	assert.Equal(t, GlobalVars["WhenFalse"], false)
+}
+
+func TestParser_Http(t *testing.T) {
+	server := setupTest()
+	defer server.Close()
+
+	GlobalVars["ServerMux"] = server.URL
+
+	Run(Parse(`
+HTTP GET {{ ServerMux }} INTO {{ ServerResult }}
+SET {{ ContentLength }} {{ ServerResult.ContentLength }}
+	`))
+
+	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
+	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).ContentLength, 12)
+	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
+
 }

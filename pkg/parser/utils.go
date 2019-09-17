@@ -100,24 +100,26 @@ func runop(left, operator, right interface{}) bool {
 		return left != right
 	case "CONTAINS":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
-	case "LT", "GT":
+	case "STARTSWITH":
+		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+	case "LT", "GT", ">", "<":
 
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
-			if operator == "GT" {
+			if operator == "GT" || operator == ">" {
 				return l > r
 			} else {
 				return l < r
 			}
 		} else if oneIsFloat(left, right) {
 			l, r := convertToFloat(left, right)
-			if operator == "GT" {
+			if operator == "GT" || operator == ">" {
 				return l > r
 			} else {
 				return l < r
 			}
 		} else {
-			if operator == "GT" {
+			if operator == "GT" || operator == ">" {
 				return floatVal(left) > floatVal(right)
 			} else {
 				return floatVal(left) < floatVal(right)

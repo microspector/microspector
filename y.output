@@ -24,9 +24,15 @@ state 0 //
 state 1 // ASSERT FALSE [$end]
 
     0 $accept: any_command .  [$end]
-    2 any_command: any_command . command_with_condition_opt
 
-    $end    accept
+    $end  accept
+
+state 2 // ASSERT FALSE [$end]
+
+    1 any_command: command_with_condition_opt .  [$end]
+    2 any_command: command_with_condition_opt . any_command
+
+    $end    reduce using rule 1 (any_command)
     ASSERT  shift, and goto state 13
     DEBUG   shift, and goto state 11
     END     shift, and goto state 12
@@ -35,28 +41,16 @@ state 1 // ASSERT FALSE [$end]
     SET     shift, and goto state 16
     SHOULD  shift, and goto state 15
 
+    any_command                 goto state 83
     assert_command              goto state 8
     command                     goto state 3
-    command_with_condition_opt  goto state 83
+    command_with_condition_opt  goto state 2
     debug_command               goto state 6
     end_command                 goto state 7
     http_command                goto state 5
     must_command                goto state 9
     set_command                 goto state 4
     should_command              goto state 10
-
-state 2 // ASSERT FALSE [$end]
-
-    1 any_command: command_with_condition_opt .  [$end, ASSERT, DEBUG, END, HTTP, MUST, SET, SHOULD]
-
-    $end    reduce using rule 1 (any_command)
-    ASSERT  reduce using rule 1 (any_command)
-    DEBUG   reduce using rule 1 (any_command)
-    END     reduce using rule 1 (any_command)
-    HTTP    reduce using rule 1 (any_command)
-    MUST    reduce using rule 1 (any_command)
-    SET     reduce using rule 1 (any_command)
-    SHOULD  reduce using rule 1 (any_command)
 
 state 3 // ASSERT FALSE [$end]
 
@@ -751,7 +745,7 @@ state 48 // DEBUG FALSE [$end]
     conflict on AND, shift, and goto state 63, reduce using rule 41
     conflict on OR, shift, and goto state 64, reduce using rule 41
 
-state 49 // ASSERT '{' '{' IDENTIFIER '}' '}' [$end]
+state 49 // SHOULD '{' '{' IDENTIFIER '}' '}' [$end]
 
    42 any_value: variable .  [$end, '(', ')', '{', AND, ASSERT, CONTAINS, DEBUG, END, EQUALS, FALSE, FLOAT, GT, HTTP, INTEGER, INTO, LT, MUST, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
 
@@ -1507,14 +1501,7 @@ state 82 // ASSERT FALSE INTO '{' '{' IDENTIFIER '}' '}' WHEN FALSE [$end]
 
 state 83 // ASSERT FALSE ASSERT FALSE [$end]
 
-    2 any_command: any_command command_with_condition_opt .  [$end, ASSERT, DEBUG, END, HTTP, MUST, SET, SHOULD]
+    2 any_command: command_with_condition_opt any_command .  [$end]
 
-    $end    reduce using rule 2 (any_command)
-    ASSERT  reduce using rule 2 (any_command)
-    DEBUG   reduce using rule 2 (any_command)
-    END     reduce using rule 2 (any_command)
-    HTTP    reduce using rule 2 (any_command)
-    MUST    reduce using rule 2 (any_command)
-    SET     reduce using rule 2 (any_command)
-    SHOULD  reduce using rule 2 (any_command)
+    $end  reduce using rule 2 (any_command)
 

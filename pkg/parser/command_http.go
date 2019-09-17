@@ -115,7 +115,7 @@ func (hc *HttpCommand) Run() interface{} {
 			},
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				// redirect all connections to host specified in url
-				addr = req.URL.Host + addr[strings.LastIndex(addr, ":"):]
+				addr = req.URL.Host
 				return dialer.DialContext(ctx, network, addr)
 			},
 		},
