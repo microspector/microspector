@@ -183,6 +183,9 @@ END boolean_exp {
 
  $$ = &EndCommand{}
 }
+| END {
+	return -1
+}
 assert_command:
 ASSERT boolean_exp {
   $$ = &AssertCommand{}
