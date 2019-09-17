@@ -7,15 +7,17 @@ build: parser
 parser: deps
 	$(GOPATH)/bin/pigeon ./pkg/parser/msf.peg  > ./pkg/parser/msf.go
 
+run: yacc
+	go run ./cmd --file="tasks/main.msf"
+
+test: yacc
+	go test $(PWD)/pkg/parser
+
 yacc:
 	goyacc -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 	gofmt -w ./pkg/parser/parser.go
-	go run ./cmd --file="tasks/main.msf"
 
 deps:
-	go get
-
-test:
-	go test $(PWD)/pkg/parser
+	go get -v all
 
 .PHONY: build parser deps test
