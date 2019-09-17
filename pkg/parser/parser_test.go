@@ -16,7 +16,7 @@ func setupTest() *httptest.Server {
 		w.Header().Set("Microspector", "Service Up")
 		w.Header().Set("User-Agent", r.Header.Get("User-Agent"))
 		w.Header().Set("Host", r.Header.Get("Host"))
-		fmt.Fprint(w, "Microspector")
+		fmt.Fprint(w, `{"data":"microspector.com"}`)
 
 	})
 
@@ -86,12 +86,14 @@ func TestParser_Http(t *testing.T) {
 	Run(Parse(`
 HTTP GET {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
+SET {{ ContentData }} {{ ServerResult.Json.data }}
 	`))
 
 	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
-	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).ContentLength, 12)
+	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).ContentLength, 27)
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
+	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
 
 }
