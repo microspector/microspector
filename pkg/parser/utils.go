@@ -94,9 +94,17 @@ func toVariableName(str string) string {
 
 func runop(left, operator, right interface{}) bool {
 	switch operator {
-	case "EQUALS":
+	case "EQUALS", "==":
+		if oneIsInt(left, right) {
+			l, r := convertToInt(left, right)
+			return l == r
+		}
 		return left == right
-	case "NOTEQUALS":
+	case "NOTEQUALS", "!=":
+		if oneIsInt(left, right) {
+			l, r := convertToInt(left, right)
+			return l != r
+		}
 		return left != right
 	case "CONTAINS":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
@@ -123,6 +131,30 @@ func runop(left, operator, right interface{}) bool {
 				return floatVal(left) > floatVal(right)
 			} else {
 				return floatVal(left) < floatVal(right)
+			}
+
+		}
+
+	case "LE", "GE", "<=", ">=":
+		if oneIsInt(left, right) {
+			l, r := convertToInt(left, right)
+			if operator == "LE" || operator == "<=" {
+				return l <= r
+			} else {
+				return l >= r
+			}
+		} else if oneIsFloat(left, right) {
+			l, r := convertToFloat(left, right)
+			if operator == "GE" || operator == ">=" {
+				return l >= r
+			} else {
+				return l <= r
+			}
+		} else {
+			if operator == "GE" || operator == ">=" {
+				return floatVal(left) >= floatVal(right)
+			} else {
+				return floatVal(left) <= floatVal(right)
 			}
 
 		}

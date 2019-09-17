@@ -31,7 +31,14 @@ SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
 SET {{ StringDigitCompare }} "100" LT 101
+SET {{ StringDigitCompare1 }} "100" < 101
+SET {{ StringDigitCompare11 }} "100" <= 101
 SET {{ StringDigitCompare2 }} "100" GT 99
+SET {{ StringDigitCompare21 }} "100" > 99
+SET {{ StringDigitCompare22 }} "100" >= 99
+SET {{ StringDigitCompare23 }} "100" <= 99
+SET {{ StringDigitCompare24 }} "100" == 100
+SET {{ StringDigitCompare25 }} "100" != 100
 SET {{ StringDigitCompare3 }} 100 GT "99"
 SET {{ StringDigitCompare4 }} {{ Hundred }} GT "99"
 SET {{ StringDigitCompare5 }} {{ Hundred }} GT "999"
@@ -47,7 +54,14 @@ SET {{ WhenFalse }} FALSE WHEN "100" < "101"
 	assert.Equal(t, GlobalVars["StartsWithFalse"], false)
 	assert.Equal(t, GlobalVars["DoubleDomain"], "microspector.com microspector.com")
 	assert.Equal(t, GlobalVars["StringDigitCompare"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare1"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare11"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare2"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare21"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare22"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare23"], false)
+	assert.Equal(t, GlobalVars["StringDigitCompare24"], true)
+	assert.Equal(t, GlobalVars["StringDigitCompare25"], false)
 	assert.Equal(t, GlobalVars["StringDigitCompare3"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare4"], true)
 	assert.Equal(t, GlobalVars["StringDigitCompare5"], false)

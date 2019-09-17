@@ -272,23 +272,61 @@ func (s *Scanner) scanOperator() (tok Token) {
 	ch := s.read()
 	switch ch {
 	case '<':
-		tok = Token{
+		if s.Peek() == '=' {
+			s.read()
+			return Token{
+				Type: LE,
+				Text: "<=",
+			}
+		}
+
+		return Token{
 			Type: LT,
 			Text: "<",
 		}
 	case '>':
-		tok = Token{
+
+		if s.Peek() == '=' {
+			s.read()
+			return Token{
+				Type: GE,
+				Text: ">=",
+			}
+		}
+
+		return Token{
 			Type: GT,
 			Text: ">",
 		}
+
+	case '!':
+		if s.Peek() == '=' {
+			s.read()
+			return Token{
+				Type: NOTEQUALS,
+				Text: "!=",
+			}
+		}
+		fallthrough
+	case '=':
+
+		if s.Peek() == '=' {
+			s.read()
+			return Token{
+				Type: EQUALS,
+				Text: "==",
+			}
+		}
+
+		fallthrough
+
 	default:
-		tok = Token{
+		return Token{
 			Type: int(ch),
 			Text: string(ch),
 		}
 	}
 
-	return tok
 }
 
 func (s *Scanner) unread() {
