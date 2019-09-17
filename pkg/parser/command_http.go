@@ -86,7 +86,6 @@ func (hc *HttpCommand) Run() interface{} {
 				} else {
 					if strings.ToLower(strings.TrimSpace(headerParts[0])) == "host" {
 						req.Host = strings.TrimSpace(headerParts[1])
-						//req.URL.Host = strings.TrimSpace(headerParts[1])
 					}
 					req.Header.Set(strings.TrimSpace(headerParts[0]), strings.TrimSpace(headerParts[1]))
 				}

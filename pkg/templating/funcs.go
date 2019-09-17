@@ -2,6 +2,7 @@ package templating
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
 	"fmt"
 	"html/template"
 	"os/exec"
@@ -15,6 +16,10 @@ var Functions = template.FuncMap{
 	"hash_md5": func(val interface{}) string {
 		data := []byte(fmt.Sprintf("%s", val))
 		return fmt.Sprintf("%x", md5.Sum(data))
+	},
+	"hash_sha256": func(val interface{}) string {
+		data := []byte(fmt.Sprintf("%s", val))
+		return fmt.Sprintf("%x", sha256.Sum256(data))
 	},
 }
 
