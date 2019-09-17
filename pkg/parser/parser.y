@@ -4,6 +4,7 @@ package parser
 import (
     "log"
     "strings"
+    "strconv"
 
 )
 var GlobalVars = map[string]interface{}{}
@@ -317,7 +318,9 @@ any_value:
 
  }
 | FLOAT
-| INTEGER
+| INTEGER {
+	$$,_ = strconv.Atoi($1.(string))
+}
 | boolean_exp {
   $$ = $1
 }

@@ -6,6 +6,7 @@ import __yyfmt__ "fmt"
 
 import (
 	"log"
+	"strconv"
 	"strings"
 )
 
@@ -788,6 +789,10 @@ yynewstate:
 				yyVAL.val = yyS[yypt-0].val
 			}
 
+		}
+	case 40:
+		{
+			yyVAL.val, _ = strconv.Atoi(yyS[yypt-0].val.(string))
 		}
 	case 41:
 		{

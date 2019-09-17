@@ -101,6 +101,7 @@ func runop(left, operator, right interface{}) bool {
 	case "CONTAINS":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "LT", "GT":
+
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			if operator == "GT" {
@@ -108,15 +109,20 @@ func runop(left, operator, right interface{}) bool {
 			} else {
 				return l < r
 			}
-		}
-
-		if oneIsFloat(left, right) {
+		} else if oneIsFloat(left, right) {
 			l, r := convertToFloat(left, right)
 			if operator == "GT" {
 				return l > r
 			} else {
 				return l < r
 			}
+		} else {
+			if operator == "GT" {
+				return floatVal(left) > floatVal(right)
+			} else {
+				return floatVal(left) < floatVal(right)
+			}
+
 		}
 
 	}
