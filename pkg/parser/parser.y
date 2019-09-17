@@ -119,17 +119,17 @@ command_with_condition_opt
 command_with_condition_opt:
 command INTO variable WHEN boolean_exp {
   	//run command put result into variable WHEN boolean_exp is true
-
   	if strings.Contains($3.name,".") {
   		yylex.Error("nested variables are not supported yet")
   	}
 
   	if $5 {
-  	  globalvars[$3.name] = $1.Run()
+  	   globalvars[$3.name] = $1.Run()
   	}
  }
 |
 command INTO variable {
+	//command INTO variable
 	if strings.Contains($3.name,".") {
            yylex.Error("nested variables are not supported yet")
         }
@@ -176,7 +176,8 @@ END WHEN boolean_exp {
 	 }
 	  $$ = &EndCommand{}
 }
-| END boolean_exp {
+|
+END boolean_exp {
  if $2 {
     return -1
  }
@@ -212,7 +213,6 @@ SET variable any_value {
 http_command:
 HTTP http_method string_or_var http_command_params  {
   //call http with header here.
-  fmt.Println($1,$2,$3)
   $$ = &HttpCommand{
 	Method : $2.(string),
 	CommandParams: $4,
@@ -220,7 +220,7 @@ HTTP http_method string_or_var http_command_params  {
   }
 }
 | HTTP http_method string_or_var {
-fmt.Println($1,$2,$3)
+	//simple http command
 	$$ = &HttpCommand{
 		Method : $2.(string),
 		Url: $3.(string),
@@ -302,10 +302,13 @@ GET
 multi_any_value:
 any_value
 {
-    $$ = append($$,$1)
+	//getting a single value from multi_value exp
+    	$$ = append($$,$1)
 }
-| multi_any_value any_value {
-     $$ = append($$,$2)
+|
+multi_any_value any_value {
+	//multi value
+     	$$ = append($$,$2)
 }
 
 any_value:
@@ -323,6 +326,7 @@ any_value:
   $$ = $1
 }
 | variable {
+ //found variable in any_value token
    switch  $1.value.(type) {
        case string :
   	     if isTemplate($1.value.(string)) {
@@ -339,7 +343,6 @@ any_value:
 string_or_var:
 variable {
  //found variable
-
  switch  $1.value.(type) {
      case string :
 	     if isTemplate($1.value.(string)) {
@@ -360,8 +363,6 @@ STRING {
 	 }else{
 		 $$ = $1
  	}
-
- 	fmt.Println($$)
 }
 
 variable: '{''{' IDENTIFIER '}''}'{
@@ -436,8 +437,13 @@ func runop(left, operator,right interface{}) bool {
 
 
 func query(fieldPath string, thevars map[string]interface{}) interface{} {
-	b, _ := json.Marshal(thevars)
-	return gojsonq.New().JSONString(string(b)).Find(fieldPath)
+	b, err := json.Marshal(thevars)
+	if err!=nil{
+		fmt.Println("error finding variable value",err)
+	}
+	jq := gojsonq.New()
+	found:= jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
+	return found
 }
 
 type lex struct {
@@ -475,5 +481,5 @@ func Parse(text string) {
 	 l := &lex{ tokens }
 
 	yyParse(l)
-	fmt.Println(globalvars)
+	fmt.Printf("%+v\n", globalvars)
 }

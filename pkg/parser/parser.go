@@ -616,7 +616,6 @@ yynewstate:
 	case 3:
 		{
 			//run command put result into variable WHEN boolean_exp is true
-
 			if strings.Contains(yyS[yypt-2].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
@@ -627,6 +626,7 @@ yynewstate:
 		}
 	case 4:
 		{
+			//command INTO variable
 			if strings.Contains(yyS[yypt-0].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
@@ -692,7 +692,6 @@ yynewstate:
 	case 21:
 		{
 			//call http with header here.
-			fmt.Println(yyS[yypt-3].val, yyS[yypt-2].val, yyS[yypt-1].val)
 			yyVAL.cmd = &HttpCommand{
 				Method:        yyS[yypt-2].val.(string),
 				CommandParams: yyS[yypt-0].http_command_params,
@@ -701,7 +700,7 @@ yynewstate:
 		}
 	case 22:
 		{
-			fmt.Println(yyS[yypt-2].val, yyS[yypt-1].val, yyS[yypt-0].val)
+			//simple http command
 			yyVAL.cmd = &HttpCommand{
 				Method: yyS[yypt-1].val.(string),
 				Url:    yyS[yypt-0].val.(string),
@@ -777,10 +776,12 @@ yynewstate:
 		}
 	case 36:
 		{
+			//getting a single value from multi_value exp
 			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].val)
 		}
 	case 37:
 		{
+			//multi value
 			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].val)
 		}
 	case 38:
@@ -798,6 +799,7 @@ yynewstate:
 		}
 	case 42:
 		{
+			//found variable in any_value token
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
@@ -812,7 +814,6 @@ yynewstate:
 	case 43:
 		{
 			//found variable
-
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
@@ -833,8 +834,6 @@ yynewstate:
 			} else {
 				yyVAL.val = yyS[yypt-0].val
 			}
-
-			fmt.Println(yyVAL.val)
 		}
 	case 45:
 		{
@@ -907,8 +906,13 @@ func runop(left, operator, right interface{}) bool {
 }
 
 func query(fieldPath string, thevars map[string]interface{}) interface{} {
-	b, _ := json.Marshal(thevars)
-	return gojsonq.New().JSONString(string(b)).Find(fieldPath)
+	b, err := json.Marshal(thevars)
+	if err != nil {
+		fmt.Println("error finding variable value", err)
+	}
+	jq := gojsonq.New()
+	found := jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
+	return found
 }
 
 type lex struct {
@@ -946,5 +950,5 @@ func Parse(text string) {
 	l := &lex{tokens}
 
 	yyParse(l)
-	fmt.Println(globalvars)
+	fmt.Printf("%+v\n", globalvars)
 }
