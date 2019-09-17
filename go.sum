@@ -8,5 +8,7 @@ github.com/pkg/errors v0.8.1 h1:iURUrRGxPUNPdy5/HRSm+Yj6okJ6UtLINN0Q9M4+h3I=
 github.com/pkg/errors v0.8.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/thedevsaddam/gojsonq v2.2.1+incompatible h1:XVW6tZj665MJmpBzSX07IVjGc8nPw8tuPMoM8A6kPMk=
 github.com/thedevsaddam/gojsonq v2.2.1+incompatible/go.mod h1:RBcQaITThgJAAYKH7FNp2onYodRz8URfsuEGpAch0NA=
+github.com/thedevsaddam/gojsonq v2.2.2+incompatible h1:IDBN1FNzhv9p83n8JEnuu0rrlXIVFlf8K9lWuXPJHfI=
+github.com/thedevsaddam/gojsonq v2.2.2+incompatible/go.mod h1:RBcQaITThgJAAYKH7FNp2onYodRz8URfsuEGpAch0NA=
 gotest.tools v2.2.0+incompatible h1:VsBPFP1AI068pPrMxtb/S8Zkgf9xEmTLJjfM+P5UIEo=
 gotest.tools v2.2.0+incompatible/go.mod h1:DsYFclhRJ6vuDpmuTbkuFWG+y2sxOXAzmJt81HFBacw=
