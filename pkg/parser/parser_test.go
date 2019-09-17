@@ -47,7 +47,7 @@ SET {{ StringDigitCompare12 }} {{ Hundred }} GT "999"
 SET {{ WhenFalse }} FALSE WHEN "100" < "101"
 SET {{ SSLRand }} "{{ openssl_rand 32 \"hex\" }}"
 SET {{ SSLRandSize }} "{{ str_len .SSLRand }}"
-SET {{ HashMd5 }} "{{ hash_md5 1 }}"
+SET {{ HashMd5 }} "{{ hash_md5 \"1\" }}"
 SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
 `)
 
@@ -74,7 +74,9 @@ SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
 	assert.Equal(t, GlobalVars["WhenFalse"], false)
 	assert.Equal(t, GlobalVars["SSLRandSize"], "64")
 	assert.Equal(t, len(GlobalVars["HashMd5"].(string)), 32)
+	assert.Equal(t, GlobalVars["HashMd5"].(string), "c4ca4238a0b923820dcc509a6f75849b")
 	assert.Equal(t, len(GlobalVars["Hash256"].(string)), 64)
+	assert.Equal(t, GlobalVars["Hash256"].(string), "08428467285068b426356b9b0d0ae1e80378d9137d5e559e5f8377dbd6dde29f")
 }
 
 func TestParser_Http(t *testing.T) {
@@ -86,6 +88,7 @@ func TestParser_Http(t *testing.T) {
 	Run(Parse(`
 HTTP GET {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
+SET {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }} {{ ServerResult.Json.data }}
 	`))
 
@@ -94,6 +97,7 @@ SET {{ ContentData }} {{ ServerResult.Json.data }}
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
+	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
 
 }
