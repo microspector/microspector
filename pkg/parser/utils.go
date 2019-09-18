@@ -94,7 +94,7 @@ func toVariableName(str string) string {
 }
 
 func runop(left, operator, right interface{}) bool {
-	switch operator {
+	switch strings.ToUpper(operator.(string)) {
 	case "EQUALS", "==":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)

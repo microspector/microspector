@@ -7,7 +7,7 @@ import (
 
 func TestScanner_Set(t *testing.T) {
 
-	l := Parse(`SET {{ Domain }} "microspector.com" 
+	l := Parse(`set {{ Domain }} "microspector.com" 
 SET {{ Domain }} "microspector.com"`)
 
 	assert.Equal(t, len(l.tokens) , 14)

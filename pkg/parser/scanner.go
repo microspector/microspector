@@ -255,11 +255,11 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	}
 
 	keyword := s.readWhile(isLetter)
-	token, ok := keywords[keyword]
+	token, ok := keywords[ strings.ToUpper(keyword)]
 	if ok {
 		return Token{
 			Type: token,
-			Text: keyword,
+			Text: strings.ToUpper(keyword),
 		}
 	}
 	return Token{

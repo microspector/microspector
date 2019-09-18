@@ -26,14 +26,14 @@ func TestParser_Set(t *testing.T) {
 
 	lex := Parse(`
 SET {{ Domain }} "microspector.com"
-SET {{ ContainsTrue }}  "microspector.com" CONTAINS "microspector"
+SET {{ ContainsTrue }}  "microspector.com" contains "microspector"
 SET {{ ContainsFalse }} "microspector.com" CONTAINS "microspectorFAIL"
-SET {{ StartsWithTrue }} "microspector.com" STARTSWITH "microspector"
+SET {{ StartsWithTrue }} "microspector.com" startswith "microspector"
 SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
 SET {{ StringDigitCompare1 }} "100" LT 101 AND 100 == 100
-SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" EQUALS 100) OR (1 != 1)
+SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" equals 100) OR (1 != 1)
 SET {{ StringDigitCompare3 }} "100" <= 101
 SET {{ StringDigitCompare4 }} "100" GT 99
 SET {{ StringDigitCompare5 }} "100" > 99
@@ -42,9 +42,9 @@ SET {{ StringDigitCompare7 }} "100" <= 99
 SET {{ StringDigitCompare8 }} "100" == 100
 SET {{ StringDigitCompare9 }} "100" != 100
 SET {{ StringDigitCompare10 }} 100 GT "99"
-SET {{ StringDigitCompare11 }} {{ Hundred }} GT "99"
+SET {{ StringDigitCompare11 }} {{ Hundred }} gt "99"
 SET {{ StringDigitCompare12 }} {{ Hundred }} GT "999"
-SET {{ WhenFalse }} FALSE WHEN "100" < "101"
+SET {{ WhenFalse }} false when "100" < "101"
 SET {{ SSLRand }} "{{ openssl_rand 32 \"hex\" }}"
 SET {{ SSLRandSize }} "{{ str_len .SSLRand }}"
 SET {{ HashMd5 }} "{{ hash_md5 \"1\" }}"
@@ -86,9 +86,9 @@ func TestParser_Http(t *testing.T) {
 	GlobalVars["ServerMux"] = server.URL
 
 	Run(Parse(`
-HTTP GET {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
+HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
-SET {{ RawContent }} {{ ServerResult.Content }}
+set {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }} {{ ServerResult.Json.data }}
 	`))
 
@@ -107,7 +107,7 @@ func TestParser_End(t *testing.T) {
 SET {{ Var50 }} 49
 END WHEN {{ Var50 }} > 100 #this line won't end the execution
 SET {{ Var50 }} 50
-END
+end
 SET {{ Var50 }} 100
 SET {{ NilVar }} "this should not be assigned"
 `)
