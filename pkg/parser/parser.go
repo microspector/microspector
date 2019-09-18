@@ -920,6 +920,10 @@ func Parse(text string) *lex {
 	return l
 }
 
+func Reset() {
+	GlobalVars = map[string]interface{}{}
+}
+
 func Run(l *lex) {
 	yyParse(l)
 }
