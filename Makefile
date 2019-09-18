@@ -3,7 +3,7 @@ export GO111MODULE=on
 VERSION := $(shell git describe --always --long --dirty)
 
 buildwin: yacc
-	GOOS=windows go build -o ${PWD}/bin/microspector.exe ${PWD}/cmd
+	GOOS=windows go build -i -v -o ${PWD}/bin/microspector.exe -ldflags="-X main.version=${VERSION}" ${PWD}/cmd
 
 build: yacc
 	go build -i -v -o $(PWD)/bin/microspector -ldflags="-X main.version=${VERSION}" ${PWD}/cmd
