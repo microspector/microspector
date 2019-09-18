@@ -345,7 +345,7 @@ func (s *Scanner) read() rune {
 
 var eof = rune(0)
 
-func isQuote(ch rune) bool            { return ch == '"' || ch == '\'' }
+func isQuote(ch rune) bool            { return ch == '"' || ch == '\'' || ch == '`' }
 func needsEscape(ch, delim rune) bool { return ch == delim || ch == 'n' || ch == 't' || ch == '\\' || ch == 'r' }
 func isSpace(ch rune) bool            { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
 func isEndOfLine(ch rune) bool        { return ch == '\r' || ch == '\n' }

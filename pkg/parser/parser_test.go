@@ -151,14 +151,18 @@ SET {{ SingleContainsDouble }}  '"this is a string "" with double quotes"'
 SET {{ DoubleContainsSingle }}  "'this is a string '' with single quotes'"
 SET {{ SingleContainsSingle }}  '\'this is a string \'\' with single includes quotes\''
 SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
-`)
+SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
+`+" SET {{ BackTicks }} `\"\"this is' a back tick yeah\"\"` ")
 
 	Run(lex)
+
+
 	assert.Equal(t, GlobalVars["SingleQuoted50"], "50")
 	assert.Equal(t, GlobalVars["DoubleQuoted50"], "50")
 	assert.Equal(t, GlobalVars["SingleContainsDouble"], `"this is a string "" with double quotes"`)
 	assert.Equal(t, GlobalVars["DoubleContainsSingle"], `'this is a string '' with single quotes'`)
 	assert.Equal(t, GlobalVars["SingleContainsSingle"], `'this is a string '' with single includes quotes'`)
 	assert.Equal(t, GlobalVars["DoubleContainsDouble"], `"this is a string "" with double includes quotes"`)
+	assert.Equal(t, GlobalVars["BackTicks"], `""this is' a back tick yeah""`)
 
 }
