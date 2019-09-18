@@ -13,6 +13,8 @@ import (
 	"time"
 )
 
+var Version = "development"
+
 func executeTemplate(text string, state map[string]interface{}) (string, error) {
 	t := template.New("microspector").Funcs(templating.Functions)
 	_, err := t.Parse(text)

@@ -10,8 +10,6 @@ import (
 	"path"
 )
 
-var version = "development"
-
 func main() {
 
 	var file, folder string
@@ -26,7 +24,7 @@ func main() {
 	folder = *fo
 
 	if *v {
-		fmt.Println(version)
+		fmt.Println(parser.Version)
 		os.Exit(0)
 	}
 
