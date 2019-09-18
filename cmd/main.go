@@ -10,17 +10,25 @@ import (
 	"path"
 )
 
+var version = "development"
+
 func main() {
 
 	var file, folder string
 	var err error
 
-	var fi = flag.String("file", "", "Task file path")
-	var fo = flag.String("folder", "", "Tasks folder path")
+	var fi = flag.String("file", "", "task file path")
+	var fo = flag.String("folder", "", "tasks folder path")
+	var v = flag.Bool("version", false, "prints version")
 	flag.Parse()
 
 	file = *fi
 	folder = *fo
+
+	if *v {
+		fmt.Println(version)
+		os.Exit(0)
+	}
 
 	if file == "" && folder == "" {
 		flag.PrintDefaults()
