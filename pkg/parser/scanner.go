@@ -194,7 +194,7 @@ func (s *Scanner) skipEndOfLine() {
 */
 func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 	var buf bytes.Buffer
-	buf.WriteRune(s.read())
+	s.read() //consume delimiter
 	for {
 		ch := s.read()
 
@@ -224,7 +224,7 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 		}
 
 		if ch == delimiter {
-			buf.WriteRune(ch)
+			s.read() //consume delimiter
 			break
 		}
 
@@ -233,7 +233,7 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 
 	tok = Token{
 		Type: STRING,
-		Text: strings.Trim(buf.String(), string(delimiter)),
+		Text: buf.String(),
 	}
 
 	return tok

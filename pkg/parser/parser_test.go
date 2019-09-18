@@ -142,3 +142,23 @@ MUST {{ Var50 }} < 100
 	assert.Equal(t, State.Must.Succeeded, 1)
 
 }
+
+func TestParser_QuotedString(t *testing.T) {
+	lex := Parse(`
+SET {{ SingleQuoted50 }} '50'
+SET {{ DoubleQuoted50 }} "50"
+SET {{ SingleContainsDouble }}  '"this is a string "" with double quotes"'
+SET {{ DoubleContainsSingle }}  "'this is a string '' with single quotes'"
+SET {{ SingleContainsSingle }}  '\'this is a string \'\' with single includes quotes\''
+SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
+`)
+
+	Run(lex)
+	assert.Equal(t, GlobalVars["SingleQuoted50"], "50")
+	assert.Equal(t, GlobalVars["DoubleQuoted50"], "50")
+	assert.Equal(t, GlobalVars["SingleContainsDouble"], `"this is a string "" with double quotes"`)
+	assert.Equal(t, GlobalVars["DoubleContainsSingle"], `'this is a string '' with single quotes'`)
+	assert.Equal(t, GlobalVars["SingleContainsSingle"], `'this is a string '' with single includes quotes'`)
+	assert.Equal(t, GlobalVars["DoubleContainsDouble"], `"this is a string "" with double includes quotes"`)
+
+}
