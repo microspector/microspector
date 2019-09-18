@@ -13,7 +13,6 @@ type SetCommand struct {
 func (hc *SetCommand) Run() interface{} {
 	if strings.Contains(hc.Name, ".") {
 		panic(fmt.Errorf("nested variables are not supported yet"))
-
 	}
 
 	GlobalVars[hc.Name] = hc.Value

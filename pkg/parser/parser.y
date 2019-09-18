@@ -48,7 +48,7 @@ OPTIONS
 TRACE
 PATCH
 HEADER
-QUERY
+BODY
 
 //condition tokens
 %token <val>
@@ -188,18 +188,26 @@ END boolean_exp {
 }
 assert_command:
 ASSERT boolean_exp {
-  $$ = &AssertCommand{}
+	if !$2 {
+		//TODO: assert failed here
+	}
+ 	 $$ = &AssertCommand{}
 }
 
 must_command:
 MUST boolean_exp {
-	//if $2 is false, fail
+	if !$2{
+		//TODO: a must failed here
+	}
+
 	$$ = &MustCommand{}
 }
 
 should_command:
 SHOULD boolean_exp {
-	//if $2 is false, write a warning
+	if !$2{
+        	//TODO: a should failed here
+        }
 	$$ = &ShouldCommand{}
 }
 
@@ -261,7 +269,7 @@ HEADER STRING {
 	}
 }
 |
-QUERY STRING {
+BODY STRING {
 	//adding query param
      	$$ = HttpCommandParam{
         	 	ParamName : $1.(string),

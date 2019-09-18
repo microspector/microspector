@@ -16,7 +16,7 @@ import (
 
 type HttpCommand struct {
 	Method        string
-	CommandParams []HttpCommandParam //HEADER, QUERY etc.
+	CommandParams []HttpCommandParam //HEADER, BODY etc.
 	Url           string
 }
 
@@ -87,13 +87,12 @@ func (hc *HttpCommand) Run() interface{} {
 					}
 					req.Header.Set(strings.TrimSpace(headerParts[0]), strings.TrimSpace(headerParts[1]))
 				}
-
 			}
 
-		case "QUERY":
-
-			//how should we format params? query params / post params?
-
+		case "BODY":
+			if req.Method == http.MethodPost || req.Method == http.MethodPut || req.Method == http.MethodPatch {
+				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue))
+			}
 		default:
 			fmt.Println("Unknown http command param ", commandParam.ParamName)
 		}

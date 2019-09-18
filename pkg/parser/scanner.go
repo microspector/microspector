@@ -30,7 +30,7 @@ var keywords = map[string]int{
 	"IDENTIFIER": IDENTIFIER,
 	"STRING":     STRING,
 	"KEYWORD":    KEYWORD,
-	"QUERY":      QUERY,
+	"BODY":      BODY,
 	"WHEN":       WHEN,
 	"TRUE":       TRUE,
 	"FALSE":      FALSE,

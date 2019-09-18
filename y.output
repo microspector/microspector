@@ -377,13 +377,13 @@ state 28 // HTTP CONNECT STRING [$end]
 
     $end    reduce using rule 24 (http_command)
     ASSERT  reduce using rule 24 (http_command)
+    BODY    shift, and goto state 39
     DEBUG   reduce using rule 24 (http_command)
     END     reduce using rule 24 (http_command)
     HEADER  shift, and goto state 38
     HTTP    reduce using rule 24 (http_command)
     INTO    reduce using rule 24 (http_command)
     MUST    reduce using rule 24 (http_command)
-    QUERY   shift, and goto state 39
     SET     reduce using rule 24 (http_command)
     SHOULD  reduce using rule 24 (http_command)
     WHEN    reduce using rule 24 (http_command)
@@ -393,13 +393,14 @@ state 28 // HTTP CONNECT STRING [$end]
 
 state 29 // DEBUG '{' '{' IDENTIFIER '}' '}' [$end]
 
-   43 string_or_var: variable .  [$end, ')', '{', AND, ASSERT, CONTAINS, DEBUG, END, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, WHEN]
+   43 string_or_var: variable .  [$end, ')', '{', AND, ASSERT, BODY, CONTAINS, DEBUG, END, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
 
     $end        reduce using rule 43 (string_or_var)
     ')'         reduce using rule 43 (string_or_var)
     '{'         reduce using rule 43 (string_or_var)
     AND         reduce using rule 43 (string_or_var)
     ASSERT      reduce using rule 43 (string_or_var)
+    BODY        reduce using rule 43 (string_or_var)
     CONTAINS    reduce using rule 43 (string_or_var)
     DEBUG       reduce using rule 43 (string_or_var)
     END         reduce using rule 43 (string_or_var)
@@ -416,7 +417,6 @@ state 29 // DEBUG '{' '{' IDENTIFIER '}' '}' [$end]
     MUST        reduce using rule 43 (string_or_var)
     NOTEQUALS   reduce using rule 43 (string_or_var)
     OR          reduce using rule 43 (string_or_var)
-    QUERY       reduce using rule 43 (string_or_var)
     SET         reduce using rule 43 (string_or_var)
     SHOULD      reduce using rule 43 (string_or_var)
     STARTSWITH  reduce using rule 43 (string_or_var)
@@ -425,13 +425,14 @@ state 29 // DEBUG '{' '{' IDENTIFIER '}' '}' [$end]
 
 state 30 // MUST STRING
 
-   44 string_or_var: STRING .  [$end, ')', '{', AND, ASSERT, CONTAINS, DEBUG, END, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, WHEN]
+   44 string_or_var: STRING .  [$end, ')', '{', AND, ASSERT, BODY, CONTAINS, DEBUG, END, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
 
     $end        reduce using rule 44 (string_or_var)
     ')'         reduce using rule 44 (string_or_var)
     '{'         reduce using rule 44 (string_or_var)
     AND         reduce using rule 44 (string_or_var)
     ASSERT      reduce using rule 44 (string_or_var)
+    BODY        reduce using rule 44 (string_or_var)
     CONTAINS    reduce using rule 44 (string_or_var)
     DEBUG       reduce using rule 44 (string_or_var)
     END         reduce using rule 44 (string_or_var)
@@ -448,7 +449,6 @@ state 30 // MUST STRING
     MUST        reduce using rule 44 (string_or_var)
     NOTEQUALS   reduce using rule 44 (string_or_var)
     OR          reduce using rule 44 (string_or_var)
-    QUERY       reduce using rule 44 (string_or_var)
     SET         reduce using rule 44 (string_or_var)
     SHOULD      reduce using rule 44 (string_or_var)
     STARTSWITH  reduce using rule 44 (string_or_var)
@@ -481,7 +481,7 @@ state 34 // SET '{' '{' IDENTIFIER '}'
 
 state 35 // SET '{' '{' IDENTIFIER '}' '}'
 
-   45 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '(', ')', '{', AND, ASSERT, CONTAINS, DEBUG, END, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, QUERY, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
+   45 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '(', ')', '{', AND, ASSERT, BODY, CONTAINS, DEBUG, END, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MUST, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, TRUE, WHEN]
 
     $end        reduce using rule 45 (variable)
     '('         reduce using rule 45 (variable)
@@ -489,6 +489,7 @@ state 35 // SET '{' '{' IDENTIFIER '}' '}'
     '{'         reduce using rule 45 (variable)
     AND         reduce using rule 45 (variable)
     ASSERT      reduce using rule 45 (variable)
+    BODY        reduce using rule 45 (variable)
     CONTAINS    reduce using rule 45 (variable)
     DEBUG       reduce using rule 45 (variable)
     END         reduce using rule 45 (variable)
@@ -506,7 +507,6 @@ state 35 // SET '{' '{' IDENTIFIER '}' '}'
     MUST        reduce using rule 45 (variable)
     NOTEQUALS   reduce using rule 45 (variable)
     OR          reduce using rule 45 (variable)
-    QUERY       reduce using rule 45 (variable)
     SET         reduce using rule 45 (variable)
     SHOULD      reduce using rule 45 (variable)
     STARTSWITH  reduce using rule 45 (variable)
@@ -514,39 +514,39 @@ state 35 // SET '{' '{' IDENTIFIER '}' '}'
     TRUE        reduce using rule 45 (variable)
     WHEN        reduce using rule 45 (variable)
 
-state 36 // HTTP CONNECT STRING HEADER STRING [$end]
+state 36 // HTTP CONNECT STRING BODY STRING [$end]
 
    23 http_command: HTTP http_method string_or_var http_command_params .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
    26 http_command_params: http_command_params . http_command_param
 
     $end    reduce using rule 23 (http_command)
     ASSERT  reduce using rule 23 (http_command)
+    BODY    shift, and goto state 39
     DEBUG   reduce using rule 23 (http_command)
     END     reduce using rule 23 (http_command)
     HEADER  shift, and goto state 38
     HTTP    reduce using rule 23 (http_command)
     INTO    reduce using rule 23 (http_command)
     MUST    reduce using rule 23 (http_command)
-    QUERY   shift, and goto state 39
     SET     reduce using rule 23 (http_command)
     SHOULD  reduce using rule 23 (http_command)
     WHEN    reduce using rule 23 (http_command)
 
     http_command_param  goto state 42
 
-state 37 // HTTP CONNECT STRING HEADER STRING [$end]
+state 37 // HTTP CONNECT STRING BODY STRING [$end]
 
-   25 http_command_params: http_command_param .  [$end, ASSERT, DEBUG, END, HEADER, HTTP, INTO, MUST, QUERY, SET, SHOULD, WHEN]
+   25 http_command_params: http_command_param .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 25 (http_command_params)
     ASSERT  reduce using rule 25 (http_command_params)
+    BODY    reduce using rule 25 (http_command_params)
     DEBUG   reduce using rule 25 (http_command_params)
     END     reduce using rule 25 (http_command_params)
     HEADER  reduce using rule 25 (http_command_params)
     HTTP    reduce using rule 25 (http_command_params)
     INTO    reduce using rule 25 (http_command_params)
     MUST    reduce using rule 25 (http_command_params)
-    QUERY   reduce using rule 25 (http_command_params)
     SET     reduce using rule 25 (http_command_params)
     SHOULD  reduce using rule 25 (http_command_params)
     WHEN    reduce using rule 25 (http_command_params)
@@ -557,59 +557,59 @@ state 38 // HTTP CONNECT STRING HEADER
 
     STRING  shift, and goto state 41
 
-state 39 // HTTP CONNECT STRING QUERY
+state 39 // HTTP CONNECT STRING BODY
 
-   28 http_command_param: QUERY . STRING
+   28 http_command_param: BODY . STRING
 
     STRING  shift, and goto state 40
 
-state 40 // HTTP CONNECT STRING QUERY STRING
+state 40 // HTTP CONNECT STRING BODY STRING
 
-   28 http_command_param: QUERY STRING .  [$end, ASSERT, DEBUG, END, HEADER, HTTP, INTO, MUST, QUERY, SET, SHOULD, WHEN]
+   28 http_command_param: BODY STRING .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 28 (http_command_param)
     ASSERT  reduce using rule 28 (http_command_param)
+    BODY    reduce using rule 28 (http_command_param)
     DEBUG   reduce using rule 28 (http_command_param)
     END     reduce using rule 28 (http_command_param)
     HEADER  reduce using rule 28 (http_command_param)
     HTTP    reduce using rule 28 (http_command_param)
     INTO    reduce using rule 28 (http_command_param)
     MUST    reduce using rule 28 (http_command_param)
-    QUERY   reduce using rule 28 (http_command_param)
     SET     reduce using rule 28 (http_command_param)
     SHOULD  reduce using rule 28 (http_command_param)
     WHEN    reduce using rule 28 (http_command_param)
 
 state 41 // HTTP CONNECT STRING HEADER STRING
 
-   27 http_command_param: HEADER STRING .  [$end, ASSERT, DEBUG, END, HEADER, HTTP, INTO, MUST, QUERY, SET, SHOULD, WHEN]
+   27 http_command_param: HEADER STRING .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 27 (http_command_param)
     ASSERT  reduce using rule 27 (http_command_param)
+    BODY    reduce using rule 27 (http_command_param)
     DEBUG   reduce using rule 27 (http_command_param)
     END     reduce using rule 27 (http_command_param)
     HEADER  reduce using rule 27 (http_command_param)
     HTTP    reduce using rule 27 (http_command_param)
     INTO    reduce using rule 27 (http_command_param)
     MUST    reduce using rule 27 (http_command_param)
-    QUERY   reduce using rule 27 (http_command_param)
     SET     reduce using rule 27 (http_command_param)
     SHOULD  reduce using rule 27 (http_command_param)
     WHEN    reduce using rule 27 (http_command_param)
 
-state 42 // HTTP CONNECT STRING HEADER STRING HEADER STRING [$end]
+state 42 // HTTP CONNECT STRING BODY STRING BODY STRING [$end]
 
-   26 http_command_params: http_command_params http_command_param .  [$end, ASSERT, DEBUG, END, HEADER, HTTP, INTO, MUST, QUERY, SET, SHOULD, WHEN]
+   26 http_command_params: http_command_params http_command_param .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 26 (http_command_params)
     ASSERT  reduce using rule 26 (http_command_params)
+    BODY    reduce using rule 26 (http_command_params)
     DEBUG   reduce using rule 26 (http_command_params)
     END     reduce using rule 26 (http_command_params)
     HEADER  reduce using rule 26 (http_command_params)
     HTTP    reduce using rule 26 (http_command_params)
     INTO    reduce using rule 26 (http_command_params)
     MUST    reduce using rule 26 (http_command_params)
-    QUERY   reduce using rule 26 (http_command_params)
     SET     reduce using rule 26 (http_command_params)
     SHOULD  reduce using rule 26 (http_command_params)
     WHEN    reduce using rule 26 (http_command_params)
