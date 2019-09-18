@@ -61,8 +61,6 @@ func NewFromResponse(response *http.Response) HttpResult {
 
 func (hc *HttpCommand) Run() interface{} {
 
-	fmt.Println(hc)
-
 	_, urlError := url.Parse(hc.Url)
 
 	if urlError != nil {
