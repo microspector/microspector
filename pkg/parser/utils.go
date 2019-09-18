@@ -193,7 +193,7 @@ func intVal(obj interface{}) int {
 	case int, int64, int32:
 		return obj.(int)
 	case float32, float64:
-		return obj.(int)
+		return int(obj.(float64))
 	default:
 		f, _err := strconv.Atoi(fmt.Sprintf("%s", obj))
 		if _err == nil {
