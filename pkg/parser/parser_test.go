@@ -49,8 +49,6 @@ SET {{ SSLRand }} "{{ openssl_rand 32 \"hex\" }}"
 SET {{ SSLRandSize }} "{{ str_len .SSLRand }}"
 SET {{ HashMd5 }} "{{ hash_md5 \"1\" }}"
 SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
-END
-SET {{ NilVar }} "this should not be assigned"
 `)
 
 	Run(lex)
@@ -79,7 +77,6 @@ SET {{ NilVar }} "this should not be assigned"
 	assert.Equal(t, GlobalVars["HashMd5"].(string), "c4ca4238a0b923820dcc509a6f75849b")
 	assert.Equal(t, len(GlobalVars["Hash256"].(string)), 64)
 	assert.Equal(t, GlobalVars["Hash256"].(string), "08428467285068b426356b9b0d0ae1e80378d9137d5e559e5f8377dbd6dde29f")
-	assert.Equal(t, GlobalVars["NilVar"], nil)
 }
 
 func TestParser_Http(t *testing.T) {
@@ -103,4 +100,20 @@ SET {{ ContentData }} {{ ServerResult.Json.data }}
 	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
 
+}
+
+func TestParser_End(t *testing.T) {
+	lex := Parse(`
+SET {{ Var50 }} 49
+END WHEN {{ Var50 }} > 100 #this line won't end the execution
+SET {{ Var50 }} 50
+END
+SET {{ Var50 }} 100
+SET {{ NilVar }} "this should not be assigned"
+`)
+
+	Run(lex)
+
+	assert.Equal(t, GlobalVars["Var50"], 50)
+	assert.Equal(t, GlobalVars["NilVar"], nil)
 }
