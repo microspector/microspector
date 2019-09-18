@@ -25,14 +25,14 @@ func setupTest() *httptest.Server {
 func TestParser_Set(t *testing.T) {
 
 	lex := Parse(`
-SET {{ Domain }} "microspector.com"
+SET {{ Domain }} 'microspector.com'
 SET {{ ContainsTrue }}  "microspector.com" contains "microspector"
 SET {{ ContainsFalse }} "microspector.com" CONTAINS "microspectorFAIL"
 SET {{ StartsWithTrue }} "microspector.com" startswith "microspector"
 SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
-SET {{ StringDigitCompare1 }} "100" LT 101 AND 100 == 100
+SET {{ StringDigitCompare1 }} '100' LT 101 AND 100 == 100
 SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" equals 100) OR (1 != 1)
 SET {{ StringDigitCompare3 }} "100" <= 101
 SET {{ StringDigitCompare4 }} "100" GT 99

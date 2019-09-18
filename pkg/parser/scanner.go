@@ -30,7 +30,7 @@ var keywords = map[string]int{
 	"IDENTIFIER": IDENTIFIER,
 	"STRING":     STRING,
 	"KEYWORD":    KEYWORD,
-	"BODY":      BODY,
+	"BODY":       BODY,
 	"WHEN":       WHEN,
 	"TRUE":       TRUE,
 	"FALSE":      FALSE,
@@ -97,8 +97,8 @@ func (s *Scanner) getNextToken() Token {
 		return s.scanDigit()
 	} else if isLetter(ch) {
 		return s.scanKeyword()
-	} else if isDoubleQuote(ch) {
-		return s.scanQuotedString()
+	} else if isQuote(ch) {
+		return s.scanQuotedString(ch)
 	} else if ch == eof {
 		return Token{
 			Type: EOF,
@@ -192,7 +192,7 @@ func (s *Scanner) skipEndOfLine() {
 \t – To add tab space.
 \r – For carriage return.
 */
-func (s *Scanner) scanQuotedString() (tok Token) {
+func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 	var buf bytes.Buffer
 	buf.WriteRune(s.read())
 	for {
@@ -203,7 +203,7 @@ func (s *Scanner) scanQuotedString() (tok Token) {
 		}
 
 		if ch == '\\' {
-			if needsEscape(s.Peek()) {
+			if needsEscape(s.Peek(), delimiter) {
 				switch s.read() {
 				case 'n':
 					buf.WriteRune('\n')
@@ -213,8 +213,8 @@ func (s *Scanner) scanQuotedString() (tok Token) {
 					buf.WriteRune('\t')
 				case '\\':
 					buf.WriteRune('\\')
-				case '"':
-					buf.WriteRune('"')
+				case delimiter:
+					buf.WriteRune(delimiter)
 				}
 
 				continue
@@ -223,7 +223,7 @@ func (s *Scanner) scanQuotedString() (tok Token) {
 			}
 		}
 
-		if isDoubleQuote(ch) {
+		if ch == delimiter {
 			buf.WriteRune(ch)
 			break
 		}
@@ -233,7 +233,7 @@ func (s *Scanner) scanQuotedString() (tok Token) {
 
 	tok = Token{
 		Type: STRING,
-		Text: strings.Trim(buf.String(), "\""),
+		Text: strings.Trim(buf.String(), string(delimiter)),
 	}
 
 	return tok
@@ -345,14 +345,14 @@ func (s *Scanner) read() rune {
 
 var eof = rune(0)
 
-func isDoubleQuote(ch rune) bool    { return ch == '"' }
-func needsEscape(ch rune) bool      { return ch == 'n' || ch == 't' || ch == '"' || ch == '\\' || ch == 'r' }
-func isSpace(ch rune) bool          { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
-func isEndOfLine(ch rune) bool      { return ch == '\r' || ch == '\n' }
-func isDigit(ch rune) bool          { return unicode.IsDigit(ch) }
-func isLetter(ch rune) bool         { return ch == '_' || unicode.IsLetter(ch) }
-func isAlphaNumeric(ch rune) bool   { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isIdentifierChar(ch rune) bool { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isOperator(ch rune) bool       { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
-func isVarStart(ch rune) bool       { return ch == '{' }
-func isVarEnd(ch rune) bool         { return ch == '}' }
+func isQuote(ch rune) bool            { return ch == '"' || ch == '\'' }
+func needsEscape(ch, delim rune) bool { return ch == delim || ch == 'n' || ch == 't' || ch == '\\' || ch == 'r' }
+func isSpace(ch rune) bool            { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
+func isEndOfLine(ch rune) bool        { return ch == '\r' || ch == '\n' }
+func isDigit(ch rune) bool            { return unicode.IsDigit(ch) }
+func isLetter(ch rune) bool           { return ch == '_' || unicode.IsLetter(ch) }
+func isAlphaNumeric(ch rune) bool     { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isIdentifierChar(ch rune) bool   { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isOperator(ch rune) bool         { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
+func isVarStart(ch rune) bool         { return ch == '{' }
+func isVarEnd(ch rune) bool           { return ch == '}' }
