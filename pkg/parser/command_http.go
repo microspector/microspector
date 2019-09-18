@@ -60,7 +60,6 @@ func NewFromResponse(response *http.Response) HttpResult {
 }
 
 func (hc *HttpCommand) Run() interface{} {
-
 	_, urlError := url.Parse(hc.Url)
 
 	if urlError != nil {
@@ -112,7 +111,7 @@ func (hc *HttpCommand) Run() interface{} {
 			},
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				// redirect all connections to host specified in url
-				addr = req.URL.Host
+				addr = strings.Split(req.URL.Host, ":")[0] + addr[strings.LastIndex(addr, ":"):]
 				return dialer.DialContext(ctx, network, addr)
 			},
 		},
