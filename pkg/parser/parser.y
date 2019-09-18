@@ -189,25 +189,31 @@ END boolean_exp {
 assert_command:
 ASSERT boolean_exp {
 	if !$2 {
-		//TODO: assert failed here
+		State.Assertion.Failed++
+	}else{
+		State.Assertion.Succeeded++
 	}
  	 $$ = &AssertCommand{}
 }
 
 must_command:
 MUST boolean_exp {
-	if !$2{
-		//TODO: a must failed here
-	}
+	if !$2 {
+        		State.Must.Failed++
+        	}else{
+        		State.Must.Succeeded++
+        	}
 
 	$$ = &MustCommand{}
 }
 
 should_command:
 SHOULD boolean_exp {
-	if !$2{
-        	//TODO: a should failed here
-        }
+	if !$2 {
+        		State.Should.Failed++
+        	}else{
+        		State.Should.Succeeded++
+        	}
 	$$ = &ShouldCommand{}
 }
 
@@ -450,6 +456,7 @@ func Parse(text string) *lex {
 
 func Reset(){
    	GlobalVars = map[string]interface{}{}
+   	State = NewStats()
 }
 
 func Run(l *lex){

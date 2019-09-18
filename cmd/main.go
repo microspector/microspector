@@ -18,6 +18,7 @@ func main() {
 	var fi = flag.String("file", "", "task file path")
 	var fo = flag.String("folder", "", "tasks folder path")
 	var v = flag.Bool("version", false, "prints version")
+	var vv = flag.Bool("verbose", false, "print out logs")
 	flag.Parse()
 
 	file = *fi
@@ -26,6 +27,10 @@ func main() {
 	if *v {
 		fmt.Println(parser.Version)
 		os.Exit(0)
+	}
+
+	if *vv {
+		//we will enable logs here
 	}
 
 	if file == "" && folder == "" {
@@ -62,6 +67,7 @@ func main() {
 		}
 
 		parser.Run(parser.Parse(string(bytes)))
+		parser.PrintStats()
 		parser.Reset()
 
 	}

@@ -684,14 +684,18 @@ yynewstate:
 	case 18:
 		{
 			if !yyS[yypt-0].boolean {
-				//TODO: assert failed here
+				State.Assertion.Failed++
+			} else {
+				State.Assertion.Succeeded++
 			}
 			yyVAL.cmd = &AssertCommand{}
 		}
 	case 19:
 		{
 			if !yyS[yypt-0].boolean {
-				//TODO: a must failed here
+				State.Must.Failed++
+			} else {
+				State.Must.Succeeded++
 			}
 
 			yyVAL.cmd = &MustCommand{}
@@ -699,7 +703,9 @@ yynewstate:
 	case 20:
 		{
 			if !yyS[yypt-0].boolean {
-				//TODO: a should failed here
+				State.Should.Failed++
+			} else {
+				State.Should.Succeeded++
 			}
 			yyVAL.cmd = &ShouldCommand{}
 		}
@@ -930,6 +936,7 @@ func Parse(text string) *lex {
 
 func Reset() {
 	GlobalVars = map[string]interface{}{}
+	State = NewStats()
 }
 
 func Run(l *lex) {
