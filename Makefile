@@ -1,11 +1,11 @@
 export PWD=$(shell pwd)
 export GO111MODULE=on
 
-build: parser
-	go build -o $(PWD)/bin/microspector $(PWD)/cmd
+buildwin: yacc
+	GOOS=windows go build -o $(PWD)/bin/microspector.exe $(PWD)/cmd
 
-parser: deps
-	$(GOPATH)/bin/pigeon ./pkg/parser/msf.peg  > ./pkg/parser/msf.go
+build: yacc
+	go build -o $(PWD)/bin/microspector $(PWD)/cmd
 
 run: yacc
 	go run ./cmd --file="tasks/main.msf"
