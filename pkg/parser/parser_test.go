@@ -80,6 +80,8 @@ SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
 }
 
 func TestParser_Http(t *testing.T) {
+	Reset()
+
 	server := setupTest()
 	defer server.Close()
 
@@ -90,6 +92,8 @@ HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ Serve
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
 set {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }} {{ ServerResult.Json.data }}
+HTTP get "https://microspector.com/test.json" INTO {{ MResult }}
+MUST {{ MResult.Json.boolean }} equals true
 	`))
 
 	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
@@ -99,10 +103,13 @@ SET {{ ContentData }} {{ ServerResult.Json.data }}
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
 	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
+	assert.Equal(t, State.Must.Succeeded, 1)
 
 }
 
 func TestParser_End(t *testing.T) {
+	Reset()
+
 	lex := Parse(`
 SET {{ Var50 }} 49
 END WHEN {{ Var50 }} > 100 #this line won't end the execution
