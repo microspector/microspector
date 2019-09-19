@@ -126,6 +126,7 @@ SET {{ Var50 }} 49
 SET {{ VarTrue }} true
 SET {{ VarFalse }} true AND false
 MUST "{{ .VarFalse }}" EQUALS "false"
+MUST {{ VarFalse }} EQUALS false
 `)
 
 

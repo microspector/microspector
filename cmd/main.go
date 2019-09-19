@@ -65,8 +65,9 @@ func main() {
 			fmt.Println(fmt.Errorf("error reading file: %s", err))
 			os.Exit(1)
 		}
-
-		parser.Run(parser.Parse(string(bytes)))
+		lex := parser.Parse(string(bytes))
+		fmt.Printf("%+v\n",lex)
+		parser.Run(lex)
 		parser.PrintStats()
 		parser.Reset()
 

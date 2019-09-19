@@ -156,7 +156,8 @@ command_with_condition_opt	:
 					}
 				}
 				|
-				command {
+				command
+				{
 					//just run the command
 					$1.Run()
 					//run command without condition
@@ -183,26 +184,30 @@ debug_command		:
 			}
 
 end_command		:
-			END WHEN boolean_exp {
+			END WHEN boolean_exp
+			{
 				if $3 {
 				   return -1
 				 }
-				  $$ = &EndCommand{}
+
+				$$ = &EndCommand{}
 			}
 			|
-			END boolean_exp {
-			 if $2 {
-			    return -1
-			 }
+			END boolean_exp
+			{
+				 if $2 {
+				    return -1
+				 }
 
-			 $$ = &EndCommand{}
+				 $$ = &EndCommand{}
 			}
 			| END {
 				return -1
 			}
 
 assert_command		:
-			ASSERT boolean_exp {
+			ASSERT boolean_exp
+			{
 				if !$2 {
 					State.Assertion.Failed++
 				}else{
@@ -214,7 +219,7 @@ assert_command		:
 must_command		:
 			MUST boolean_exp
 			{
-				if !IsTrue($2) {
+				if !$2 {
 						State.Must.Failed++
 					}else{
 						State.Must.Succeeded++
@@ -226,7 +231,8 @@ must_command		:
 
 
 should_command		:
-			SHOULD boolean_exp {
+			SHOULD boolean_exp
+			{
 				if !$2 {
 						State.Should.Failed++
 					}else{
@@ -292,7 +298,8 @@ http_command_params	:
 			}
 
 http_command_param	:
-			HEADER STRING {
+			HEADER STRING
+			{
 				//addin header
 				$$ = HttpCommandParam{
 					ParamName : $1.(string),
@@ -379,27 +386,12 @@ operator	:
 
 
 boolean_exp	:
+		true_false
+		|
 		'(' boolean_exp ')'
 		{
 		 	//boolean_ex: '(' boolean_exp ')'
 		  	$$ = $2
-		}
-		|
-		true_false
-		{
-			$$ = $1
-		}
-		|
-		boolean_exp AND boolean_exp
-		{
-			//boolean_ex: boolean_exp AND boolean_exp
-		   	$$ = IsTrue($1) && IsTrue($3)
-		}
-		|
-		boolean_exp OR boolean_exp
-		{
-			//boolean_ex: boolean_exp OR boolean_exp
-		   	$$ = IsTrue($1) || IsTrue($3)
 		}
 		|
 		any_value operator any_value
@@ -439,6 +431,18 @@ expr_opr	:
 		{
 			operator_result := runop($1,$2,$3)
 			 $$ = operator_result
+		}
+		|
+		boolean_exp AND boolean_exp
+		{
+			//boolean_ex: boolean_exp AND boolean_exp
+			$$ = $1 && $3
+		}
+		|
+		boolean_exp OR boolean_exp
+		{
+			//boolean_ex: boolean_exp OR boolean_exp
+			$$ = $1 || $3
 		}
 
 // arithmetic things
@@ -495,6 +499,9 @@ func (l *lex) Error(e string) {
 
 //TODO: use channels here.
 func Parse(text string) *lex {
+
+	SetStateErrors()
+
 	s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
 	tokens := make(Tokens,0)
 
