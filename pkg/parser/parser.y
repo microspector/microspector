@@ -77,11 +77,11 @@ IDENTIFIER
 
 %type <variable> variable
 %type <val> http_method operator
-%type <val> any_value string_or_var
+%type <val> any_value
 %type <vals> multi_any_value
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
-%type <boolean> boolean_exp expr_opr
+%type <boolean> boolean_exp expr_opr true_false
 
 
 //arithmetic things
@@ -175,7 +175,8 @@ command			:
 
 
 debug_command		:
-			DEBUG multi_any_value {
+			DEBUG multi_any_value
+			{
 			  $$ = &DebugCommand{
 				Values : $2,
 			   }
@@ -211,8 +212,9 @@ assert_command		:
 			}
 
 must_command		:
-			MUST boolean_exp {
-				if !$2 {
+			MUST boolean_exp
+			{
+				if !IsTrue($2) {
 						State.Must.Failed++
 					}else{
 						State.Must.Succeeded++
@@ -220,6 +222,8 @@ must_command		:
 
 				$$ = &MustCommand{}
 			}
+
+
 
 should_command		:
 			SHOULD boolean_exp {
@@ -232,7 +236,8 @@ should_command		:
 			}
 
 set_command		:
-			SET variable any_value {
+			SET variable expr
+			{
 				//GlobalVars[$2.name] = $3
 				$$ = &SetCommand{
 					Name:$2.name,
@@ -240,15 +245,8 @@ set_command		:
 				}
 			}
 			|
-			SET variable expr {
-				//GlobalVars[$2.name] = $3
-				$$ = &SetCommand{
-					Name:$2.name,
-					Value:$3,
-				}
-			}
-			|
-			SET variable boolean_exp {
+			SET variable boolean_exp
+			{
 				//GlobalVars[$2.name] = $3
 				$$ = &SetCommand{
 					Name:$2.name,
@@ -257,7 +255,8 @@ set_command		:
 			}
 
 http_command		:
-			HTTP http_method string_or_var http_command_params  {
+			HTTP http_method any_value http_command_params
+			{
 			  //call http with header here.
 			  $$ = &HttpCommand{
 				Method : $2.(string),
@@ -265,7 +264,8 @@ http_command		:
 				Url: $3.(string),
 			  }
 			}
-			| HTTP http_method string_or_var {
+			|
+			HTTP http_method any_value {
 				//simple http command
 				$$ = &HttpCommand{
 					Method : $2.(string),
@@ -274,13 +274,16 @@ http_command		:
 			}
 
 http_command_params	:
-			http_command_param {
+			http_command_param
+			{
 				if $$ == nil {
 				  $$ = make([]HttpCommandParam,0)
 				}
 				$$ = append($$,$1)
 			}
-			| http_command_params http_command_param  {
+			|
+			http_command_params http_command_param
+			{
 				if $$ == nil {
 				  $$ = make([]HttpCommandParam,0)
 				}
@@ -306,44 +309,8 @@ http_command_param	:
 			}
 
 
-http_method	:
-		GET
-		{
-			//http get
-			$$ = $1
-		}
-		| HEAD
-		{
-		      $$ = $1
-		}
-		|POST
-		{
-		      $$ = $1
-		}
-		|PUT
-		{
-		      $$ = $1
-		}
-		|DELETE
-		{
-		      $$ = $1
-		}
-		|CONNECT
-		{
-		      $$ = $1
-		}
-		|OPTIONS
-		{
-		      $$ = $1
-		}
-		|TRACE
-		{
-		      $$ = $1
-		}
-		|PATCH
-		{
-		      $$ = $1
-		}
+http_method	: GET | HEAD | POST | PUT | DELETE | CONNECT | OPTIONS | TRACE | PATCH
+
 
 multi_any_value	:
 		any_value
@@ -352,48 +319,15 @@ multi_any_value	:
 			$$ = append($$,$1)
 		}
 		|
-		multi_any_value any_value {
+		multi_any_value any_value
+		{
 			//multi value
 			$$ = append($$,$2)
 		}
 
 any_value	:
-		string_or_var
+		STRING
 		{
-			//any_value: string_or_var
-			$$ = $1
-		}
-		|
-		FLOAT
-		{
-			//any_value: FLOAT
-			$$ = $1
-		}
-		|
-		INTEGER
-		{
-			//any_value: INTEGER
-			$$ = $1
-		}
-
-
-string_or_var	:
-		variable {
-		 //string_or_var : variable
-		 switch  $1.value.(type) {
-		     case string :
-			     if isTemplate($1.value.(string)) {
-				    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
-			     }else{
-				$$ = $1.value
-			     }
-		     default:
-			 $$ = $1.value
-		     }
-
-		}
-		|
-		STRING {
 			//string_or_var : STRING
 			if isTemplate($1.(string)) {
 				$$,_ = executeTemplate( $1.(string) , GlobalVars)
@@ -401,9 +335,28 @@ string_or_var	:
 
 			}
 		}
+		|
+		variable
+		{
+			//any_value : variable
+			 switch  $1.value.(type) {
+			     case string :
+				     if isTemplate($1.value.(string)) {
+					    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
+				     }else{
+					$$ = $1.value
+				     }
+			     default:
+					$$ = $1.value
+			     }
+		}
+		|
+		number
+
 
 variable	:
-		'{''{' IDENTIFIER '}''}'{
+		'{''{' IDENTIFIER '}''}'
+		{
 			//getting variable
 			$$.name = $3.(string)
 			$$.value = query($3.(string),GlobalVars)
@@ -432,14 +385,9 @@ boolean_exp	:
 		  	$$ = $2
 		}
 		|
-		TRUE
+		true_false
 		{
-			$$ = true
-		}
-		|
-		FALSE
-		{
-			$$ = false
+			$$ = $1
 		}
 		|
 		boolean_exp AND boolean_exp
@@ -460,8 +408,21 @@ boolean_exp	:
 			operator_result := runop($1,$2,$3)
 			$$ = operator_result
 		}
-		| expr_opr
-expr_opr:
+		|
+		expr_opr
+
+true_false	:
+		TRUE
+		{
+			$$ = true
+		}
+		|
+		FALSE
+		{
+			$$ = false
+		}
+
+expr_opr	:
 		expr operator expr
 		{
 			operator_result := runop($1,$2,$3)
@@ -493,7 +454,7 @@ expr	:    '(' expr ')'
 		{ $$,_  =  divide($3 , $1) }
 	|    expr '%' expr
 		{ $$,_  =  mod($3 , $1) }
-	|    number
+	|    any_value
 	;
 
 
@@ -508,14 +469,6 @@ number	: INTEGER
 		//number: FLOAT
 	 	$$ = $1
 	}
-	|
-	variable
-	{
-	    	//number: variable
-		$$ =  $1.value
-	}
-
-
 
 %%
 

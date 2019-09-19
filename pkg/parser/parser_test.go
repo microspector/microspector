@@ -118,7 +118,27 @@ SET {{ NilVar }} "this should not be assigned"
 	assert.Equal(t, GlobalVars["NilVar"], nil)
 }
 
+func TestParser_Must(t *testing.T) {
+	Reset()
+
+	lex := Parse(`
+SET {{ Var50 }} 49
+SET {{ VarTrue }} true
+SET {{ VarFalse }} true AND false
+MUST "{{ .VarFalse }}" EQUALS "false"
+`)
+
+
+	Run(lex)
+	//TODO: do some more assertion, like, must fail and success counts
+	assert.Equal(t, GlobalVars["VarFalse"], false)
+	assert.Equal(t, State.Must.Failed, 0)
+	assert.Equal(t, State.Must.Succeeded, 1)
+}
+
 func TestParser_Assert(t *testing.T) {
+	Reset()
+
 	lex := Parse(`
 SET {{ Var50 }} 50
 ASSERT {{ Var50 }} > 100 
