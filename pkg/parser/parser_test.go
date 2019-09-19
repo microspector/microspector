@@ -9,6 +9,7 @@ import (
 )
 
 func setupTest() *httptest.Server {
+
 	serverMux := http.NewServeMux()
 	server := httptest.NewServer(serverMux)
 
@@ -24,13 +25,15 @@ func setupTest() *httptest.Server {
 }
 func TestParser_Set(t *testing.T) {
 
+	Reset()
+
 	lex := Parse(`
 SET {{ Domain }} 'microspector.com'
-SET {{ ContainsTrue }}  "microspector.com" contains "microspector"
-SET {{ ContainsFalse }} "microspector.com" CONTAINS "microspectorFAIL"
-SET {{ StartsWithTrue }} "microspector.com" startswith "microspector"
-SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
-SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
+SET $ContainsTrue  "microspector.com" contains "microspector"
+SET $ContainsFalse  "microspector.com" CONTAINS "microspectorFAIL"
+SET $StartsWithTrue  "microspector.com" startswith "microspector"
+SET $StartsWithFalse  "microspector.com" STARTSWITH "microspectorFAIL"
+SET $DoubleDomain "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
 SET {{ StringDigitCompare1 }} '100' LT 101 AND 100 == 100
 SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" equals 20 * 5) OR (1 != 1)
@@ -93,7 +96,7 @@ SET {{ ContentLength }} {{ ServerResult.ContentLength }}
 set {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }} {{ ServerResult.Json.data }}
 HTTP get "https://microspector.com/test.json" INTO {{ MResult }}
-MUST {{ MResult.Json.boolean }} equals true
+MUST $MResult.Json.boolean equals true
 	`))
 
 	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
@@ -138,7 +141,6 @@ MUST {{ Var50 }} EQUALS 50
 MUST {{ Var50 }} EQUALS 49
 `)
 
-
 	Run(lex)
 	//TODO: do some more assertion, like, must fail and success counts
 	assert.Equal(t, GlobalVars["VarFalse"], false)
@@ -174,6 +176,9 @@ MUST {{ Var50 }} < 100
 }
 
 func TestParser_QuotedString(t *testing.T) {
+
+	Reset()
+
 	lex := Parse(`
 SET {{ SingleQuoted50 }} '50'
 SET {{ DoubleQuoted50 }} "50"
@@ -197,7 +202,7 @@ SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes qu
 }
 
 func TestParser_Arithmetic(t *testing.T) {
-
+	Reset()
 	lex := Parse(`
 SET {{ Var1 }} 1
 SET {{ Var2 }} '2' # it should support both
@@ -282,6 +287,8 @@ Using .*w vs .*?w on xxsomethingnew@1234wxx
 .*w? returns somethingnew (shortest match)
 */
 func TestParser_Regex(t *testing.T) {
+
+	Reset()
 
 	lex := Parse(`
 SET {{ Cat }} "cat"
