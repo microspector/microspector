@@ -403,6 +403,13 @@ boolean_exp	:
 			$$ = operator_result
 		}
 		|
+		any_value operator true_false
+		{
+			//boolean_ex: any_value operator any_value, oh conflicts start here :(
+			operator_result := runop($1,$2,$3)
+			$$ = operator_result
+		}
+		|
 		expr_opr
 
 true_false	:
@@ -447,8 +454,8 @@ expr_opr	:
 			$$ = $1 || $3
 		}
 
-// arithmetic things
-expr	:    '(' expr ')'
+expr	:
+	'(' expr ')'
 		{ $$  =  $2 }
 	|    expr '+' expr
 		{ $$,_  = add ( $1 , $3 ) }
@@ -464,7 +471,8 @@ expr	:    '(' expr ')'
 	;
 
 
-number	: INTEGER
+number	:
+	INTEGER
 	{
 		//number: INTEGER
 		$$ = $1;

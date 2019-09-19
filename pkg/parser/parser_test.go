@@ -127,14 +127,16 @@ SET {{ VarTrue }} true
 SET {{ VarFalse }} true AND false
 MUST "{{ .VarFalse }}" EQUALS "false"
 MUST {{ VarFalse }} EQUALS false
+MUST {{ Var50 }} EQUALS 50
+MUST {{ Var50 }} EQUALS 49
 `)
 
 
 	Run(lex)
 	//TODO: do some more assertion, like, must fail and success counts
 	assert.Equal(t, GlobalVars["VarFalse"], false)
-	assert.Equal(t, State.Must.Failed, 0)
-	assert.Equal(t, State.Must.Succeeded, 1)
+	assert.Equal(t, State.Must.Failed, 1)
+	assert.Equal(t, State.Must.Succeeded, 3)
 }
 
 func TestParser_Assert(t *testing.T) {

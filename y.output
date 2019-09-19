@@ -63,11 +63,11 @@ state 3 // END [$end]
     DEBUG   reduce using rule 6 (command_with_condition_opt)
     END     reduce using rule 6 (command_with_condition_opt)
     HTTP    reduce using rule 6 (command_with_condition_opt)
-    INTO    shift, and goto state 105
+    INTO    shift, and goto state 106
     MUST    reduce using rule 6 (command_with_condition_opt)
     SET     reduce using rule 6 (command_with_condition_opt)
     SHOULD  reduce using rule 6 (command_with_condition_opt)
-    WHEN    shift, and goto state 106
+    WHEN    shift, and goto state 107
 
 state 4 // SET '{' '{' IDENTIFIER '}' '}' FALSE [$end]
 
@@ -183,8 +183,8 @@ state 11 // DEBUG
     INTEGER  shift, and goto state 33
     STRING   shift, and goto state 29
 
-    any_value        goto state 103
-    multi_any_value  goto state 102
+    any_value        goto state 104
+    multi_any_value  goto state 103
     number           goto state 31
     variable         goto state 30
 
@@ -210,17 +210,17 @@ state 12 // END
     SHOULD   reduce using rule 17 (end_command)
     STRING   shift, and goto state 29
     TRUE     shift, and goto state 53
-    WHEN     shift, and goto state 99
+    WHEN     shift, and goto state 100
 
     any_value    goto state 51
-    boolean_exp  goto state 100
-    expr         goto state 93
+    boolean_exp  goto state 101
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
     variable     goto state 30
 
-    conflict on WHEN, shift, and goto state 99, reduce using rule 17
+    conflict on WHEN, shift, and goto state 100, reduce using rule 17
 
 state 13 // ASSERT
 
@@ -235,8 +235,8 @@ state 13 // ASSERT
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 98
-    expr         goto state 93
+    boolean_exp  goto state 99
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
@@ -255,8 +255,8 @@ state 14 // MUST
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 97
-    expr         goto state 93
+    boolean_exp  goto state 98
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
@@ -275,8 +275,8 @@ state 15 // SHOULD
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 96
-    expr         goto state 93
+    boolean_exp  goto state 97
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
@@ -466,7 +466,7 @@ state 29 // ASSERT STRING
     STRING      reduce using rule 40 (any_value)
     WHEN        reduce using rule 40 (any_value)
 
-state 30 // ASSERT '{' '{' IDENTIFIER '}' '}' [$end]
+state 30 // DEBUG '{' '{' IDENTIFIER '}' '}' [$end]
 
    41 any_value: variable .  [$end, '%', ')', '*', '+', '-', '/', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
 
@@ -558,49 +558,7 @@ state 32 // MUST '{'
 
 state 33 // MUST INTEGER
 
-   75 number: INTEGER .  [$end, '%', ')', '*', '+', '-', '/', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
-
-    $end        reduce using rule 75 (number)
-    '%'         reduce using rule 75 (number)
-    ')'         reduce using rule 75 (number)
-    '*'         reduce using rule 75 (number)
-    '+'         reduce using rule 75 (number)
-    '-'         reduce using rule 75 (number)
-    '/'         reduce using rule 75 (number)
-    '{'         reduce using rule 75 (number)
-    AND         reduce using rule 75 (number)
-    ASSERT      reduce using rule 75 (number)
-    BODY        reduce using rule 75 (number)
-    CONTAIN     reduce using rule 75 (number)
-    CONTAINS    reduce using rule 75 (number)
-    DEBUG       reduce using rule 75 (number)
-    END         reduce using rule 75 (number)
-    EQUAL       reduce using rule 75 (number)
-    EQUALS      reduce using rule 75 (number)
-    FLOAT       reduce using rule 75 (number)
-    GE          reduce using rule 75 (number)
-    GT          reduce using rule 75 (number)
-    HEADER      reduce using rule 75 (number)
-    HTTP        reduce using rule 75 (number)
-    INTEGER     reduce using rule 75 (number)
-    INTO        reduce using rule 75 (number)
-    LE          reduce using rule 75 (number)
-    LT          reduce using rule 75 (number)
-    MATCH       reduce using rule 75 (number)
-    MATCHES     reduce using rule 75 (number)
-    MUST        reduce using rule 75 (number)
-    NOTEQUAL    reduce using rule 75 (number)
-    NOTEQUALS   reduce using rule 75 (number)
-    OR          reduce using rule 75 (number)
-    SET         reduce using rule 75 (number)
-    SHOULD      reduce using rule 75 (number)
-    STARTSWITH  reduce using rule 75 (number)
-    STRING      reduce using rule 75 (number)
-    WHEN        reduce using rule 75 (number)
-
-state 34 // MUST FLOAT
-
-   76 number: FLOAT .  [$end, '%', ')', '*', '+', '-', '/', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
+   76 number: INTEGER .  [$end, '%', ')', '*', '+', '-', '/', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
 
     $end        reduce using rule 76 (number)
     '%'         reduce using rule 76 (number)
@@ -639,6 +597,48 @@ state 34 // MUST FLOAT
     STARTSWITH  reduce using rule 76 (number)
     STRING      reduce using rule 76 (number)
     WHEN        reduce using rule 76 (number)
+
+state 34 // MUST FLOAT
+
+   77 number: FLOAT .  [$end, '%', ')', '*', '+', '-', '/', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FLOAT, GE, GT, HEADER, HTTP, INTEGER, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, STRING, WHEN]
+
+    $end        reduce using rule 77 (number)
+    '%'         reduce using rule 77 (number)
+    ')'         reduce using rule 77 (number)
+    '*'         reduce using rule 77 (number)
+    '+'         reduce using rule 77 (number)
+    '-'         reduce using rule 77 (number)
+    '/'         reduce using rule 77 (number)
+    '{'         reduce using rule 77 (number)
+    AND         reduce using rule 77 (number)
+    ASSERT      reduce using rule 77 (number)
+    BODY        reduce using rule 77 (number)
+    CONTAIN     reduce using rule 77 (number)
+    CONTAINS    reduce using rule 77 (number)
+    DEBUG       reduce using rule 77 (number)
+    END         reduce using rule 77 (number)
+    EQUAL       reduce using rule 77 (number)
+    EQUALS      reduce using rule 77 (number)
+    FLOAT       reduce using rule 77 (number)
+    GE          reduce using rule 77 (number)
+    GT          reduce using rule 77 (number)
+    HEADER      reduce using rule 77 (number)
+    HTTP        reduce using rule 77 (number)
+    INTEGER     reduce using rule 77 (number)
+    INTO        reduce using rule 77 (number)
+    LE          reduce using rule 77 (number)
+    LT          reduce using rule 77 (number)
+    MATCH       reduce using rule 77 (number)
+    MATCHES     reduce using rule 77 (number)
+    MUST        reduce using rule 77 (number)
+    NOTEQUAL    reduce using rule 77 (number)
+    NOTEQUALS   reduce using rule 77 (number)
+    OR          reduce using rule 77 (number)
+    SET         reduce using rule 77 (number)
+    SHOULD      reduce using rule 77 (number)
+    STARTSWITH  reduce using rule 77 (number)
+    STRING      reduce using rule 77 (number)
+    WHEN        reduce using rule 77 (number)
 
 state 35 // MUST '{' '{'
 
@@ -827,20 +827,20 @@ state 46 // SET '{' '{' IDENTIFIER '}' '}' ['(']
 state 47 // SET '{' '{' IDENTIFIER '}' '}' FLOAT [$end]
 
    21 set_command: SET variable expr .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   63 expr_opr: expr . operator expr
-   65 expr_opr: expr . operator any_value
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   64 expr_opr: expr . operator expr
+   66 expr_opr: expr . operator any_value
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
     $end        reduce using rule 21 (set_command)
-    '%'         shift, and goto state 79
-    '*'         shift, and goto state 77
-    '+'         shift, and goto state 75
-    '-'         shift, and goto state 76
-    '/'         shift, and goto state 78
+    '%'         shift, and goto state 80
+    '*'         shift, and goto state 78
+    '+'         shift, and goto state 76
+    '-'         shift, and goto state 77
+    '/'         shift, and goto state 79
     ASSERT      reduce using rule 21 (set_command)
     CONTAIN     shift, and goto state 64
     CONTAINS    shift, and goto state 63
@@ -864,23 +864,23 @@ state 47 // SET '{' '{' IDENTIFIER '}' '}' FLOAT [$end]
     STARTSWITH  shift, and goto state 65
     WHEN        reduce using rule 21 (set_command)
 
-    operator  goto state 87
+    operator  goto state 88
 
 state 48 // SET '{' '{' IDENTIFIER '}' '}' FALSE [$end]
 
    22 set_command: SET variable boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 22 (set_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 22 (set_command)
     DEBUG   reduce using rule 22 (set_command)
     END     reduce using rule 22 (set_command)
     HTTP    reduce using rule 22 (set_command)
     INTO    reduce using rule 22 (set_command)
     MUST    reduce using rule 22 (set_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 22 (set_command)
     SHOULD  reduce using rule 22 (set_command)
     WHEN    reduce using rule 22 (set_command)
@@ -906,7 +906,7 @@ state 49 // MUST FALSE [$end]
 state 50 // MUST '('
 
    58 boolean_exp: '(' . boolean_exp ')'
-   68 expr: '(' . expr ')'
+   69 expr: '(' . expr ')'
 
     '('      shift, and goto state 50
     '{'      shift, and goto state 32
@@ -917,8 +917,8 @@ state 50 // MUST '('
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 85
-    expr         goto state 86
+    boolean_exp  goto state 86
+    expr         goto state 87
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
@@ -927,94 +927,77 @@ state 50 // MUST '('
 state 51 // ASSERT FLOAT [$end]
 
    59 boolean_exp: any_value . operator any_value
-   64 expr_opr: any_value . operator expr
-   74 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, STARTSWITH, WHEN]
+   60 boolean_exp: any_value . operator true_false
+   65 expr_opr: any_value . operator expr
+   75 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, STARTSWITH, WHEN]
 
-    $end        reduce using rule 74 (expr)
-    '%'         reduce using rule 74 (expr)
-    ')'         reduce using rule 74 (expr)
-    '*'         reduce using rule 74 (expr)
-    '+'         reduce using rule 74 (expr)
-    '-'         reduce using rule 74 (expr)
-    '/'         reduce using rule 74 (expr)
-    ASSERT      reduce using rule 74 (expr)
+    $end        reduce using rule 75 (expr)
+    '%'         reduce using rule 75 (expr)
+    ')'         reduce using rule 75 (expr)
+    '*'         reduce using rule 75 (expr)
+    '+'         reduce using rule 75 (expr)
+    '-'         reduce using rule 75 (expr)
+    '/'         reduce using rule 75 (expr)
+    ASSERT      reduce using rule 75 (expr)
     CONTAIN     shift, and goto state 64
     CONTAINS    shift, and goto state 63
-    DEBUG       reduce using rule 74 (expr)
-    END         reduce using rule 74 (expr)
+    DEBUG       reduce using rule 75 (expr)
+    END         reduce using rule 75 (expr)
     EQUAL       shift, and goto state 56
     EQUALS      shift, and goto state 55
     GE          shift, and goto state 60
     GT          shift, and goto state 59
-    HTTP        reduce using rule 74 (expr)
-    INTO        reduce using rule 74 (expr)
+    HTTP        reduce using rule 75 (expr)
+    INTO        reduce using rule 75 (expr)
     LE          shift, and goto state 62
     LT          shift, and goto state 61
     MATCH       shift, and goto state 66
     MATCHES     shift, and goto state 67
-    MUST        reduce using rule 74 (expr)
+    MUST        reduce using rule 75 (expr)
     NOTEQUAL    shift, and goto state 58
     NOTEQUALS   shift, and goto state 57
-    SET         reduce using rule 74 (expr)
-    SHOULD      reduce using rule 74 (expr)
+    SET         reduce using rule 75 (expr)
+    SHOULD      reduce using rule 75 (expr)
     STARTSWITH  shift, and goto state 65
-    WHEN        reduce using rule 74 (expr)
+    WHEN        reduce using rule 75 (expr)
 
     operator  goto state 68
 
-    conflict on CONTAIN, shift, and goto state 64, reduce using rule 74
-    conflict on CONTAINS, shift, and goto state 63, reduce using rule 74
-    conflict on EQUAL, shift, and goto state 56, reduce using rule 74
-    conflict on EQUALS, shift, and goto state 55, reduce using rule 74
-    conflict on GE, shift, and goto state 60, reduce using rule 74
-    conflict on GT, shift, and goto state 59, reduce using rule 74
-    conflict on LE, shift, and goto state 62, reduce using rule 74
-    conflict on LT, shift, and goto state 61, reduce using rule 74
-    conflict on MATCH, shift, and goto state 66, reduce using rule 74
-    conflict on MATCHES, shift, and goto state 67, reduce using rule 74
-    conflict on NOTEQUAL, shift, and goto state 58, reduce using rule 74
-    conflict on NOTEQUALS, shift, and goto state 57, reduce using rule 74
-    conflict on STARTSWITH, shift, and goto state 65, reduce using rule 74
+    conflict on CONTAIN, shift, and goto state 64, reduce using rule 75
+    conflict on CONTAINS, shift, and goto state 63, reduce using rule 75
+    conflict on EQUAL, shift, and goto state 56, reduce using rule 75
+    conflict on EQUALS, shift, and goto state 55, reduce using rule 75
+    conflict on GE, shift, and goto state 60, reduce using rule 75
+    conflict on GT, shift, and goto state 59, reduce using rule 75
+    conflict on LE, shift, and goto state 62, reduce using rule 75
+    conflict on LT, shift, and goto state 61, reduce using rule 75
+    conflict on MATCH, shift, and goto state 66, reduce using rule 75
+    conflict on MATCHES, shift, and goto state 67, reduce using rule 75
+    conflict on NOTEQUAL, shift, and goto state 58, reduce using rule 75
+    conflict on NOTEQUALS, shift, and goto state 57, reduce using rule 75
+    conflict on STARTSWITH, shift, and goto state 65, reduce using rule 75
 
 state 52 // MUST FLOAT CONTAIN FLOAT
 
-   60 boolean_exp: expr_opr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   61 boolean_exp: expr_opr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
 
-    $end    reduce using rule 60 (boolean_exp)
-    ')'     reduce using rule 60 (boolean_exp)
-    AND     reduce using rule 60 (boolean_exp)
-    ASSERT  reduce using rule 60 (boolean_exp)
-    DEBUG   reduce using rule 60 (boolean_exp)
-    END     reduce using rule 60 (boolean_exp)
-    HTTP    reduce using rule 60 (boolean_exp)
-    INTO    reduce using rule 60 (boolean_exp)
-    MUST    reduce using rule 60 (boolean_exp)
-    OR      reduce using rule 60 (boolean_exp)
-    SET     reduce using rule 60 (boolean_exp)
-    SHOULD  reduce using rule 60 (boolean_exp)
-    WHEN    reduce using rule 60 (boolean_exp)
+    $end    reduce using rule 61 (boolean_exp)
+    ')'     reduce using rule 61 (boolean_exp)
+    AND     reduce using rule 61 (boolean_exp)
+    ASSERT  reduce using rule 61 (boolean_exp)
+    DEBUG   reduce using rule 61 (boolean_exp)
+    END     reduce using rule 61 (boolean_exp)
+    HTTP    reduce using rule 61 (boolean_exp)
+    INTO    reduce using rule 61 (boolean_exp)
+    MUST    reduce using rule 61 (boolean_exp)
+    OR      reduce using rule 61 (boolean_exp)
+    SET     reduce using rule 61 (boolean_exp)
+    SHOULD  reduce using rule 61 (boolean_exp)
+    WHEN    reduce using rule 61 (boolean_exp)
 
 state 53 // ASSERT TRUE
 
-   61 true_false: TRUE .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-
-    $end    reduce using rule 61 (true_false)
-    ')'     reduce using rule 61 (true_false)
-    AND     reduce using rule 61 (true_false)
-    ASSERT  reduce using rule 61 (true_false)
-    DEBUG   reduce using rule 61 (true_false)
-    END     reduce using rule 61 (true_false)
-    HTTP    reduce using rule 61 (true_false)
-    INTO    reduce using rule 61 (true_false)
-    MUST    reduce using rule 61 (true_false)
-    OR      reduce using rule 61 (true_false)
-    SET     reduce using rule 61 (true_false)
-    SHOULD  reduce using rule 61 (true_false)
-    WHEN    reduce using rule 61 (true_false)
-
-state 54 // MUST FALSE
-
-   62 true_false: FALSE .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   62 true_false: TRUE .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
 
     $end    reduce using rule 62 (true_false)
     ')'     reduce using rule 62 (true_false)
@@ -1030,164 +1013,212 @@ state 54 // MUST FALSE
     SHOULD  reduce using rule 62 (true_false)
     WHEN    reduce using rule 62 (true_false)
 
+state 54 // MUST FALSE
+
+   63 true_false: FALSE .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+
+    $end    reduce using rule 63 (true_false)
+    ')'     reduce using rule 63 (true_false)
+    AND     reduce using rule 63 (true_false)
+    ASSERT  reduce using rule 63 (true_false)
+    DEBUG   reduce using rule 63 (true_false)
+    END     reduce using rule 63 (true_false)
+    HTTP    reduce using rule 63 (true_false)
+    INTO    reduce using rule 63 (true_false)
+    MUST    reduce using rule 63 (true_false)
+    OR      reduce using rule 63 (true_false)
+    SET     reduce using rule 63 (true_false)
+    SHOULD  reduce using rule 63 (true_false)
+    WHEN    reduce using rule 63 (true_false)
+
 state 55 // ASSERT FLOAT EQUALS
 
-   44 operator: EQUALS .  ['(', '{', FLOAT, INTEGER, STRING]
+   44 operator: EQUALS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 44 (operator)
     '{'      reduce using rule 44 (operator)
+    FALSE    reduce using rule 44 (operator)
     FLOAT    reduce using rule 44 (operator)
     INTEGER  reduce using rule 44 (operator)
     STRING   reduce using rule 44 (operator)
+    TRUE     reduce using rule 44 (operator)
 
 state 56 // ASSERT FLOAT EQUAL
 
-   45 operator: EQUAL .  ['(', '{', FLOAT, INTEGER, STRING]
+   45 operator: EQUAL .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 45 (operator)
     '{'      reduce using rule 45 (operator)
+    FALSE    reduce using rule 45 (operator)
     FLOAT    reduce using rule 45 (operator)
     INTEGER  reduce using rule 45 (operator)
     STRING   reduce using rule 45 (operator)
+    TRUE     reduce using rule 45 (operator)
 
 state 57 // ASSERT FLOAT NOTEQUALS
 
-   46 operator: NOTEQUALS .  ['(', '{', FLOAT, INTEGER, STRING]
+   46 operator: NOTEQUALS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 46 (operator)
     '{'      reduce using rule 46 (operator)
+    FALSE    reduce using rule 46 (operator)
     FLOAT    reduce using rule 46 (operator)
     INTEGER  reduce using rule 46 (operator)
     STRING   reduce using rule 46 (operator)
+    TRUE     reduce using rule 46 (operator)
 
 state 58 // ASSERT FLOAT NOTEQUAL
 
-   47 operator: NOTEQUAL .  ['(', '{', FLOAT, INTEGER, STRING]
+   47 operator: NOTEQUAL .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 47 (operator)
     '{'      reduce using rule 47 (operator)
+    FALSE    reduce using rule 47 (operator)
     FLOAT    reduce using rule 47 (operator)
     INTEGER  reduce using rule 47 (operator)
     STRING   reduce using rule 47 (operator)
+    TRUE     reduce using rule 47 (operator)
 
 state 59 // ASSERT FLOAT GT
 
-   48 operator: GT .  ['(', '{', FLOAT, INTEGER, STRING]
+   48 operator: GT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 48 (operator)
     '{'      reduce using rule 48 (operator)
+    FALSE    reduce using rule 48 (operator)
     FLOAT    reduce using rule 48 (operator)
     INTEGER  reduce using rule 48 (operator)
     STRING   reduce using rule 48 (operator)
+    TRUE     reduce using rule 48 (operator)
 
 state 60 // ASSERT FLOAT GE
 
-   49 operator: GE .  ['(', '{', FLOAT, INTEGER, STRING]
+   49 operator: GE .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 49 (operator)
     '{'      reduce using rule 49 (operator)
+    FALSE    reduce using rule 49 (operator)
     FLOAT    reduce using rule 49 (operator)
     INTEGER  reduce using rule 49 (operator)
     STRING   reduce using rule 49 (operator)
+    TRUE     reduce using rule 49 (operator)
 
 state 61 // ASSERT FLOAT LT
 
-   50 operator: LT .  ['(', '{', FLOAT, INTEGER, STRING]
+   50 operator: LT .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 50 (operator)
     '{'      reduce using rule 50 (operator)
+    FALSE    reduce using rule 50 (operator)
     FLOAT    reduce using rule 50 (operator)
     INTEGER  reduce using rule 50 (operator)
     STRING   reduce using rule 50 (operator)
+    TRUE     reduce using rule 50 (operator)
 
 state 62 // ASSERT FLOAT LE
 
-   51 operator: LE .  ['(', '{', FLOAT, INTEGER, STRING]
+   51 operator: LE .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 51 (operator)
     '{'      reduce using rule 51 (operator)
+    FALSE    reduce using rule 51 (operator)
     FLOAT    reduce using rule 51 (operator)
     INTEGER  reduce using rule 51 (operator)
     STRING   reduce using rule 51 (operator)
+    TRUE     reduce using rule 51 (operator)
 
 state 63 // ASSERT FLOAT CONTAINS
 
-   52 operator: CONTAINS .  ['(', '{', FLOAT, INTEGER, STRING]
+   52 operator: CONTAINS .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 52 (operator)
     '{'      reduce using rule 52 (operator)
+    FALSE    reduce using rule 52 (operator)
     FLOAT    reduce using rule 52 (operator)
     INTEGER  reduce using rule 52 (operator)
     STRING   reduce using rule 52 (operator)
+    TRUE     reduce using rule 52 (operator)
 
 state 64 // ASSERT FLOAT CONTAIN
 
-   53 operator: CONTAIN .  ['(', '{', FLOAT, INTEGER, STRING]
+   53 operator: CONTAIN .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 53 (operator)
     '{'      reduce using rule 53 (operator)
+    FALSE    reduce using rule 53 (operator)
     FLOAT    reduce using rule 53 (operator)
     INTEGER  reduce using rule 53 (operator)
     STRING   reduce using rule 53 (operator)
+    TRUE     reduce using rule 53 (operator)
 
 state 65 // ASSERT FLOAT STARTSWITH
 
-   54 operator: STARTSWITH .  ['(', '{', FLOAT, INTEGER, STRING]
+   54 operator: STARTSWITH .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 54 (operator)
     '{'      reduce using rule 54 (operator)
+    FALSE    reduce using rule 54 (operator)
     FLOAT    reduce using rule 54 (operator)
     INTEGER  reduce using rule 54 (operator)
     STRING   reduce using rule 54 (operator)
+    TRUE     reduce using rule 54 (operator)
 
 state 66 // ASSERT FLOAT MATCH
 
-   55 operator: MATCH .  ['(', '{', FLOAT, INTEGER, STRING]
+   55 operator: MATCH .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 55 (operator)
     '{'      reduce using rule 55 (operator)
+    FALSE    reduce using rule 55 (operator)
     FLOAT    reduce using rule 55 (operator)
     INTEGER  reduce using rule 55 (operator)
     STRING   reduce using rule 55 (operator)
+    TRUE     reduce using rule 55 (operator)
 
 state 67 // ASSERT FLOAT MATCHES
 
-   56 operator: MATCHES .  ['(', '{', FLOAT, INTEGER, STRING]
+   56 operator: MATCHES .  ['(', '{', FALSE, FLOAT, INTEGER, STRING, TRUE]
 
     '('      reduce using rule 56 (operator)
     '{'      reduce using rule 56 (operator)
+    FALSE    reduce using rule 56 (operator)
     FLOAT    reduce using rule 56 (operator)
     INTEGER  reduce using rule 56 (operator)
     STRING   reduce using rule 56 (operator)
+    TRUE     reduce using rule 56 (operator)
 
 state 68 // ASSERT FLOAT CONTAIN ['(']
 
    59 boolean_exp: any_value operator . any_value
-   64 expr_opr: any_value operator . expr
+   60 boolean_exp: any_value operator . true_false
+   65 expr_opr: any_value operator . expr
 
-    '('      shift, and goto state 71
+    '('      shift, and goto state 72
     '{'      shift, and goto state 32
+    FALSE    shift, and goto state 54
     FLOAT    shift, and goto state 34
     INTEGER  shift, and goto state 33
     STRING   shift, and goto state 29
+    TRUE     shift, and goto state 53
 
-    any_value  goto state 69
-    expr       goto state 70
-    number     goto state 31
-    variable   goto state 30
+    any_value   goto state 69
+    expr        goto state 71
+    number      goto state 31
+    true_false  goto state 70
+    variable    goto state 30
 
 state 69 // ASSERT FLOAT CONTAIN FLOAT [$end]
 
    59 boolean_exp: any_value operator any_value .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-   74 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   75 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
 
     $end    reduce using rule 59 (boolean_exp)
-    '%'     reduce using rule 74 (expr)
+    '%'     reduce using rule 75 (expr)
     ')'     reduce using rule 59 (boolean_exp)
-    '*'     reduce using rule 74 (expr)
-    '+'     reduce using rule 74 (expr)
-    '-'     reduce using rule 74 (expr)
-    '/'     reduce using rule 74 (expr)
+    '*'     reduce using rule 75 (expr)
+    '+'     reduce using rule 75 (expr)
+    '-'     reduce using rule 75 (expr)
+    '/'     reduce using rule 75 (expr)
     AND     reduce using rule 59 (boolean_exp)
     ASSERT  reduce using rule 59 (boolean_exp)
     DEBUG   reduce using rule 59 (boolean_exp)
@@ -1199,82 +1230,252 @@ state 69 // ASSERT FLOAT CONTAIN FLOAT [$end]
     SET     reduce using rule 59 (boolean_exp)
     SHOULD  reduce using rule 59 (boolean_exp)
     WHEN    reduce using rule 59 (boolean_exp)
-    conflict on $end, reduce using rule 59, reduce using rule 74
-    conflict on ')', reduce using rule 59, reduce using rule 74
-    conflict on AND, reduce using rule 59, reduce using rule 74
-    conflict on ASSERT, reduce using rule 59, reduce using rule 74
-    conflict on DEBUG, reduce using rule 59, reduce using rule 74
-    conflict on END, reduce using rule 59, reduce using rule 74
-    conflict on HTTP, reduce using rule 59, reduce using rule 74
-    conflict on INTO, reduce using rule 59, reduce using rule 74
-    conflict on MUST, reduce using rule 59, reduce using rule 74
-    conflict on OR, reduce using rule 59, reduce using rule 74
-    conflict on SET, reduce using rule 59, reduce using rule 74
-    conflict on SHOULD, reduce using rule 59, reduce using rule 74
-    conflict on WHEN, reduce using rule 59, reduce using rule 74
+    conflict on $end, reduce using rule 59, reduce using rule 75
+    conflict on ')', reduce using rule 59, reduce using rule 75
+    conflict on AND, reduce using rule 59, reduce using rule 75
+    conflict on ASSERT, reduce using rule 59, reduce using rule 75
+    conflict on DEBUG, reduce using rule 59, reduce using rule 75
+    conflict on END, reduce using rule 59, reduce using rule 75
+    conflict on HTTP, reduce using rule 59, reduce using rule 75
+    conflict on INTO, reduce using rule 59, reduce using rule 75
+    conflict on MUST, reduce using rule 59, reduce using rule 75
+    conflict on OR, reduce using rule 59, reduce using rule 75
+    conflict on SET, reduce using rule 59, reduce using rule 75
+    conflict on SHOULD, reduce using rule 59, reduce using rule 75
+    conflict on WHEN, reduce using rule 59, reduce using rule 75
 
-state 70 // ASSERT FLOAT CONTAIN FLOAT ['%']
+state 70 // ASSERT FLOAT CONTAIN FALSE [$end]
 
-   64 expr_opr: any_value operator expr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   60 boolean_exp: any_value operator true_false .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
 
-    $end    reduce using rule 64 (expr_opr)
-    '%'     shift, and goto state 79
-    ')'     reduce using rule 64 (expr_opr)
-    '*'     shift, and goto state 77
-    '+'     shift, and goto state 75
-    '-'     shift, and goto state 76
-    '/'     shift, and goto state 78
-    AND     reduce using rule 64 (expr_opr)
-    ASSERT  reduce using rule 64 (expr_opr)
-    DEBUG   reduce using rule 64 (expr_opr)
-    END     reduce using rule 64 (expr_opr)
-    HTTP    reduce using rule 64 (expr_opr)
-    INTO    reduce using rule 64 (expr_opr)
-    MUST    reduce using rule 64 (expr_opr)
-    OR      reduce using rule 64 (expr_opr)
-    SET     reduce using rule 64 (expr_opr)
-    SHOULD  reduce using rule 64 (expr_opr)
-    WHEN    reduce using rule 64 (expr_opr)
+    $end    reduce using rule 60 (boolean_exp)
+    ')'     reduce using rule 60 (boolean_exp)
+    AND     reduce using rule 60 (boolean_exp)
+    ASSERT  reduce using rule 60 (boolean_exp)
+    DEBUG   reduce using rule 60 (boolean_exp)
+    END     reduce using rule 60 (boolean_exp)
+    HTTP    reduce using rule 60 (boolean_exp)
+    INTO    reduce using rule 60 (boolean_exp)
+    MUST    reduce using rule 60 (boolean_exp)
+    OR      reduce using rule 60 (boolean_exp)
+    SET     reduce using rule 60 (boolean_exp)
+    SHOULD  reduce using rule 60 (boolean_exp)
+    WHEN    reduce using rule 60 (boolean_exp)
 
-state 71 // ASSERT FLOAT CONTAIN '('
+state 71 // ASSERT FLOAT CONTAIN FLOAT ['%']
 
-   68 expr: '(' . expr ')'
+   65 expr_opr: any_value operator expr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
-    '('      shift, and goto state 71
+    $end    reduce using rule 65 (expr_opr)
+    '%'     shift, and goto state 80
+    ')'     reduce using rule 65 (expr_opr)
+    '*'     shift, and goto state 78
+    '+'     shift, and goto state 76
+    '-'     shift, and goto state 77
+    '/'     shift, and goto state 79
+    AND     reduce using rule 65 (expr_opr)
+    ASSERT  reduce using rule 65 (expr_opr)
+    DEBUG   reduce using rule 65 (expr_opr)
+    END     reduce using rule 65 (expr_opr)
+    HTTP    reduce using rule 65 (expr_opr)
+    INTO    reduce using rule 65 (expr_opr)
+    MUST    reduce using rule 65 (expr_opr)
+    OR      reduce using rule 65 (expr_opr)
+    SET     reduce using rule 65 (expr_opr)
+    SHOULD  reduce using rule 65 (expr_opr)
+    WHEN    reduce using rule 65 (expr_opr)
+
+state 72 // ASSERT FLOAT CONTAIN '('
+
+   69 expr: '(' . expr ')'
+
+    '('      shift, and goto state 72
     '{'      shift, and goto state 32
     FLOAT    shift, and goto state 34
     INTEGER  shift, and goto state 33
     STRING   shift, and goto state 29
 
-    any_value  goto state 73
-    expr       goto state 72
+    any_value  goto state 74
+    expr       goto state 73
     number     goto state 31
     variable   goto state 30
 
-state 72 // ASSERT FLOAT CONTAIN '(' FLOAT ['%']
+state 73 // ASSERT FLOAT CONTAIN '(' FLOAT ['%']
 
-   68 expr: '(' expr . ')'
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   69 expr: '(' expr . ')'
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
-    '%'  shift, and goto state 79
-    ')'  shift, and goto state 74
-    '*'  shift, and goto state 77
-    '+'  shift, and goto state 75
-    '-'  shift, and goto state 76
-    '/'  shift, and goto state 78
+    '%'  shift, and goto state 80
+    ')'  shift, and goto state 75
+    '*'  shift, and goto state 78
+    '+'  shift, and goto state 76
+    '-'  shift, and goto state 77
+    '/'  shift, and goto state 79
 
-state 73 // ASSERT FLOAT '*' FLOAT [$end]
+state 74 // ASSERT FLOAT '-' FLOAT [$end]
 
-   74 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]
+   75 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]
+
+    $end        reduce using rule 75 (expr)
+    '%'         reduce using rule 75 (expr)
+    ')'         reduce using rule 75 (expr)
+    '*'         reduce using rule 75 (expr)
+    '+'         reduce using rule 75 (expr)
+    '-'         reduce using rule 75 (expr)
+    '/'         reduce using rule 75 (expr)
+    AND         reduce using rule 75 (expr)
+    ASSERT      reduce using rule 75 (expr)
+    CONTAIN     reduce using rule 75 (expr)
+    CONTAINS    reduce using rule 75 (expr)
+    DEBUG       reduce using rule 75 (expr)
+    END         reduce using rule 75 (expr)
+    EQUAL       reduce using rule 75 (expr)
+    EQUALS      reduce using rule 75 (expr)
+    GE          reduce using rule 75 (expr)
+    GT          reduce using rule 75 (expr)
+    HTTP        reduce using rule 75 (expr)
+    INTO        reduce using rule 75 (expr)
+    LE          reduce using rule 75 (expr)
+    LT          reduce using rule 75 (expr)
+    MATCH       reduce using rule 75 (expr)
+    MATCHES     reduce using rule 75 (expr)
+    MUST        reduce using rule 75 (expr)
+    NOTEQUAL    reduce using rule 75 (expr)
+    NOTEQUALS   reduce using rule 75 (expr)
+    OR          reduce using rule 75 (expr)
+    SET         reduce using rule 75 (expr)
+    SHOULD      reduce using rule 75 (expr)
+    STARTSWITH  reduce using rule 75 (expr)
+    WHEN        reduce using rule 75 (expr)
+
+state 75 // MUST '(' FLOAT ')'
+
+   69 expr: '(' expr ')' .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]
+
+    $end        reduce using rule 69 (expr)
+    '%'         reduce using rule 69 (expr)
+    ')'         reduce using rule 69 (expr)
+    '*'         reduce using rule 69 (expr)
+    '+'         reduce using rule 69 (expr)
+    '-'         reduce using rule 69 (expr)
+    '/'         reduce using rule 69 (expr)
+    AND         reduce using rule 69 (expr)
+    ASSERT      reduce using rule 69 (expr)
+    CONTAIN     reduce using rule 69 (expr)
+    CONTAINS    reduce using rule 69 (expr)
+    DEBUG       reduce using rule 69 (expr)
+    END         reduce using rule 69 (expr)
+    EQUAL       reduce using rule 69 (expr)
+    EQUALS      reduce using rule 69 (expr)
+    GE          reduce using rule 69 (expr)
+    GT          reduce using rule 69 (expr)
+    HTTP        reduce using rule 69 (expr)
+    INTO        reduce using rule 69 (expr)
+    LE          reduce using rule 69 (expr)
+    LT          reduce using rule 69 (expr)
+    MATCH       reduce using rule 69 (expr)
+    MATCHES     reduce using rule 69 (expr)
+    MUST        reduce using rule 69 (expr)
+    NOTEQUAL    reduce using rule 69 (expr)
+    NOTEQUALS   reduce using rule 69 (expr)
+    OR          reduce using rule 69 (expr)
+    SET         reduce using rule 69 (expr)
+    SHOULD      reduce using rule 69 (expr)
+    STARTSWITH  reduce using rule 69 (expr)
+    WHEN        reduce using rule 69 (expr)
+
+state 76 // ASSERT FLOAT '+'
+
+   70 expr: expr '+' . expr  // assoc %left, prec 3
+
+    '('      shift, and goto state 72
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+
+    any_value  goto state 74
+    expr       goto state 85
+    number     goto state 31
+    variable   goto state 30
+
+state 77 // ASSERT FLOAT '-'
+
+   71 expr: expr '-' . expr  // assoc %left, prec 3
+
+    '('      shift, and goto state 72
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+
+    any_value  goto state 74
+    expr       goto state 84
+    number     goto state 31
+    variable   goto state 30
+
+state 78 // ASSERT FLOAT '*'
+
+   72 expr: expr '*' . expr  // assoc %left, prec 4
+
+    '('      shift, and goto state 72
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+
+    any_value  goto state 74
+    expr       goto state 83
+    number     goto state 31
+    variable   goto state 30
+
+state 79 // ASSERT FLOAT '/'
+
+   73 expr: expr '/' . expr  // assoc %left, prec 4
+
+    '('      shift, and goto state 72
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+
+    any_value  goto state 74
+    expr       goto state 82
+    number     goto state 31
+    variable   goto state 30
+
+state 80 // ASSERT FLOAT '%'
+
+   74 expr: expr '%' . expr  // assoc %left, prec 4
+
+    '('      shift, and goto state 72
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+
+    any_value  goto state 74
+    expr       goto state 81
+    number     goto state 31
+    variable   goto state 30
+
+state 81 // ASSERT FLOAT '%' FLOAT [$end]
+
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
+   74 expr: expr '%' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
 
     $end        reduce using rule 74 (expr)
     '%'         reduce using rule 74 (expr)
@@ -1308,125 +1509,14 @@ state 73 // ASSERT FLOAT '*' FLOAT [$end]
     STARTSWITH  reduce using rule 74 (expr)
     WHEN        reduce using rule 74 (expr)
 
-state 74 // MUST '(' FLOAT ')'
+state 82 // ASSERT FLOAT '/' FLOAT [$end]
 
-   68 expr: '(' expr ')' .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]
-
-    $end        reduce using rule 68 (expr)
-    '%'         reduce using rule 68 (expr)
-    ')'         reduce using rule 68 (expr)
-    '*'         reduce using rule 68 (expr)
-    '+'         reduce using rule 68 (expr)
-    '-'         reduce using rule 68 (expr)
-    '/'         reduce using rule 68 (expr)
-    AND         reduce using rule 68 (expr)
-    ASSERT      reduce using rule 68 (expr)
-    CONTAIN     reduce using rule 68 (expr)
-    CONTAINS    reduce using rule 68 (expr)
-    DEBUG       reduce using rule 68 (expr)
-    END         reduce using rule 68 (expr)
-    EQUAL       reduce using rule 68 (expr)
-    EQUALS      reduce using rule 68 (expr)
-    GE          reduce using rule 68 (expr)
-    GT          reduce using rule 68 (expr)
-    HTTP        reduce using rule 68 (expr)
-    INTO        reduce using rule 68 (expr)
-    LE          reduce using rule 68 (expr)
-    LT          reduce using rule 68 (expr)
-    MATCH       reduce using rule 68 (expr)
-    MATCHES     reduce using rule 68 (expr)
-    MUST        reduce using rule 68 (expr)
-    NOTEQUAL    reduce using rule 68 (expr)
-    NOTEQUALS   reduce using rule 68 (expr)
-    OR          reduce using rule 68 (expr)
-    SET         reduce using rule 68 (expr)
-    SHOULD      reduce using rule 68 (expr)
-    STARTSWITH  reduce using rule 68 (expr)
-    WHEN        reduce using rule 68 (expr)
-
-state 75 // ASSERT FLOAT '+'
-
-   69 expr: expr '+' . expr  // assoc %left, prec 3
-
-    '('      shift, and goto state 71
-    '{'      shift, and goto state 32
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-
-    any_value  goto state 73
-    expr       goto state 84
-    number     goto state 31
-    variable   goto state 30
-
-state 76 // ASSERT FLOAT '-'
-
-   70 expr: expr '-' . expr  // assoc %left, prec 3
-
-    '('      shift, and goto state 71
-    '{'      shift, and goto state 32
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-
-    any_value  goto state 73
-    expr       goto state 83
-    number     goto state 31
-    variable   goto state 30
-
-state 77 // ASSERT FLOAT '*'
-
-   71 expr: expr '*' . expr  // assoc %left, prec 4
-
-    '('      shift, and goto state 71
-    '{'      shift, and goto state 32
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-
-    any_value  goto state 73
-    expr       goto state 82
-    number     goto state 31
-    variable   goto state 30
-
-state 78 // ASSERT FLOAT '/'
-
-   72 expr: expr '/' . expr  // assoc %left, prec 4
-
-    '('      shift, and goto state 71
-    '{'      shift, and goto state 32
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-
-    any_value  goto state 73
-    expr       goto state 81
-    number     goto state 31
-    variable   goto state 30
-
-state 79 // ASSERT FLOAT '%'
-
-   73 expr: expr '%' . expr  // assoc %left, prec 4
-
-    '('      shift, and goto state 71
-    '{'      shift, and goto state 32
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-
-    any_value  goto state 73
-    expr       goto state 80
-    number     goto state 31
-    variable   goto state 30
-
-state 80 // ASSERT FLOAT '%' FLOAT [$end]
-
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
-   73 expr: expr '%' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   73 expr: expr '/' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
     $end        reduce using rule 73 (expr)
     '%'         reduce using rule 73 (expr)
@@ -1460,14 +1550,14 @@ state 80 // ASSERT FLOAT '%' FLOAT [$end]
     STARTSWITH  reduce using rule 73 (expr)
     WHEN        reduce using rule 73 (expr)
 
-state 81 // ASSERT FLOAT '/' FLOAT [$end]
+state 83 // ASSERT FLOAT '*' FLOAT [$end]
 
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   72 expr: expr '/' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   72 expr: expr '*' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
     $end        reduce using rule 72 (expr)
     '%'         reduce using rule 72 (expr)
@@ -1501,22 +1591,22 @@ state 81 // ASSERT FLOAT '/' FLOAT [$end]
     STARTSWITH  reduce using rule 72 (expr)
     WHEN        reduce using rule 72 (expr)
 
-state 82 // ASSERT FLOAT '*' FLOAT [$end]
+state 84 // ASSERT FLOAT '-' FLOAT [$end]
 
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   71 expr: expr '*' expr .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   71 expr: expr '-' expr .  [$end, ')', '+', '-', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
     $end        reduce using rule 71 (expr)
-    '%'         reduce using rule 71 (expr)
+    '%'         shift, and goto state 80
     ')'         reduce using rule 71 (expr)
-    '*'         reduce using rule 71 (expr)
+    '*'         shift, and goto state 78
     '+'         reduce using rule 71 (expr)
     '-'         reduce using rule 71 (expr)
-    '/'         reduce using rule 71 (expr)
+    '/'         shift, and goto state 79
     AND         reduce using rule 71 (expr)
     ASSERT      reduce using rule 71 (expr)
     CONTAIN     reduce using rule 71 (expr)
@@ -1542,22 +1632,22 @@ state 82 // ASSERT FLOAT '*' FLOAT [$end]
     STARTSWITH  reduce using rule 71 (expr)
     WHEN        reduce using rule 71 (expr)
 
-state 83 // ASSERT FLOAT '-' FLOAT [$end]
+state 85 // ASSERT FLOAT '+' FLOAT [$end]
 
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   70 expr: expr '-' expr .  [$end, ')', '+', '-', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   70 expr: expr '+' expr .  [$end, ')', '+', '-', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
     $end        reduce using rule 70 (expr)
-    '%'         shift, and goto state 79
+    '%'         shift, and goto state 80
     ')'         reduce using rule 70 (expr)
-    '*'         shift, and goto state 77
+    '*'         shift, and goto state 78
     '+'         reduce using rule 70 (expr)
     '-'         reduce using rule 70 (expr)
-    '/'         shift, and goto state 78
+    '/'         shift, and goto state 79
     AND         reduce using rule 70 (expr)
     ASSERT      reduce using rule 70 (expr)
     CONTAIN     reduce using rule 70 (expr)
@@ -1583,74 +1673,33 @@ state 83 // ASSERT FLOAT '-' FLOAT [$end]
     STARTSWITH  reduce using rule 70 (expr)
     WHEN        reduce using rule 70 (expr)
 
-state 84 // ASSERT FLOAT '+' FLOAT [$end]
-
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   69 expr: expr '+' expr .  [$end, ')', '+', '-', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INTO, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, STARTSWITH, WHEN]  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
-
-    $end        reduce using rule 69 (expr)
-    '%'         shift, and goto state 79
-    ')'         reduce using rule 69 (expr)
-    '*'         shift, and goto state 77
-    '+'         reduce using rule 69 (expr)
-    '-'         reduce using rule 69 (expr)
-    '/'         shift, and goto state 78
-    AND         reduce using rule 69 (expr)
-    ASSERT      reduce using rule 69 (expr)
-    CONTAIN     reduce using rule 69 (expr)
-    CONTAINS    reduce using rule 69 (expr)
-    DEBUG       reduce using rule 69 (expr)
-    END         reduce using rule 69 (expr)
-    EQUAL       reduce using rule 69 (expr)
-    EQUALS      reduce using rule 69 (expr)
-    GE          reduce using rule 69 (expr)
-    GT          reduce using rule 69 (expr)
-    HTTP        reduce using rule 69 (expr)
-    INTO        reduce using rule 69 (expr)
-    LE          reduce using rule 69 (expr)
-    LT          reduce using rule 69 (expr)
-    MATCH       reduce using rule 69 (expr)
-    MATCHES     reduce using rule 69 (expr)
-    MUST        reduce using rule 69 (expr)
-    NOTEQUAL    reduce using rule 69 (expr)
-    NOTEQUALS   reduce using rule 69 (expr)
-    OR          reduce using rule 69 (expr)
-    SET         reduce using rule 69 (expr)
-    SHOULD      reduce using rule 69 (expr)
-    STARTSWITH  reduce using rule 69 (expr)
-    WHEN        reduce using rule 69 (expr)
-
-state 85 // MUST '(' FALSE [')']
+state 86 // MUST '(' FALSE [')']
 
    58 boolean_exp: '(' boolean_exp . ')'
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
-    ')'  shift, and goto state 90
-    AND  shift, and goto state 91
-    OR   shift, and goto state 92
+    ')'  shift, and goto state 91
+    AND  shift, and goto state 92
+    OR   shift, and goto state 93
 
-state 86 // MUST '(' FLOAT ['%']
+state 87 // MUST '(' FLOAT ['%']
 
-   63 expr_opr: expr . operator expr
-   65 expr_opr: expr . operator any_value
-   68 expr: '(' expr . ')'
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
+   64 expr_opr: expr . operator expr
+   66 expr_opr: expr . operator any_value
+   69 expr: '(' expr . ')'
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
-    '%'         shift, and goto state 79
-    ')'         shift, and goto state 74
-    '*'         shift, and goto state 77
-    '+'         shift, and goto state 75
-    '-'         shift, and goto state 76
-    '/'         shift, and goto state 78
+    '%'         shift, and goto state 80
+    ')'         shift, and goto state 75
+    '*'         shift, and goto state 78
+    '+'         shift, and goto state 76
+    '-'         shift, and goto state 77
+    '/'         shift, and goto state 79
     CONTAIN     shift, and goto state 64
     CONTAINS    shift, and goto state 63
     EQUAL       shift, and goto state 56
@@ -1665,90 +1714,90 @@ state 86 // MUST '(' FLOAT ['%']
     NOTEQUALS   shift, and goto state 57
     STARTSWITH  shift, and goto state 65
 
-    operator  goto state 87
+    operator  goto state 88
 
-state 87 // ASSERT FLOAT CONTAIN
+state 88 // ASSERT FLOAT CONTAIN
 
-   63 expr_opr: expr operator . expr
-   65 expr_opr: expr operator . any_value
+   64 expr_opr: expr operator . expr
+   66 expr_opr: expr operator . any_value
 
-    '('      shift, and goto state 71
+    '('      shift, and goto state 72
     '{'      shift, and goto state 32
     FLOAT    shift, and goto state 34
     INTEGER  shift, and goto state 33
     STRING   shift, and goto state 29
 
-    any_value  goto state 89
-    expr       goto state 88
+    any_value  goto state 90
+    expr       goto state 89
     number     goto state 31
     variable   goto state 30
 
-state 88 // ASSERT FLOAT CONTAIN FLOAT
-
-   63 expr_opr: expr operator expr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
-
-    $end    reduce using rule 63 (expr_opr)
-    '%'     shift, and goto state 79
-    ')'     reduce using rule 63 (expr_opr)
-    '*'     shift, and goto state 77
-    '+'     shift, and goto state 75
-    '-'     shift, and goto state 76
-    '/'     shift, and goto state 78
-    AND     reduce using rule 63 (expr_opr)
-    ASSERT  reduce using rule 63 (expr_opr)
-    DEBUG   reduce using rule 63 (expr_opr)
-    END     reduce using rule 63 (expr_opr)
-    HTTP    reduce using rule 63 (expr_opr)
-    INTO    reduce using rule 63 (expr_opr)
-    MUST    reduce using rule 63 (expr_opr)
-    OR      reduce using rule 63 (expr_opr)
-    SET     reduce using rule 63 (expr_opr)
-    SHOULD  reduce using rule 63 (expr_opr)
-    WHEN    reduce using rule 63 (expr_opr)
-
 state 89 // ASSERT FLOAT CONTAIN FLOAT
 
-   65 expr_opr: expr operator any_value .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-   74 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   64 expr_opr: expr operator expr .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
-    $end    reduce using rule 65 (expr_opr)
-    '%'     reduce using rule 74 (expr)
-    ')'     reduce using rule 65 (expr_opr)
-    '*'     reduce using rule 74 (expr)
-    '+'     reduce using rule 74 (expr)
-    '-'     reduce using rule 74 (expr)
-    '/'     reduce using rule 74 (expr)
-    AND     reduce using rule 65 (expr_opr)
-    ASSERT  reduce using rule 65 (expr_opr)
-    DEBUG   reduce using rule 65 (expr_opr)
-    END     reduce using rule 65 (expr_opr)
-    HTTP    reduce using rule 65 (expr_opr)
-    INTO    reduce using rule 65 (expr_opr)
-    MUST    reduce using rule 65 (expr_opr)
-    OR      reduce using rule 65 (expr_opr)
-    SET     reduce using rule 65 (expr_opr)
-    SHOULD  reduce using rule 65 (expr_opr)
-    WHEN    reduce using rule 65 (expr_opr)
-    conflict on $end, reduce using rule 65, reduce using rule 74
-    conflict on ')', reduce using rule 65, reduce using rule 74
-    conflict on AND, reduce using rule 65, reduce using rule 74
-    conflict on ASSERT, reduce using rule 65, reduce using rule 74
-    conflict on DEBUG, reduce using rule 65, reduce using rule 74
-    conflict on END, reduce using rule 65, reduce using rule 74
-    conflict on HTTP, reduce using rule 65, reduce using rule 74
-    conflict on INTO, reduce using rule 65, reduce using rule 74
-    conflict on MUST, reduce using rule 65, reduce using rule 74
-    conflict on OR, reduce using rule 65, reduce using rule 74
-    conflict on SET, reduce using rule 65, reduce using rule 74
-    conflict on SHOULD, reduce using rule 65, reduce using rule 74
-    conflict on WHEN, reduce using rule 65, reduce using rule 74
+    $end    reduce using rule 64 (expr_opr)
+    '%'     shift, and goto state 80
+    ')'     reduce using rule 64 (expr_opr)
+    '*'     shift, and goto state 78
+    '+'     shift, and goto state 76
+    '-'     shift, and goto state 77
+    '/'     shift, and goto state 79
+    AND     reduce using rule 64 (expr_opr)
+    ASSERT  reduce using rule 64 (expr_opr)
+    DEBUG   reduce using rule 64 (expr_opr)
+    END     reduce using rule 64 (expr_opr)
+    HTTP    reduce using rule 64 (expr_opr)
+    INTO    reduce using rule 64 (expr_opr)
+    MUST    reduce using rule 64 (expr_opr)
+    OR      reduce using rule 64 (expr_opr)
+    SET     reduce using rule 64 (expr_opr)
+    SHOULD  reduce using rule 64 (expr_opr)
+    WHEN    reduce using rule 64 (expr_opr)
 
-state 90 // MUST '(' FALSE ')'
+state 90 // ASSERT FLOAT CONTAIN FLOAT
+
+   66 expr_opr: expr operator any_value .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   75 expr: any_value .  [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+
+    $end    reduce using rule 66 (expr_opr)
+    '%'     reduce using rule 75 (expr)
+    ')'     reduce using rule 66 (expr_opr)
+    '*'     reduce using rule 75 (expr)
+    '+'     reduce using rule 75 (expr)
+    '-'     reduce using rule 75 (expr)
+    '/'     reduce using rule 75 (expr)
+    AND     reduce using rule 66 (expr_opr)
+    ASSERT  reduce using rule 66 (expr_opr)
+    DEBUG   reduce using rule 66 (expr_opr)
+    END     reduce using rule 66 (expr_opr)
+    HTTP    reduce using rule 66 (expr_opr)
+    INTO    reduce using rule 66 (expr_opr)
+    MUST    reduce using rule 66 (expr_opr)
+    OR      reduce using rule 66 (expr_opr)
+    SET     reduce using rule 66 (expr_opr)
+    SHOULD  reduce using rule 66 (expr_opr)
+    WHEN    reduce using rule 66 (expr_opr)
+    conflict on $end, reduce using rule 66, reduce using rule 75
+    conflict on ')', reduce using rule 66, reduce using rule 75
+    conflict on AND, reduce using rule 66, reduce using rule 75
+    conflict on ASSERT, reduce using rule 66, reduce using rule 75
+    conflict on DEBUG, reduce using rule 66, reduce using rule 75
+    conflict on END, reduce using rule 66, reduce using rule 75
+    conflict on HTTP, reduce using rule 66, reduce using rule 75
+    conflict on INTO, reduce using rule 66, reduce using rule 75
+    conflict on MUST, reduce using rule 66, reduce using rule 75
+    conflict on OR, reduce using rule 66, reduce using rule 75
+    conflict on SET, reduce using rule 66, reduce using rule 75
+    conflict on SHOULD, reduce using rule 66, reduce using rule 75
+    conflict on WHEN, reduce using rule 66, reduce using rule 75
+
+state 91 // MUST '(' FALSE ')'
 
    58 boolean_exp: '(' boolean_exp ')' .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
 
@@ -1766,9 +1815,29 @@ state 90 // MUST '(' FALSE ')'
     SHOULD  reduce using rule 58 (boolean_exp)
     WHEN    reduce using rule 58 (boolean_exp)
 
-state 91 // ASSERT FALSE AND
+state 92 // ASSERT FALSE AND
 
-   66 expr_opr: boolean_exp AND . boolean_exp
+   67 expr_opr: boolean_exp AND . boolean_exp
+
+    '('      shift, and goto state 50
+    '{'      shift, and goto state 32
+    FALSE    shift, and goto state 54
+    FLOAT    shift, and goto state 34
+    INTEGER  shift, and goto state 33
+    STRING   shift, and goto state 29
+    TRUE     shift, and goto state 53
+
+    any_value    goto state 51
+    boolean_exp  goto state 96
+    expr         goto state 94
+    expr_opr     goto state 52
+    number       goto state 31
+    true_false   goto state 49
+    variable     goto state 30
+
+state 93 // ASSERT FALSE OR
+
+   68 expr_opr: boolean_exp OR . boolean_exp
 
     '('      shift, and goto state 50
     '{'      shift, and goto state 32
@@ -1780,47 +1849,27 @@ state 91 // ASSERT FALSE AND
 
     any_value    goto state 51
     boolean_exp  goto state 95
-    expr         goto state 93
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
     variable     goto state 30
 
-state 92 // ASSERT FALSE OR
+state 94 // ASSERT FLOAT ['%']
 
-   67 expr_opr: boolean_exp OR . boolean_exp
+   64 expr_opr: expr . operator expr
+   66 expr_opr: expr . operator any_value
+   70 expr: expr . '+' expr  // assoc %left, prec 3
+   71 expr: expr . '-' expr  // assoc %left, prec 3
+   72 expr: expr . '*' expr  // assoc %left, prec 4
+   73 expr: expr . '/' expr  // assoc %left, prec 4
+   74 expr: expr . '%' expr  // assoc %left, prec 4
 
-    '('      shift, and goto state 50
-    '{'      shift, and goto state 32
-    FALSE    shift, and goto state 54
-    FLOAT    shift, and goto state 34
-    INTEGER  shift, and goto state 33
-    STRING   shift, and goto state 29
-    TRUE     shift, and goto state 53
-
-    any_value    goto state 51
-    boolean_exp  goto state 94
-    expr         goto state 93
-    expr_opr     goto state 52
-    number       goto state 31
-    true_false   goto state 49
-    variable     goto state 30
-
-state 93 // ASSERT FLOAT ['%']
-
-   63 expr_opr: expr . operator expr
-   65 expr_opr: expr . operator any_value
-   69 expr: expr . '+' expr  // assoc %left, prec 3
-   70 expr: expr . '-' expr  // assoc %left, prec 3
-   71 expr: expr . '*' expr  // assoc %left, prec 4
-   72 expr: expr . '/' expr  // assoc %left, prec 4
-   73 expr: expr . '%' expr  // assoc %left, prec 4
-
-    '%'         shift, and goto state 79
-    '*'         shift, and goto state 77
-    '+'         shift, and goto state 75
-    '-'         shift, and goto state 76
-    '/'         shift, and goto state 78
+    '%'         shift, and goto state 80
+    '*'         shift, and goto state 78
+    '+'         shift, and goto state 76
+    '-'         shift, and goto state 77
+    '/'         shift, and goto state 79
     CONTAIN     shift, and goto state 64
     CONTAINS    shift, and goto state 63
     EQUAL       shift, and goto state 56
@@ -1835,110 +1884,110 @@ state 93 // ASSERT FLOAT ['%']
     NOTEQUALS   shift, and goto state 57
     STARTSWITH  shift, and goto state 65
 
-    operator  goto state 87
+    operator  goto state 88
 
-state 94 // ASSERT FALSE OR FALSE [$end]
+state 95 // ASSERT FALSE OR FALSE [$end]
 
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
-   67 expr_opr: boolean_exp OR boolean_exp .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
+   68 expr_opr: boolean_exp OR boolean_exp .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+
+    $end    reduce using rule 68 (expr_opr)
+    ')'     reduce using rule 68 (expr_opr)
+    AND     shift, and goto state 92
+    ASSERT  reduce using rule 68 (expr_opr)
+    DEBUG   reduce using rule 68 (expr_opr)
+    END     reduce using rule 68 (expr_opr)
+    HTTP    reduce using rule 68 (expr_opr)
+    INTO    reduce using rule 68 (expr_opr)
+    MUST    reduce using rule 68 (expr_opr)
+    OR      shift, and goto state 93
+    SET     reduce using rule 68 (expr_opr)
+    SHOULD  reduce using rule 68 (expr_opr)
+    WHEN    reduce using rule 68 (expr_opr)
+    conflict on AND, shift, and goto state 92, reduce using rule 68
+    conflict on OR, shift, and goto state 93, reduce using rule 68
+
+state 96 // ASSERT FALSE AND FALSE [$end]
+
+   67 expr_opr: boolean_exp . AND boolean_exp
+   67 expr_opr: boolean_exp AND boolean_exp .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 67 (expr_opr)
     ')'     reduce using rule 67 (expr_opr)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 67 (expr_opr)
     DEBUG   reduce using rule 67 (expr_opr)
     END     reduce using rule 67 (expr_opr)
     HTTP    reduce using rule 67 (expr_opr)
     INTO    reduce using rule 67 (expr_opr)
     MUST    reduce using rule 67 (expr_opr)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 67 (expr_opr)
     SHOULD  reduce using rule 67 (expr_opr)
     WHEN    reduce using rule 67 (expr_opr)
-    conflict on AND, shift, and goto state 91, reduce using rule 67
-    conflict on OR, shift, and goto state 92, reduce using rule 67
+    conflict on AND, shift, and goto state 92, reduce using rule 67
+    conflict on OR, shift, and goto state 93, reduce using rule 67
 
-state 95 // ASSERT FALSE AND FALSE [$end]
-
-   66 expr_opr: boolean_exp . AND boolean_exp
-   66 expr_opr: boolean_exp AND boolean_exp .  [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INTO, MUST, OR, SET, SHOULD, WHEN]
-   67 expr_opr: boolean_exp . OR boolean_exp
-
-    $end    reduce using rule 66 (expr_opr)
-    ')'     reduce using rule 66 (expr_opr)
-    AND     shift, and goto state 91
-    ASSERT  reduce using rule 66 (expr_opr)
-    DEBUG   reduce using rule 66 (expr_opr)
-    END     reduce using rule 66 (expr_opr)
-    HTTP    reduce using rule 66 (expr_opr)
-    INTO    reduce using rule 66 (expr_opr)
-    MUST    reduce using rule 66 (expr_opr)
-    OR      shift, and goto state 92
-    SET     reduce using rule 66 (expr_opr)
-    SHOULD  reduce using rule 66 (expr_opr)
-    WHEN    reduce using rule 66 (expr_opr)
-    conflict on AND, shift, and goto state 91, reduce using rule 66
-    conflict on OR, shift, and goto state 92, reduce using rule 66
-
-state 96 // SHOULD FALSE [$end]
+state 97 // SHOULD FALSE [$end]
 
    20 should_command: SHOULD boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 20 (should_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 20 (should_command)
     DEBUG   reduce using rule 20 (should_command)
     END     reduce using rule 20 (should_command)
     HTTP    reduce using rule 20 (should_command)
     INTO    reduce using rule 20 (should_command)
     MUST    reduce using rule 20 (should_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 20 (should_command)
     SHOULD  reduce using rule 20 (should_command)
     WHEN    reduce using rule 20 (should_command)
 
-state 97 // MUST FALSE [$end]
+state 98 // MUST FALSE [$end]
 
    19 must_command: MUST boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 19 (must_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 19 (must_command)
     DEBUG   reduce using rule 19 (must_command)
     END     reduce using rule 19 (must_command)
     HTTP    reduce using rule 19 (must_command)
     INTO    reduce using rule 19 (must_command)
     MUST    reduce using rule 19 (must_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 19 (must_command)
     SHOULD  reduce using rule 19 (must_command)
     WHEN    reduce using rule 19 (must_command)
 
-state 98 // ASSERT FALSE [$end]
+state 99 // ASSERT FALSE [$end]
 
    18 assert_command: ASSERT boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 18 (assert_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 18 (assert_command)
     DEBUG   reduce using rule 18 (assert_command)
     END     reduce using rule 18 (assert_command)
     HTTP    reduce using rule 18 (assert_command)
     INTO    reduce using rule 18 (assert_command)
     MUST    reduce using rule 18 (assert_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 18 (assert_command)
     SHOULD  reduce using rule 18 (assert_command)
     WHEN    reduce using rule 18 (assert_command)
 
-state 99 // END WHEN
+state 100 // END WHEN
 
    15 end_command: END WHEN . boolean_exp
 
@@ -1951,52 +2000,52 @@ state 99 // END WHEN
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 101
-    expr         goto state 93
+    boolean_exp  goto state 102
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
     variable     goto state 30
 
-state 100 // END FALSE [$end]
+state 101 // END FALSE [$end]
 
    16 end_command: END boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 16 (end_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 16 (end_command)
     DEBUG   reduce using rule 16 (end_command)
     END     reduce using rule 16 (end_command)
     HTTP    reduce using rule 16 (end_command)
     INTO    reduce using rule 16 (end_command)
     MUST    reduce using rule 16 (end_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 16 (end_command)
     SHOULD  reduce using rule 16 (end_command)
     WHEN    reduce using rule 16 (end_command)
 
-state 101 // END WHEN FALSE [$end]
+state 102 // END WHEN FALSE [$end]
 
    15 end_command: END WHEN boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 15 (end_command)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 15 (end_command)
     DEBUG   reduce using rule 15 (end_command)
     END     reduce using rule 15 (end_command)
     HTTP    reduce using rule 15 (end_command)
     INTO    reduce using rule 15 (end_command)
     MUST    reduce using rule 15 (end_command)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 15 (end_command)
     SHOULD  reduce using rule 15 (end_command)
     WHEN    reduce using rule 15 (end_command)
 
-state 102 // DEBUG FLOAT [$end]
+state 103 // DEBUG FLOAT [$end]
 
    14 debug_command: DEBUG multi_any_value .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
    39 multi_any_value: multi_any_value . any_value
@@ -2016,11 +2065,11 @@ state 102 // DEBUG FLOAT [$end]
     STRING   shift, and goto state 29
     WHEN     reduce using rule 14 (debug_command)
 
-    any_value  goto state 104
+    any_value  goto state 105
     number     goto state 31
     variable   goto state 30
 
-state 103 // DEBUG FLOAT [$end]
+state 104 // DEBUG FLOAT [$end]
 
    38 multi_any_value: any_value .  [$end, '{', ASSERT, DEBUG, END, FLOAT, HTTP, INTEGER, INTO, MUST, SET, SHOULD, STRING, WHEN]
 
@@ -2039,7 +2088,7 @@ state 103 // DEBUG FLOAT [$end]
     STRING   reduce using rule 38 (multi_any_value)
     WHEN     reduce using rule 38 (multi_any_value)
 
-state 104 // DEBUG FLOAT FLOAT [$end]
+state 105 // DEBUG FLOAT FLOAT [$end]
 
    39 multi_any_value: multi_any_value any_value .  [$end, '{', ASSERT, DEBUG, END, FLOAT, HTTP, INTEGER, INTO, MUST, SET, SHOULD, STRING, WHEN]
 
@@ -2058,16 +2107,16 @@ state 104 // DEBUG FLOAT FLOAT [$end]
     STRING   reduce using rule 39 (multi_any_value)
     WHEN     reduce using rule 39 (multi_any_value)
 
-state 105 // END INTO
+state 106 // END INTO
 
     3 command_with_condition_opt: command INTO . variable WHEN boolean_exp
     4 command_with_condition_opt: command INTO . variable
 
     '{'  shift, and goto state 32
 
-    variable  goto state 108
+    variable  goto state 109
 
-state 106 // END WHEN
+state 107 // END WHEN
 
     5 command_with_condition_opt: command WHEN . boolean_exp
 
@@ -2080,31 +2129,31 @@ state 106 // END WHEN
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 107
-    expr         goto state 93
+    boolean_exp  goto state 108
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
     variable     goto state 30
 
-state 107 // END WHEN FALSE
+state 108 // END WHEN FALSE
 
     5 command_with_condition_opt: command WHEN boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, MUST, SET, SHOULD]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 5 (command_with_condition_opt)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 5 (command_with_condition_opt)
     DEBUG   reduce using rule 5 (command_with_condition_opt)
     END     reduce using rule 5 (command_with_condition_opt)
     HTTP    reduce using rule 5 (command_with_condition_opt)
     MUST    reduce using rule 5 (command_with_condition_opt)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 5 (command_with_condition_opt)
     SHOULD  reduce using rule 5 (command_with_condition_opt)
 
-state 108 // END INTO '{' '{' IDENTIFIER '}' '}' [$end]
+state 109 // END INTO '{' '{' IDENTIFIER '}' '}' [$end]
 
     3 command_with_condition_opt: command INTO variable . WHEN boolean_exp
     4 command_with_condition_opt: command INTO variable .  [$end, ASSERT, DEBUG, END, HTTP, MUST, SET, SHOULD]
@@ -2117,9 +2166,9 @@ state 108 // END INTO '{' '{' IDENTIFIER '}' '}' [$end]
     MUST    reduce using rule 4 (command_with_condition_opt)
     SET     reduce using rule 4 (command_with_condition_opt)
     SHOULD  reduce using rule 4 (command_with_condition_opt)
-    WHEN    shift, and goto state 109
+    WHEN    shift, and goto state 110
 
-state 109 // END INTO '{' '{' IDENTIFIER '}' '}' WHEN
+state 110 // END INTO '{' '{' IDENTIFIER '}' '}' WHEN
 
     3 command_with_condition_opt: command INTO variable WHEN . boolean_exp
 
@@ -2132,27 +2181,27 @@ state 109 // END INTO '{' '{' IDENTIFIER '}' '}' WHEN
     TRUE     shift, and goto state 53
 
     any_value    goto state 51
-    boolean_exp  goto state 110
-    expr         goto state 93
+    boolean_exp  goto state 111
+    expr         goto state 94
     expr_opr     goto state 52
     number       goto state 31
     true_false   goto state 49
     variable     goto state 30
 
-state 110 // END INTO '{' '{' IDENTIFIER '}' '}' WHEN FALSE [$end]
+state 111 // END INTO '{' '{' IDENTIFIER '}' '}' WHEN FALSE [$end]
 
     3 command_with_condition_opt: command INTO variable WHEN boolean_exp .  [$end, ASSERT, DEBUG, END, HTTP, MUST, SET, SHOULD]
-   66 expr_opr: boolean_exp . AND boolean_exp
-   67 expr_opr: boolean_exp . OR boolean_exp
+   67 expr_opr: boolean_exp . AND boolean_exp
+   68 expr_opr: boolean_exp . OR boolean_exp
 
     $end    reduce using rule 3 (command_with_condition_opt)
-    AND     shift, and goto state 91
+    AND     shift, and goto state 92
     ASSERT  reduce using rule 3 (command_with_condition_opt)
     DEBUG   reduce using rule 3 (command_with_condition_opt)
     END     reduce using rule 3 (command_with_condition_opt)
     HTTP    reduce using rule 3 (command_with_condition_opt)
     MUST    reduce using rule 3 (command_with_condition_opt)
-    OR      shift, and goto state 92
+    OR      shift, and goto state 93
     SET     reduce using rule 3 (command_with_condition_opt)
     SHOULD  reduce using rule 3 (command_with_condition_opt)
 
