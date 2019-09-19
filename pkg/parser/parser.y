@@ -370,6 +370,12 @@ variable	:
 			$$.name = $3.(string)
 			$$.value = query($3.(string),GlobalVars)
 		}
+		|
+		'$' IDENTIFIER
+		{
+			$$.name = $2.(string)
+                	$$.value = query($2.(string),GlobalVars)
+		}
 
 operator	:
 		EQUALS

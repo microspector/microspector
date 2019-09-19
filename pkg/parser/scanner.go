@@ -393,5 +393,5 @@ func isLetter(ch rune) bool           { return ch == '_' || unicode.IsLetter(ch)
 func isAlphaNumeric(ch rune) bool     { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
 func isIdentifierChar(ch rune) bool   { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
 func isOperator(ch rune) bool         { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
-func isVarStart(ch rune) bool         { return ch == '{' }
+func isVarStart(ch rune) bool         { return ch == '{' || ch == '$' }
 func isVarEnd(ch rune) bool           { return ch == '}' }

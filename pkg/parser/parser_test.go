@@ -220,7 +220,7 @@ SET {{ Result501Strings }} {{ Var10 }} * {{ Var5 }} * 5 + 1 + {{ Var10 }} * {{ V
 SET {{ Result550Strings }} {{ Var10 }} * {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
 SET {{ Result262Strings }} {{ Var10 }} / {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
 SET {{ ResultFloat15 }} {{ Var10 }} * 1.5
-SET {{ ResultFloat10 }} {{ ResultFloat15 }} / 1.5
+SET $ResultFloat10 {{ ResultFloat15 }} / 1.5
 `)
 
 	Run(lex)
