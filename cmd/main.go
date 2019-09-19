@@ -66,9 +66,14 @@ func main() {
 			os.Exit(1)
 		}
 		lex := parser.Parse(string(bytes))
-		fmt.Printf("%+v\n",lex)
+		if *vv {
+			fmt.Printf("%+v\n", lex)
+		}
 		parser.Run(lex)
 		parser.PrintStats()
+		if *vv {
+			fmt.Printf("%+v\n", parser.GlobalVars)
+		}
 		parser.Reset()
 
 	}

@@ -9,7 +9,7 @@ build: yacc
 	go build -i -v -o $(PWD)/bin/microspector -ldflags="-X main.version=${VERSION}" ${PWD}/cmd
 
 run: yacc
-	go run ./cmd --folder="tasks"
+	go run ./cmd --folder="tasks" --verbose
 
 test: yacc
 	go test ${PWD}/pkg/parser
