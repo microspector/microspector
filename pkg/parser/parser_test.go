@@ -33,7 +33,7 @@ SET {{ StartsWithFalse }} "microspector.com" STARTSWITH "microspectorFAIL"
 SET {{ DoubleDomain }} "microspector.com {{ .Domain }}"
 SET {{ Hundred }} 100
 SET {{ StringDigitCompare1 }} '100' LT 101 AND 100 == 100
-SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" equals 100) OR (1 != 1)
+SET {{ StringDigitCompare2 }} ("100" < 101 AND "100" equals 20 * 5) OR (1 != 1)
 SET {{ StringDigitCompare3 }} "100" <= 101
 SET {{ StringDigitCompare4 }} "100" GT 99
 SET {{ StringDigitCompare5 }} "100" > 99
@@ -114,7 +114,7 @@ SET {{ NilVar }} "this should not be assigned"
 
 	Run(lex)
 
-	assert.Equal(t, GlobalVars["Var50"], 50)
+	assert.Equal(t, GlobalVars["Var50"], int64(50))
 	assert.Equal(t, GlobalVars["NilVar"], nil)
 }
 
@@ -188,20 +188,23 @@ SET {{ Result6Strings }} {{ Var8 }} - {{ Var2 }}
 SET {{ Result5Strings }} {{ Var8 }} - {{ Var2 }} - 1
 SET {{ Result501Strings }} {{ Var10 }} * {{ Var5 }} * 5 + 1 + {{ Var10 }} * {{ Var5 }} * 5
 SET {{ Result550Strings }} {{ Var10 }} * {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
+SET {{ Result262Strings }} {{ Var10 }} / {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
+SET {{ ResultFloat15 }} {{ Var10 }} * 1.5
+SET {{ ResultFloat10 }} {{ ResultFloat15 }} / 1.5
 `)
 
 	Run(lex)
 
-	assert.Equal(t, GlobalVars["Var1"], 1)
+	assert.Equal(t, GlobalVars["Var1"], int64(1))
 	assert.Equal(t, GlobalVars["Var2"], "2")
-	assert.Equal(t, GlobalVars["Var3"], 3)
-	assert.Equal(t, GlobalVars["Var4"], 4)
+	assert.Equal(t, GlobalVars["Var3"], int64(3))
+	assert.Equal(t, GlobalVars["Var4"], int64(4))
 	assert.Equal(t, GlobalVars["Var5"], "5")
-	assert.Equal(t, GlobalVars["Var6"], 6)
-	assert.Equal(t, GlobalVars["Var7"], 7)
+	assert.Equal(t, GlobalVars["Var6"], int64(6))
+	assert.Equal(t, GlobalVars["Var7"], int64(7))
 	assert.Equal(t, GlobalVars["Var8"], "8")
-	assert.Equal(t, GlobalVars["Var9"], 9)
-	assert.Equal(t, GlobalVars["Var10"], 10)
+	assert.Equal(t, GlobalVars["Var9"], int64(9))
+	assert.Equal(t, GlobalVars["Var10"], int64(10))
 
 	assert.Equal(t, GlobalVars["Result10"], int64(10))
 	assert.Equal(t, GlobalVars["Result15"], float64(15))
@@ -210,5 +213,8 @@ SET {{ Result550Strings }} {{ Var10 }} * {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{
 	assert.Equal(t, GlobalVars["Result5Strings"], int64(5))
 	assert.Equal(t, GlobalVars["Result501Strings"], float64(501))
 	assert.Equal(t, GlobalVars["Result550Strings"], float64(550))
+	assert.Equal(t, GlobalVars["Result262Strings"], float64(262))
+	assert.Equal(t, GlobalVars["ResultFloat15"], float64(15))
+	assert.Equal(t, GlobalVars["ResultFloat10"], float64(10))
 
 }

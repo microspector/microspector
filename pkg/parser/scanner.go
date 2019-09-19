@@ -240,11 +240,44 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 	return tok
 }
 
+/**
+* TODO:
+* int8        the set of all signed  8-bit integers (-128 to 127)
+* int16       the set of all signed 16-bit integers (-32768 to 32767)
+* int32       the set of all signed 32-bit integers (-2147483648 to 2147483647)
+* int64       the set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
+*/
 func (s *Scanner) scanDigit() (tok Token) {
-	v, _ := strconv.Atoi(s.readWhile(isDigit))
-	return Token{
-		Type: INTEGER,
-		Val:  v,
+	var buf bytes.Buffer
+	foundDecimal := false
+	for {
+		ch := s.Peek()
+		if isDigit(ch) {
+			buf.WriteRune(s.read())
+		} else if ch == '.' {
+			if foundDecimal {
+				//oh second dot? fuck.
+				panic("i don't know what multiple dot means in a float val")
+			}
+			foundDecimal = true
+			buf.WriteRune(s.read())
+		} else {
+			break
+		}
+	}
+
+	if foundDecimal {
+		f, _ := strconv.ParseFloat(buf.String(), 64)
+		return Token{
+			Type: FLOAT,
+			Val:  f,
+		}
+	} else {
+		i, _ := strconv.ParseInt(buf.String(), 10, 64)
+		return Token{
+			Type: INTEGER,
+			Val:  i,
+		}
 	}
 }
 

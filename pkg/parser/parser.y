@@ -76,7 +76,7 @@ IDENTIFIER
 %type <vals> multi_any_value
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
-%type <boolean> boolean_exp
+%type <boolean> boolean_exp expr_opr
 
 
 //arithmetic things
@@ -449,6 +449,25 @@ boolean_exp	:
 			//boolean_ex: any_value operator any_value, oh conflicts start here :(
 			operator_result := runop($1,$2,$3)
 			$$ = operator_result
+		}
+		| expr_opr
+expr_opr:
+		expr operator expr
+		{
+			operator_result := runop($1,$2,$3)
+			$$ = operator_result
+		}
+		|
+		any_value operator expr
+		{
+			operator_result := runop($1,$2,$3)
+                         $$ = operator_result
+		}
+		|
+		expr operator any_value
+		{
+			operator_result := runop($1,$2,$3)
+			 $$ = operator_result
 		}
 
 // arithmetic things

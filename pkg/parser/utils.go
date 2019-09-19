@@ -167,7 +167,7 @@ func runop(left, operator, right interface{}) bool {
 	return false
 }
 
-func convertToInt(left, right interface{}) (l, r int) {
+func convertToInt(left, right interface{}) (l, r int64) {
 	return intVal(left), intVal(right)
 }
 
@@ -176,10 +176,17 @@ func convertToFloat(left, right interface{}) (l, r float64) {
 }
 
 func floatVal(obj interface{}) float64 {
+
 	switch obj.(type) {
-	case int, int64, int32:
-		return obj.(float64)
-	case float32, float64:
+	case int:
+		return float64(obj.(int))
+	case int64:
+		return float64(obj.(int64))
+	case int32:
+		return float64(obj.(int32))
+	case float32:
+		return float64(obj.(float32))
+	case float64:
 		return obj.(float64)
 	default:
 		f, _err := strconv.ParseFloat(fmt.Sprintf("%s", obj), 64)
@@ -190,16 +197,22 @@ func floatVal(obj interface{}) float64 {
 	}
 }
 
-func intVal(obj interface{}) int {
+func intVal(obj interface{}) int64 {
 	switch obj.(type) {
-	case int, int64, int32:
-		return obj.(int)
-	case float32, float64:
-		return int(obj.(float64))
+	case int:
+		return int64(obj.(int))
+	case int64:
+		return obj.(int64)
+	case int32:
+		return int64(obj.(int32))
+	case float32:
+		return int64(obj.(float32))
+	case float64:
+		return int64(obj.(float64))
 	default:
 		f, _err := strconv.Atoi(fmt.Sprintf("%s", obj))
 		if _err == nil {
-			return f
+			return int64(f)
 		}
 		return 0
 	}
