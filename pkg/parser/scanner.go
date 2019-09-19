@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"bytes"
 	"io"
+	"strconv"
 	"strings"
 	"unicode"
 )
@@ -102,12 +103,12 @@ func (s *Scanner) getNextToken() Token {
 	} else if ch == eof {
 		return Token{
 			Type: EOF,
-			Text: string(s.read()),
+			Val:  string(s.read()),
 		}
 	}
 	return Token{
 		Type: int(ch),
-		Text: string(s.read()),
+		Val:  string(s.read()),
 	}
 }
 
@@ -233,16 +234,17 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 
 	tok = Token{
 		Type: STRING,
-		Text: buf.String(),
+		Val:  buf.String(),
 	}
 
 	return tok
 }
 
 func (s *Scanner) scanDigit() (tok Token) {
+	v, _ := strconv.Atoi(s.readWhile(isDigit))
 	return Token{
 		Type: INTEGER,
-		Text: s.readWhile(isDigit),
+		Val:  v,
 	}
 }
 
@@ -250,7 +252,7 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	if isVarStart(rune(s.Latest.Type)) {
 		return Token{
 			Type: IDENTIFIER,
-			Text: s.readWhile(isIdentifierChar),
+			Val:  s.readWhile(isIdentifierChar),
 		}
 	}
 
@@ -259,12 +261,12 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	if ok {
 		return Token{
 			Type: token,
-			Text: strings.ToUpper(keyword),
+			Val:  strings.ToUpper(keyword),
 		}
 	}
 	return Token{
 		Type: KEYWORD,
-		Text: keyword,
+		Val:  keyword,
 	}
 }
 
@@ -276,13 +278,13 @@ func (s *Scanner) scanOperator() (tok Token) {
 			s.read()
 			return Token{
 				Type: LE,
-				Text: "<=",
+				Val:  "<=",
 			}
 		}
 
 		return Token{
 			Type: LT,
-			Text: "<",
+			Val:  "<",
 		}
 	case '>':
 
@@ -290,13 +292,13 @@ func (s *Scanner) scanOperator() (tok Token) {
 			s.read()
 			return Token{
 				Type: GE,
-				Text: ">=",
+				Val:  ">=",
 			}
 		}
 
 		return Token{
 			Type: GT,
-			Text: ">",
+			Val:  ">",
 		}
 
 	case '!':
@@ -304,7 +306,7 @@ func (s *Scanner) scanOperator() (tok Token) {
 			s.read()
 			return Token{
 				Type: NOTEQUALS,
-				Text: "!=",
+				Val:  "!=",
 			}
 		}
 		fallthrough
@@ -314,7 +316,7 @@ func (s *Scanner) scanOperator() (tok Token) {
 			s.read()
 			return Token{
 				Type: EQUALS,
-				Text: "==",
+				Val:  "==",
 			}
 		}
 
@@ -323,7 +325,7 @@ func (s *Scanner) scanOperator() (tok Token) {
 	default:
 		return Token{
 			Type: int(ch),
-			Text: string(ch),
+			Val:  string(ch),
 		}
 	}
 

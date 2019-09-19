@@ -152,10 +152,9 @@ SET {{ DoubleContainsSingle }}  "'this is a string '' with single quotes'"
 SET {{ SingleContainsSingle }}  '\'this is a string \'\' with single includes quotes\''
 SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
 SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
-`+" SET {{ BackTicks }} `\"\"this is' a back tick yeah\"\"` ")
+` + " SET {{ BackTicks }} `\"\"this is' a back tick yeah\"\"` ")
 
 	Run(lex)
-
 
 	assert.Equal(t, GlobalVars["SingleQuoted50"], "50")
 	assert.Equal(t, GlobalVars["DoubleQuoted50"], "50")
@@ -164,5 +163,52 @@ SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes qu
 	assert.Equal(t, GlobalVars["SingleContainsSingle"], `'this is a string '' with single includes quotes'`)
 	assert.Equal(t, GlobalVars["DoubleContainsDouble"], `"this is a string "" with double includes quotes"`)
 	assert.Equal(t, GlobalVars["BackTicks"], `""this is' a back tick yeah""`)
+
+}
+
+func TestParser_Arithmetic(t *testing.T) {
+
+	lex := Parse(`
+SET {{ Var1 }} 1
+SET {{ Var2 }} '2' # it should support both
+SET {{ Var3 }} 3
+SET {{ Var4 }} 4
+SET {{ Var5 }} '5'
+SET {{ Var6 }} 6
+SET {{ Var7 }} 7
+SET {{ Var8 }} '8'
+SET {{ Var9 }} 9
+SET {{ Var10 }} 10
+
+SET {{ Result10 }} {{ Var5 }} * 2
+SET {{ Result15 }} {{ Var3 }} * 5
+SET {{ Result5 }} {{ Var10 }} / 2
+SET {{ Result10Strings }} {{ Var8 }} + {{ Var2 }}
+SET {{ Result6Strings }} {{ Var8 }} - {{ Var2 }}
+SET {{ Result5Strings }} {{ Var8 }} - {{ Var2 }} - 1
+SET {{ Result501Strings }} {{ Var10 }} * {{ Var5 }} * 5 + 1 + {{ Var10 }} * {{ Var5 }} * 5
+SET {{ Result550Strings }} {{ Var10 }} * {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
+`)
+
+	Run(lex)
+
+	assert.Equal(t, GlobalVars["Var1"], 1)
+	assert.Equal(t, GlobalVars["Var2"], "2")
+	assert.Equal(t, GlobalVars["Var3"], 3)
+	assert.Equal(t, GlobalVars["Var4"], 4)
+	assert.Equal(t, GlobalVars["Var5"], "5")
+	assert.Equal(t, GlobalVars["Var6"], 6)
+	assert.Equal(t, GlobalVars["Var7"], 7)
+	assert.Equal(t, GlobalVars["Var8"], "8")
+	assert.Equal(t, GlobalVars["Var9"], 9)
+	assert.Equal(t, GlobalVars["Var10"], 10)
+
+	assert.Equal(t, GlobalVars["Result10"], int64(10))
+	assert.Equal(t, GlobalVars["Result15"], float64(15))
+	assert.Equal(t, GlobalVars["Result5"], float64(5))
+	assert.Equal(t, GlobalVars["Result6Strings"], int64(6))
+	assert.Equal(t, GlobalVars["Result5Strings"], int64(5))
+	assert.Equal(t, GlobalVars["Result501Strings"], float64(501))
+	assert.Equal(t, GlobalVars["Result550Strings"], float64(550))
 
 }

@@ -4,7 +4,7 @@ import "fmt"
 
 type Token struct {
 	Type int
-	Text string
+	Val  interface{}
 }
 
 type Tokens []Token
@@ -18,7 +18,7 @@ func (t *Token) TypeName() string {
 		return name
 	}
 
-	return t.Text
+	return fmt.Sprintf("%s", t.Val)
 }
 
 func (t *Token) Error() string {
@@ -26,5 +26,5 @@ func (t *Token) Error() string {
 }
 
 func (t *Token) String() string {
-	return fmt.Sprintf("Token: %s, Text:%s", t.TypeName(), t.Text)
+	return fmt.Sprintf("Token: %s, Val:%s", t.TypeName(), t.Val)
 }

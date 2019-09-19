@@ -4,7 +4,6 @@ package parser
 import (
     "log"
     "strings"
-    "strconv"
 
 )
 var GlobalVars = map[string]interface{}{}
@@ -78,6 +77,15 @@ IDENTIFIER
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
 %type <boolean> boolean_exp
+
+
+//arithmetic things
+%type <val> expr number
+%left '|'
+%left '&'
+%left '+'  '-'
+%left '*'  '/'  '%'
+
 
 %type <cmd>
 	command
@@ -226,6 +234,14 @@ SET variable any_value {
 	}
 }
 |
+SET variable expr {
+	//GlobalVars[$2.name] = $3
+	$$ = &SetCommand{
+		Name:$2.name,
+		Value:$3,
+	}
+}
+|
 SET variable boolean_exp {
 	//GlobalVars[$2.name] = $3
 	$$ = &SetCommand{
@@ -343,7 +359,7 @@ string_or_var {
     	$$ = $1
 }
 | INTEGER {
-	$$,_ = strconv.Atoi($1.(string))
+	$$ = $1
 }
 
 
@@ -387,8 +403,6 @@ EQUALS
 | LE
 | CONTAINS
 | STARTSWITH
-| AND
-| OR
 
 
 boolean_exp:
@@ -414,6 +428,43 @@ any_value operator any_value {
 	$$ = operator_result
 }
 
+// arithmetic things
+
+expr	:    '(' expr ')'
+		{ $$  =  $2 }
+	|    expr '+' expr
+		{ $$,_  = add ( $1 , $3 ) }
+	|    expr '-' expr
+		{ $$,_  =  subtract($3 , $1) }
+	|    expr '*' expr
+		{ $$,_  =  multiply($3 , $1) }
+	|    expr '/' expr
+		{ $$,_  =  divide($3 , $1) }
+	|    expr '%' expr
+		{ $$,_  =  mod($3 , $1) }
+	|    number
+	;
+
+
+number	: INTEGER
+	{
+		//number: INTEGER
+		$$ = $1;
+	}
+	|
+	FLOAT
+	{
+		//number: FLOAT
+	 	$$ = $1
+	}
+	|
+	variable
+	{
+	    	//number: variable
+		$$ =  $1.value
+	}
+
+
 
 %%
 
@@ -428,7 +479,7 @@ func (l *lex) Lex(lval *yySymType) int {
 
     v := l.tokens[0]
     l.tokens = l.tokens[1:]
-    lval.val = v.Text
+    lval.val = v.Val
     return v.Type
 }
 
