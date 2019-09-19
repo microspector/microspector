@@ -129,7 +129,8 @@ any_command		:
 
 
 command_with_condition_opt	:
-				command INTO variable WHEN boolean_exp {
+				command INTO variable WHEN boolean_exp
+				{
 					//run command put result into variable WHEN boolean_exp is true
 					if strings.Contains($3.name,".") {
 						yylex.Error("nested variables are not supported yet")
@@ -140,7 +141,8 @@ command_with_condition_opt	:
 					}
 				}
 				|
-				command INTO variable {
+				command INTO variable
+				{
 					//command INTO variable
 					if strings.Contains($3.name,".") {
 					   yylex.Error("nested variables are not supported yet")
