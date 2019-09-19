@@ -90,6 +90,27 @@ func TestParser_Http(t *testing.T) {
 
 	GlobalVars["ServerMux"] = server.URL
 
+	/**
+	content of https://microspector.com/test.json :
+	{
+	"array": [
+	1,
+	2,
+	3
+	],
+	"boolean": true,
+	"null": null,
+	"number": 123,
+	"float": 123.1,
+	"object": {
+	"a": "b",
+	"c": "d",
+	"e": "f"
+	},
+	"string": "Hello World"
+	}
+	 */
+
 	Run(Parse(`
 HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
@@ -97,6 +118,12 @@ set {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }} {{ ServerResult.Json.data }}
 HTTP get "https://microspector.com/test.json" INTO {{ MResult }}
 MUST $MResult.Json.boolean equals true
+MUST $MResult.Json.number equals 123
+MUST $MResult.Json.float equals 123.1
+MUST $MResult.Json.object.a equals "b"
+MUST $MResult.Json.object.c equals "d"
+MUST $MResult.Json.object.e equals "f"
+MUST $MResult.Json.string equals "Hello World"
 	`))
 
 	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
@@ -106,7 +133,7 @@ MUST $MResult.Json.boolean equals true
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
 	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
-	assert.Equal(t, State.Must.Succeeded, 1)
+	assert.Equal(t, State.Must.Succeeded, 7)
 
 }
 
