@@ -8,6 +8,7 @@ import (
 	"github.com/tufanbarisyildirim/microspector/pkg/templating"
 	"html/template"
 	"reflect"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -97,13 +98,13 @@ func toVariableName(str string) string {
 
 func runop(left, operator, right interface{}) bool {
 	switch strings.ToUpper(operator.(string)) {
-	case "EQUALS", "==":
+	case "EQUALS", "==", "EQUAL":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			return l == r
 		}
 		return left == right
-	case "NOTEQUALS", "!=":
+	case "NOTEQUALS", "!=", "NOTEQUAL":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			return l != r
@@ -137,7 +138,6 @@ func runop(left, operator, right interface{}) bool {
 			}
 
 		}
-
 	case "LE", "GE", "<=", ">=":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
@@ -161,7 +161,9 @@ func runop(left, operator, right interface{}) bool {
 			}
 
 		}
-
+	case "MATCHES", "MATCH":
+		match, _ := regexp.MatchString(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+		return match
 	}
 
 	return false

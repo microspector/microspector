@@ -39,7 +39,7 @@ SET {{ StringDigitCompare4 }} "100" GT 99
 SET {{ StringDigitCompare5 }} "100" > 99
 SET {{ StringDigitCompare6 }} "100" >= 99
 SET {{ StringDigitCompare7 }} "100" <= 99
-SET {{ StringDigitCompare8 }} "100" == 100
+SET {{ StringDigitCompare8 }} "100" == ( 200 / 4 ) * 2
 SET {{ StringDigitCompare9 }} "100" != 100
 SET {{ StringDigitCompare10 }} 100 GT "99"
 SET {{ StringDigitCompare11 }} {{ Hundred }} gt "99"
@@ -216,5 +216,94 @@ SET {{ ResultFloat10 }} {{ ResultFloat15 }} / 1.5
 	assert.Equal(t, GlobalVars["Result262Strings"], float64(262))
 	assert.Equal(t, GlobalVars["ResultFloat15"], float64(15))
 	assert.Equal(t, GlobalVars["ResultFloat10"], float64(10))
+
+}
+
+/**
+https://twitter.com/s0md3v/status/1171394403065155584
+
+1. cat matches cat
+2. ca+t matches caaaaaaaaaaaat but not ct
+3. ca*t matches caaaaaaaaaaaat and also ct
+4. ca{2,4} matches caat, caaat and caaaat
+5. c(at)+ matches catatatatatat
+6. c(at|orn) matches cat and corn
+7. c[ea]t matches cat and cet
+8. c[ea]+t matches caaaat and ceeet
+9. c[A-C0-9]t matches cAt, cBt, cCt, c8t etc.
+10. c.t matches cat, c&t, c2t (any char between c and t)
+11. c.+t matches c3%x4t (any number of any chars)
+12. c.*t matches c3%x4t and as well as ct
+13. ^ denotes start of a string, $ denotes the end
+14. ^a+cat will match aaacat in aaacat but not in bbaaacat
+15. cat$ will match cat in aaacat but not in aaacats
+16. ^cat$ will match only and only this string i.e. cat
+
+\d is for digits, \w for alphanumeric chars, \s is for white space chars & line breaks
+\D is for non-digits, \W for non-alphamueric chars and \s is for non-white space chars
+\t for tabs, \r for carriage return and \n for newline
+
+Yes, c\d+t matches c2784t
+Yes, c\s+ matches c       t
+Yes, c\D+ matches cxxxt ca2t
+
+Using .*w vs .*?w on xxsomethingnew@1234wxx
+.*w returns somethingnew@1234w (longest match)
+.*w? returns somethingnew (shortest match)
+*/
+func TestParser_Regex(t *testing.T) {
+
+	lex := Parse(`
+SET {{ Cat }} "cat"
+SET {{ Regex1 }} {{ Cat }} MATCHES "cat"
+SET {{ Regex2 }} "ca+t" MATCHES "caaaaaaaaaaaat"
+SET {{ Regex2a }} "ca+t" MATCHES "ct"
+SET {{ Regex3 }} "ca*t" MATCHES "caaaaaaaaaaaat"
+SET {{ Regex3a }} "ca*t" MATCHES "ct"
+SET {{ Regex4a }} "ca{2,4}" MATCHES "caaaat"
+SET {{ Regex4b }} "ca{2,4}" MATCHES {{ Cat }}
+SET {{ Regex4c }} "ca{2,4}" MATCHES "caaaaat"
+SET {{ Regex5 }} "c(at)+" MATCHES "catatatatatat"
+SET {{ Regex6 }} "c(at|orn)" MATCHES "cat" AND "c(at|orn)" MATCHES "cat"
+SET {{ Regex7 }} "c[ea]t" MATCHES "cat" AND "c[ea]t" MATCHES "cet"
+SET {{ Regex8 }} "c[ea]+t" MATCHES  "caaaat" AND "c[ea]+t" MATCHES "ceeet"   # c[ea]+t matche caaaat and ceeet
+SET {{ Regex9 }} "c[A-C0-9]t" MATCHES "cAt" AND "c[A-C0-9]t" MATCHES "c8t"   # c[A-C0-9]t matche cAt, cBt, cCt, c8t etc.
+SET {{ Regex10 }} "c.t" MATCHES "cat" AND "c.t" MATCHES "c&t" # c.t matche cat, c&t, c2t (any char between c and t)
+SET {{ Regex11 }} "c.+t" MATCHES "c3%x4t"  # c.+t matche c3%x4t (any number of any chars)
+SET {{ Regex12 }} "c.*t" MATCHES "c3%x4t" # c.*t matche c3%x4t and as well as ct
+SET {{ Regex13 }} true # skip this :)
+SET {{ Regex14 }} "^a+cat" MATCHES "aaacat" # ^a+cat will match aaacat in aaacat but not in bbaaacat
+SET {{ Regex14a }} "^a+cat" MATCHES "bbaaacat" # ^a+cat will match aaacat in aaacat but not in bbaaacat
+SET {{ Regex15 }} "cat$" MATCHES  "aaacat" # cat$ will match cat in aaacat but not in aaacats
+SET {{ Regex15a }} "cat$" MATCHES  "aaacats" # cat$ will match cat in aaacat but not in aaacats
+SET {{ Regex16 }} "^cat$" MATCHES "cat" # ^cat$ will match only and only this string i.e. cat
+SET {{ Regex16a }} "^cat$" MATCHES "cata" # ^cat$ will match only and only this string i.e. cat
+`)
+
+	Run(lex)
+
+	assert.Equal(t, GlobalVars["Regex1"], true)
+	assert.Equal(t, GlobalVars["Regex2"], true)
+	assert.Equal(t, GlobalVars["Regex2a"], false)
+	assert.Equal(t, GlobalVars["Regex3"], true)
+	assert.Equal(t, GlobalVars["Regex3a"], true)
+	assert.Equal(t, GlobalVars["Regex4a"], true)
+	assert.Equal(t, GlobalVars["Regex4b"], false)
+	assert.Equal(t, GlobalVars["Regex4c"], true)
+	assert.Equal(t, GlobalVars["Regex5"], true)
+	assert.Equal(t, GlobalVars["Regex6"], true)
+	assert.Equal(t, GlobalVars["Regex7"], true)
+	assert.Equal(t, GlobalVars["Regex8"], true)
+	assert.Equal(t, GlobalVars["Regex9"], true)
+	assert.Equal(t, GlobalVars["Regex10"], true)
+	assert.Equal(t, GlobalVars["Regex11"], true)
+	assert.Equal(t, GlobalVars["Regex12"], true)
+	assert.Equal(t, GlobalVars["Regex13"], true)
+	assert.Equal(t, GlobalVars["Regex14"], true)
+	assert.Equal(t, GlobalVars["Regex14a"], false)
+	assert.Equal(t, GlobalVars["Regex15"], true)
+	assert.Equal(t, GlobalVars["Regex15a"], false)
+	assert.Equal(t, GlobalVars["Regex16"], true)
+	assert.Equal(t, GlobalVars["Regex16a"], false)
 
 }
