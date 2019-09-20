@@ -100,3 +100,5 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 ## TODO
 - [ ] Support `IS` operator to check type of a var in json
 - [ ] Support arrays
+- [ ] Print a better summary of the execution
+- [ ] Make stats reachable in code
