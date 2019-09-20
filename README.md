@@ -125,7 +125,7 @@ DEBUG  result.Content
 ```
 
 #### END
-End takes optional boolean expression. It just skips if thruty fails when its used without parameter. When the given expression passes thruty check it ends the execution.
+End takes optional boolean expression. It just skips if thruty fails. When its used without parameter or the given expression passes thruty check it ends the execution.
 ```bash
 END WHEN  result.Json.boolean  EQUALS false
 ```
