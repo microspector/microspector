@@ -1,5 +1,6 @@
 #!/bin/bash
 PWD=`pwd`
+dir=$(PWD)
 export GO111MODULE=on
 BUILD_ID=`git describe --always --long`
 
@@ -29,9 +30,11 @@ do
         else
           export ext=''
         fi
+        cd ${dir}
         name="microspector_${VERSION}_${os}_${arch}${ext}"
-
-        go build -i -v -o $(PWD)/bin/dist/${name} -ldflags="-X main.Version=${VERSION} -X main.Build=${BUILD_ID}" ${PWD}/cmd
+        go build -i -v -o ${PWD}/bin/dist/${name} -ldflags="-X main.Version=${VERSION} -X main.Build=${BUILD_ID}" ${PWD}/cmd
+        cd ${PWD}/bin/dist
+        tar -cvzf ${name}.tar.gz ${name}
 
   done
 done
