@@ -27,6 +27,7 @@ Currently supported commands are:
 5. [ASSERT](#should) 
 6. [DEBUG](#debug)
 7. [END](#end)
+7. [INCLUDE](#include)
 
 
 #### SET
@@ -101,6 +102,12 @@ DEBUG {{ result.Content }}
 End takes optional boolean expression it just skips if thruty fails when its used without parameter or given expression passes thruty it ends the execution.
 ```bash
 END WHEN {{ result.Json.boolean }} EQUALS false
+```
+
+#### INCLUDE
+Include takes a file path as a parameter and parses in at runtime in same context.
+```bash
+INCLUDE "tasks/sub-commands.msf"
 ```
 
 # Contributing
