@@ -125,14 +125,21 @@ Include takes a file path as a parameter and parses in at runtime in same contex
 INCLUDE "tasks/sub-commands.msf"
 ```
 
+#### SLEEP
+Include an integer in milliseconds and blocks the execution until then
+```bash
+SLEEP 500
+```
+
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
 just fork, do your changes and send pull requests. Just make sure all tests passed using `make test` command before sending a pull request.
 
 ## TODO
+- [x] Support Include files
+- [x] Support Sleep
 - [ ] Support `IS` operator to check type of a var in json
 - [ ] Support arrays
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in code
 - [ ] Support setting nested variables
-- [ ] Support Include files
