@@ -39,7 +39,7 @@ Currently supported commands are:
 2. [HTTP](#http) 
 3. [MUST](#must) 
 4. [SHOULD](#should) 
-5. [ASSERT](#should) 
+5. [ASSERT](#assert) 
 6. [DEBUG](#debug)
 7. [END](#end)
 7. [INCLUDE](#include)
