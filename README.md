@@ -42,7 +42,8 @@ Currently supported commands are:
 5. [ASSERT](#assert) 
 6. [DEBUG](#debug)
 7. [END](#end)
-7. [INCLUDE](#include)
+8. [INCLUDE](#include)
+9. [SLEEP](#sleep)
 
 
 #### SET
