@@ -11,7 +11,8 @@ MUST {{ ApiResult.Json.boolean }} == true
 ```
 
 ### Variables
-Variables can be used like `{{ VariableName }}` OR  `$VariableName` both are supported.
+Variables can be used like `{{ VariableName }}` OR  `$VariableName` both are supported. Variables can be accessed and set in same way. 
+Accessing supports nested variables like `{{ HttpResult.Json.message  }}` but setting not yet.
 
 
 ### Commands
@@ -111,3 +112,4 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 - [ ] Support arrays
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in code
+- [ ] Support setting nested variables
