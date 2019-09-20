@@ -29,6 +29,7 @@ var keywords = map[string]int{
 	"INTO":       INTO,
 	"HTTP":       HTTP,
 	"INCLUDE":    INCLUDE,
+	"SLEEP":      SLEEP,
 	"IDENTIFIER": IDENTIFIER,
 	"STRING":     STRING,
 	"KEYWORD":    KEYWORD,

@@ -35,6 +35,7 @@ DEBUG
 END
 ASSERT
 INCLUDE
+SLEEP
 
 //http command tokens
 %token <val>
@@ -103,6 +104,7 @@ IDENTIFIER
 	must_command
 	should_command
 	include_command
+	sleep_command
 
 %union{
 	val interface{}
@@ -178,6 +180,16 @@ command			:
 			|must_command
 			|should_command
 			|include_command
+			|sleep_command
+
+sleep_command		:
+			SLEEP any_value
+			{
+
+				$$ = &SleepCommand{
+					Millisecond:intVal($1),
+				}
+			}
 
 include_command		:
 			INCLUDE any_value
