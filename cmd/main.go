@@ -10,7 +10,15 @@ import (
 	"path"
 )
 
+var (
+	Version = "development"
+	Build   = "master-dev"
+)
+
 func main() {
+
+	parser.Version = Version
+	parser.Build = Build
 
 	var file, folder string
 	var err error
@@ -25,7 +33,7 @@ func main() {
 	folder = *fo
 
 	if *v {
-		fmt.Println(parser.Version)
+		fmt.Printf("Microspector v%s (%s)\n", Version, Build)
 		os.Exit(0)
 	}
 

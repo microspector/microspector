@@ -67,7 +67,7 @@ func (hc *HttpCommand) Run() interface{} {
 	}
 
 	req, reqError := http.NewRequest(hc.Method, hc.Url, nil)
-	req.Header.Set("User-Agent", fmt.Sprintf("Microspector %s (https://microspector.com/ua)", Version))
+	req.Header.Set("User-Agent", fmt.Sprintf("Microspector v%s(%s) (https://microspector.com/ua)", Version, Build))
 
 	if reqError != nil {
 		panic(reqError)

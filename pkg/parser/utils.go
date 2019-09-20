@@ -14,7 +14,8 @@ import (
 	"time"
 )
 
-var Version = "development"
+var Version = "unknown"
+var Build = "unknown"
 
 //compiles strings using golang template engine and returns the result as string
 func executeTemplate(text string, state map[string]interface{}) (string, error) {
