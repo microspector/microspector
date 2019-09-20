@@ -777,7 +777,7 @@ state 40 // DEBUG '{' '{' IDENTIFIER '}' '}'
     TRUE        reduce using rule 43 (variable)
     WHEN        reduce using rule 43 (variable)
 
-state 41 // HTTP CONNECT FLOAT BODY STRING [$end]
+state 41 // HTTP CONNECT FLOAT BODY FLOAT [$end]
 
    23 http_command: HTTP http_method any_value http_command_params .  [$end, ASSERT, DEBUG, END, HTTP, INTO, MUST, SET, SHOULD, WHEN]
    26 http_command_params: http_command_params . http_command_param
@@ -797,7 +797,7 @@ state 41 // HTTP CONNECT FLOAT BODY STRING [$end]
 
     http_command_param  goto state 47
 
-state 42 // HTTP CONNECT FLOAT BODY STRING [$end]
+state 42 // HTTP CONNECT FLOAT BODY FLOAT [$end]
 
    25 http_command_params: http_command_param .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
@@ -816,19 +816,35 @@ state 42 // HTTP CONNECT FLOAT BODY STRING [$end]
 
 state 43 // HTTP CONNECT FLOAT HEADER
 
-   27 http_command_param: HEADER . STRING
+   27 http_command_param: HEADER . any_value
 
-    STRING  shift, and goto state 46
+    '$'      shift, and goto state 33
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 35
+    INTEGER  shift, and goto state 34
+    STRING   shift, and goto state 29
+
+    any_value  goto state 46
+    number     goto state 31
+    variable   goto state 30
 
 state 44 // HTTP CONNECT FLOAT BODY
 
-   28 http_command_param: BODY . STRING
+   28 http_command_param: BODY . any_value
 
-    STRING  shift, and goto state 45
+    '$'      shift, and goto state 33
+    '{'      shift, and goto state 32
+    FLOAT    shift, and goto state 35
+    INTEGER  shift, and goto state 34
+    STRING   shift, and goto state 29
 
-state 45 // HTTP CONNECT FLOAT BODY STRING
+    any_value  goto state 45
+    number     goto state 31
+    variable   goto state 30
 
-   28 http_command_param: BODY STRING .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
+state 45 // HTTP CONNECT FLOAT BODY FLOAT [$end]
+
+   28 http_command_param: BODY any_value .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 28 (http_command_param)
     ASSERT  reduce using rule 28 (http_command_param)
@@ -843,9 +859,9 @@ state 45 // HTTP CONNECT FLOAT BODY STRING
     SHOULD  reduce using rule 28 (http_command_param)
     WHEN    reduce using rule 28 (http_command_param)
 
-state 46 // HTTP CONNECT FLOAT HEADER STRING
+state 46 // HTTP CONNECT FLOAT HEADER FLOAT [$end]
 
-   27 http_command_param: HEADER STRING .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
+   27 http_command_param: HEADER any_value .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 
     $end    reduce using rule 27 (http_command_param)
     ASSERT  reduce using rule 27 (http_command_param)
@@ -860,7 +876,7 @@ state 46 // HTTP CONNECT FLOAT HEADER STRING
     SHOULD  reduce using rule 27 (http_command_param)
     WHEN    reduce using rule 27 (http_command_param)
 
-state 47 // HTTP CONNECT FLOAT BODY STRING BODY STRING [$end]
+state 47 // HTTP CONNECT FLOAT BODY FLOAT BODY FLOAT [$end]
 
    26 http_command_params: http_command_params http_command_param .  [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INTO, MUST, SET, SHOULD, WHEN]
 

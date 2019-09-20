@@ -300,7 +300,7 @@ http_command_params	:
 			}
 
 http_command_param	:
-			HEADER STRING
+			HEADER any_value
 			{
 				//addin header
 				$$ = HttpCommandParam{
@@ -309,7 +309,7 @@ http_command_param	:
 				}
 			}
 			|
-			BODY STRING {
+			BODY any_value {
 				//adding query param
 				$$ = HttpCommandParam{
 						ParamName : $1.(string),
