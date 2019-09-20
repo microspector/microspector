@@ -113,3 +113,4 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in code
 - [ ] Support setting nested variables
+- [ ] Support Include files
