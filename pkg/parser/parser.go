@@ -773,9 +773,8 @@ yynewstate:
 		}
 	case 16:
 		{
-
 			yyVAL.cmd = &SleepCommand{
-				Millisecond: intVal(yyS[yypt-1].val),
+				Millisecond: intVal(yyS[yypt-0].val),
 			}
 		}
 	case 17:

@@ -185,9 +185,8 @@ command			:
 sleep_command		:
 			SLEEP any_value
 			{
-
 				$$ = &SleepCommand{
-					Millisecond:intVal($1),
+					Millisecond:intVal($2),
 				}
 			}
 
