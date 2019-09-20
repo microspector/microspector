@@ -1,3 +1,5 @@
+//this package is gotten from
+//https://github.com/mcuadros/go-lookup
 package lookup
 
 import (
