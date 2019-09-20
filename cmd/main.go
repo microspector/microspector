@@ -31,14 +31,11 @@ func main() {
 
 	file = *fi
 	folder = *fo
+	parser.Verbose = *vv
 
 	if *v {
 		fmt.Printf("Microspector v%s (%s)\n", Version, Build)
 		os.Exit(0)
-	}
-
-	if *vv {
-		//we will enable logs here
 	}
 
 	if file == "" && folder == "" {

@@ -527,18 +527,17 @@ number	:
 %%
 
 
-
 type lex struct {
-    tokens []Token
+    tokens chan Token
 }
 
-func (l *lex) Lex(lval *yySymType) int {
-    if len(l.tokens) == 0 {
-        return 0
-    }
 
-    v := l.tokens[0]
-    l.tokens = l.tokens[1:]
+
+func (l *lex) Lex(lval *yySymType) int {
+    v := <- l.tokens
+    if v.Type == EOF || v.Type == -1{
+    	return 0
+    }
     lval.val = v.Val
     return v.Type
 }
@@ -551,21 +550,24 @@ func (l *lex) Error(e string) {
 //Parse parses a given string and returns a lex
 func Parse(text string) *lex {
 
+	l := &lex{
+	 tokens : make(chan Token),
+	}
+
+	if Verbose {
+		yyDebug = 3
+	}
+
 	SetStateErrors()
 
-	s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
-	tokens := make(Tokens,0)
-
-	for {
-		token := s.Scan()
-		//fmt.Println(token)
-		if token.Type == EOF || token.Type == -1 {
-			break
+	go func() {
+		s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
+		for {
+		    l.tokens <- s.Scan()
 		}
-		tokens = append(tokens, token)
-	}
-	 l := &lex{ tokens }
-	 return l
+	}()
+
+	return l
 }
 
 //Resets the state to start over

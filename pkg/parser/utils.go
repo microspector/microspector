@@ -13,8 +13,11 @@ import (
 	"time"
 )
 
-var Version = "unknown"
-var Build = "unknown"
+var (
+	Version = "unknown"
+	Build   = "unknown"
+	Verbose = false
+)
 
 //compiles strings using golang template engine and returns the result as string
 func executeTemplate(text string, state map[string]interface{}) (string, error) {
