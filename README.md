@@ -61,8 +61,10 @@ Http command takes method, url, header and body in order to make an http request
 
 Full Example:
 ```bash
-HTTP POST "https://microspector.com/dummy_api" 
-     HEADER "User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
+""
+HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
+     HEADER "User-Agent:Microspector
+     Content-type: application/json"
      BODY '{ "text":"Hello World!" }'
      INTO {{ Result }}
 ```
