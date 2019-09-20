@@ -115,8 +115,9 @@ func TestParser_Http(t *testing.T) {
 HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
 set {{ RawContent }} {{ ServerResult.Content }}
-SET {{ ContentData }} {{ ServerResult.Json.data }}
+SET {{ ContentData }}  ServerResult.Json.data 
 MUST $ContentData equals "microspector.com"
+MUST ServerResult.Json.data  equals "microspector.com"
 	`))
 
 	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
@@ -126,7 +127,7 @@ MUST $ContentData equals "microspector.com"
 	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
 	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
-	assert.Equal(t, State.Must.Succeeded, 1)
+	assert.Equal(t, State.Must.Succeeded, 2)
 
 }
 
@@ -224,7 +225,7 @@ SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes qu
 func TestParser_Arithmetic(t *testing.T) {
 	Reset()
 	lex := Parse(`
-SET {{ Var1 }} 1
+SET  Var1  1
 SET {{ Var2 }} '2' # it should support both
 SET {{ Var3 }} 3
 SET {{ Var4 }} 4
@@ -235,7 +236,7 @@ SET {{ Var8 }} '8'
 SET {{ Var9 }} 9
 SET {{ Var10 }} 10
 
-SET {{ Result10 }} {{ Var5 }} * 2
+SET {{ Result10 }} Var5 * 2
 SET {{ Result15 }} {{ Var3 }} * 5
 SET {{ Result5 }} {{ Var10 }} / 2
 SET {{ Result10Strings }} {{ Var8 }} + {{ Var2 }}
@@ -312,7 +313,7 @@ func TestParser_Regex(t *testing.T) {
 
 	lex := Parse(`
 SET {{ Cat }} "cat"
-SET {{ Regex1 }} {{ Cat }} MATCHES "cat"
+SET Regex1 {{ Cat }} MATCHES "cat"
 SET {{ Regex2 }} "ca+t" MATCHES "caaaaaaaaaaaat"
 SET {{ Regex2a }} "ca+t" MATCHES "ct"
 SET {{ Regex3 }} "ca*t" MATCHES "caaaaaaaaaaaat"

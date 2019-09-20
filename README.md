@@ -20,20 +20,23 @@ Usage of ./microspector:
 
 Writing a script in microspector is as simple as
 ```bash
-SET {{ Url }} "https://microspector.com/test.json"
-HTTP GET {{ Url }}  HEADER "User-Agent:My super duper API test tool" INTO {{ ApiResult }}
-MUST {{ ApiResult.Json.boolean }} == true
+SET  Url  "https://microspector.com/test.json"
+HTTP GET  Url   HEADER "User-Agent:My super duper API test tool" INTO  ApiResult 
+MUST  ApiResult.Json.boolean  == true
 HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
      HEADER "User-Agent:Microspector
      Content-type: application/json"
      BODY '{ "text":"Oh!:( Microspector API returns false in json.boolean, you broke it!" }'
-     INTO {{ SlackResult }} 
-     WHEN {{ ApiResult.Json.boolean }} != true
+     INTO  SlackResult  
+     WHEN  ApiResult.Json.boolean  != true
 ```
 
 ### Variables
-Variables can be used like `{{ VariableName }}` OR  `$VariableName` both are supported. Variables can be accessed and set in same way. 
-Accessing supports nested variables like `{{ HttpResult.Json.message  }}` but setting does not yet.
+Variables can be used like `VariableName`, `{{ VariableName }}` OR  `$VariableName` all supported 
+in order to combine with any other templating and some brackets to allow reserved keywords being used as variable name. 
+For example `set $set 1` and `set {{ set }} 1` will set a variable named `set` while `set set 1` failing because set is a command
+Variables can be accessed and set in same way. 
+Accessing supports nested variables like ` HttpResult.Json.message  ` but setting does not yet.
 
 
 ### Commands
@@ -58,7 +61,7 @@ Set command is used to define and set a variable
 Example:
 ```bash
 SET $Url "https://microspector.com"
-SET {{ Url }} "https://microspector.com"
+SET  Url  "https://microspector.com"
 ```
 
 
@@ -71,12 +74,12 @@ HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"
      HEADER "User-Agent:Microspector
      Content-type: application/json"
      BODY '{ "text":"Hello World!" }'
-     INTO {{ Result }}
+     INTO  Result 
 ```
 
 Basic Example:
 ```bash
-HTTP GET "https://microspector.com/test.json" INTO {{ result }}
+HTTP GET "https://microspector.com/test.json" INTO  result 
 ```
 this command basically tries to fetch the url and put an &HttpResult into result variable
 an HttpResult type has a few handy property that can be used for future commands like;
@@ -97,34 +100,34 @@ type HttpResult struct {
 Assert is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.  
 
 ```bash
-ASSERT {{ result.Json.boolean }} EQUALS true
+ASSERT  result.Json.boolean  EQUALS true
 ```
 
 #### MUST
 Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. 
 
 ```bash
-MUST {{ result.StatusCode }} EQUALS 200
+MUST  result.StatusCode  EQUALS 200
 ```
 
 #### SHOULD
 Should is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded  
 
 ```bash
-SHOULD {{ result.Took }} < 900 
+SHOULD  result.Took  < 900 
 ```
 
 #### DEBUG
 Debug is used to printout variables with its structure, following example will just print the content to the stdout
 
 ```bash
-DEBUG {{ result.Content }}
+DEBUG  result.Content 
 ```
 
 #### END
 End takes optional boolean expression. It just skips if thruty fails when its used without parameter. When the given expression passes thruty check it ends the execution.
 ```bash
-END WHEN {{ result.Json.boolean }} EQUALS false
+END WHEN  result.Json.boolean  EQUALS false
 ```
 
 #### INCLUDE

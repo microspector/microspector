@@ -34,6 +34,16 @@ SET {{ Domain }} "microspector.com"`)
 	assert.Equal(t, l.tokens[6].Type, INTEGER)
 	assert.Equal(t, l.tokens[6].Val, int64(100))
 
+
+	l = Parse(`SET Domain 100`)
+
+	assert.Assert(t, len(l.tokens) == 3)
+	assert.Equal(t, l.tokens[0].Type, SET)
+	assert.Equal(t, l.tokens[1].Type, IDENTIFIER)
+	assert.Equal(t, l.tokens[1].Val, "Domain")
+	assert.Equal(t, l.tokens[2].Type, INTEGER)
+	assert.Equal(t, l.tokens[2].Val, int64(100))
+
 }
 
 func TestScanner_Must(t *testing.T) {

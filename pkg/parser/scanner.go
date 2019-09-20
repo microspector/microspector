@@ -295,7 +295,7 @@ func (s *Scanner) scanKeyword() (tok Token) {
 		}
 	}
 
-	keyword := s.readWhile(isLetter)
+	keyword := s.readWhile(isIdentifierChar)
 	token, ok := keywords[strings.ToUpper(keyword)]
 	if ok {
 		return Token{
@@ -304,7 +304,7 @@ func (s *Scanner) scanKeyword() (tok Token) {
 		}
 	}
 	return Token{
-		Type: KEYWORD,
+		Type: IDENTIFIER,
 		Val:  keyword,
 	}
 }
