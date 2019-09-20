@@ -19,10 +19,16 @@ Usage of ./microspector:
 ## Scripting
 
 Writing a script in microspector is as simple as
-```
+```bash
 SET {{ Url }} "https://microspector.com/test.json"
-HTTP GET {{ Url }} INTO {{ ApiResult }}
+HTTP GET {{ Url }}  HEADER "User-Agent:My super duper API test tool" INTO {{ ApiResult }}
 MUST {{ ApiResult.Json.boolean }} == true
+HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
+     HEADER "User-Agent:Microspector
+     Content-type: application/json"
+     BODY '{ "text":"Oh!:( Microspector API returns false in json.boolean, you broke it!" }'
+     INTO {{ SlackResult }} 
+     WHEN {{ ApiResult.Json.boolean }} != true
 ```
 
 ### Variables
@@ -143,5 +149,5 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 - [ ] Support `IS` operator to check type of a var in json
 - [ ] Support arrays
 - [ ] Print a better summary of the execution
-- [ ] Make stats reachable in code
+- [ ] Make stats reachable in script
 - [ ] Support setting nested variables
