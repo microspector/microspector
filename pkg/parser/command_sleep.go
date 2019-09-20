@@ -4,6 +4,7 @@ import (
 	"time"
 )
 
+//A command to block the current thread
 type SleepCommand struct {
 	Millisecond int64
 }

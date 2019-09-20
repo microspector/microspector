@@ -536,6 +536,7 @@ func (l *lex) Error(e string) {
 }
 
 //TODO: use channels here.
+//Parse parses a given string and returns a lex
 func Parse(text string) *lex {
 
 	SetStateErrors()
@@ -555,6 +556,7 @@ func Parse(text string) *lex {
 	 return l
 }
 
+//Resets the state to start over
 func Reset(){
    	GlobalVars = map[string]interface{}{}
    	State = NewStats()

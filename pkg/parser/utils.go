@@ -16,6 +16,7 @@ import (
 
 var Version = "development"
 
+//compiles strings using golang template engine and returns the result as string
 func executeTemplate(text string, state map[string]interface{}) (string, error) {
 	t := template.New("microspector").Funcs(templating.Functions)
 	_, err := t.Parse(text)
@@ -32,6 +33,7 @@ func executeTemplate(text string, state map[string]interface{}) (string, error) 
 	return tpl.String(), nil
 }
 
+//query basically ancodes objects and then tries to find values from objects by their path like variable.sub.value
 func query(fieldPath string, thevars map[string]interface{}) interface{} {
 	b, err := json.Marshal(thevars)
 	if err != nil {
@@ -46,6 +48,7 @@ func isTemplate(text string) bool {
 	return strings.Contains(text, "{{") && strings.Contains(text, "}}")
 }
 
+//current unix timestamp
 func makeTimestamp() int64 {
 	return time.Now().UnixNano() / int64(time.Millisecond)
 }

@@ -360,7 +360,6 @@ func (s *Scanner) scanOperator() (tok Token) {
 		}
 
 		fallthrough
-
 	default:
 		return Token{
 			Type: int(ch),

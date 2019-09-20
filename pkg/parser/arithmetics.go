@@ -293,7 +293,6 @@ func divide(b, a interface{}) (interface{}, error) {
 	}
 }
 
-// divide returns the division of b from a.
 func umin(a interface{}) (interface{}, error) {
 	av := reflect.ValueOf(a)
 
