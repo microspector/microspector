@@ -149,8 +149,11 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 ## TODO
 - [x] Support Include files
 - [x] Support Sleep
-- [ ] Support `IS` operator to check type of a var in json
+- [x] Support `IS` operator to check type of a var in json
 - [ ] Support arrays
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in script
 - [ ] Support setting nested variables
+
+## Known issues
+- [ ] any integer type converts into float64 during querying items from variables because of a weird behavior of (Unmarshalling)[https://golang.org/pkg/encoding/json/#Unmarshal]  

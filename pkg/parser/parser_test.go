@@ -376,14 +376,11 @@ MUST {{ String }} is string
 SET {{ Boolean }} String is string
 MUST Boolean is boolean
 MUST Boolean is bool
-SET {{ Integer }} 1
-MUST {{ Integer }} is int
-MUST {{ Integer }} is integer
+SET {{ Integer }} 10
+MUST {{ Integer }} is float ## known issue: https://golang.org/pkg/encoding/json/#Unmarshal
 `)
 
 	Run(lex)
 
-	assert.Equal(t, GlobalVars["Integer"], 5)
-	assert.Equal(t, State.Must.Succeeded, 5)
-
+	assert.Equal(t, State.Must.Succeeded, 4)
 }

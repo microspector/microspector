@@ -16,9 +16,8 @@ type yySymType struct {
 	val      interface{}
 	vals     []interface{}
 	str      string
-	integer  int
+	integer  int64
 	boolean  bool
-	flt      int64
 	bytes    []byte
 	cmd      Command
 	variable struct {
@@ -951,6 +950,7 @@ yynewstate:
 			default:
 				yyVAL.val = yyS[yypt-0].variable.value
 			}
+
 		}
 	case 48:
 		{

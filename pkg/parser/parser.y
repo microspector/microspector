@@ -113,9 +113,8 @@ TYPE
 	val interface{}
 	vals []interface{}
 	str string
-	integer int
+	integer int64
 	boolean bool
-	flt int64
 	bytes []byte
 	cmd Command
 	variable struct{
@@ -383,6 +382,7 @@ any_value	:
 			     default:
 					$$ = $1.value
 			     }
+
 		}
 		|
 		number

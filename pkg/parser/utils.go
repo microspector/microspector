@@ -113,7 +113,6 @@ var typeMap = map[reflect.Kind]string{
 
 func IsTypeOf(obj interface{}, typeName string) bool {
 	kind := reflect.TypeOf(obj).Kind()
-	fmt.Println(obj,kind)
 
 	typeName = strings.ToLower(typeName)
 	if typeName == "int" {
@@ -208,7 +207,6 @@ func runop(left, operator, right interface{}) bool {
 	case "MATCHES", "MATCH":
 		match, _ := regexp.MatchString(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 		return match
-
 	case "IS":
 		return IsTypeOf(left, right.(string))
 	case "ISNOT":
@@ -272,12 +270,12 @@ func intVal(obj interface{}) int64 {
 
 func oneIsInt(left, right interface{}) bool {
 	switch left.(type) {
-	case int, int64, int32:
+	case int, int64, int32, uint, uint32, uint64:
 		return true
 	}
 
 	switch right.(type) {
-	case int, int64, int32:
+	case int, int64, int32, uint, uint32, uint64:
 		return true
 	}
 
