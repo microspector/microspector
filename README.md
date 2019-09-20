@@ -156,4 +156,4 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 - [ ] Support setting nested variables
 
 ## Known issues
-- [ ] any integer type converts into float64 during querying items from variables because of a weird behavior of (Unmarshalling)[https://golang.org/pkg/encoding/json/#Unmarshal]  
+- [x] any integer type converts into float64 during querying items from variables because of a weird behavior of (Unmarshalling)[https://golang.org/pkg/encoding/json/#Unmarshal]  
