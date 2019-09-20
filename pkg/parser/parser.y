@@ -34,6 +34,7 @@ SHOULD
 DEBUG
 END
 ASSERT
+INCLUDE
 
 //http command tokens
 %token <val>
@@ -101,6 +102,7 @@ IDENTIFIER
 	assert_command
 	must_command
 	should_command
+	include_command
 
 %union{
 	val interface{}
@@ -175,14 +177,23 @@ command			:
 			|assert_command
 			|must_command
 			|should_command
+			|include_command
+
+include_command		:
+			INCLUDE any_value
+			{
+				$$ = &IncludeCommand{
+					File :  $2.(string),
+				}
+			}
 
 
 debug_command		:
 			DEBUG multi_any_value
 			{
-			  $$ = &DebugCommand{
-				Values : $2,
-			   }
+				$$ = &DebugCommand{
+					Values : $2,
+				}
 			}
 
 end_command		:

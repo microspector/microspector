@@ -28,6 +28,7 @@ var keywords = map[string]int{
 	"HEADER":     HEADER,
 	"INTO":       INTO,
 	"HTTP":       HTTP,
+	"INCLUDE":    INCLUDE,
 	"IDENTIFIER": IDENTIFIER,
 	"STRING":     STRING,
 	"KEYWORD":    KEYWORD,
