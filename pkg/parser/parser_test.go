@@ -263,13 +263,13 @@ SET $ResultFloat10 {{ ResultFloat15 }} / 1.5
 	assert.Equal(t, GlobalVars["Var10"], int64(10))
 
 	assert.Equal(t, GlobalVars["Result10"], int64(10))
-	assert.Equal(t, GlobalVars["Result15"], float64(15))
-	assert.Equal(t, GlobalVars["Result5"], float64(5))
+	assert.Equal(t, GlobalVars["Result15"], int64(15))
+	assert.Equal(t, GlobalVars["Result5"], int64(5))
 	assert.Equal(t, GlobalVars["Result6Strings"], int64(6))
 	assert.Equal(t, GlobalVars["Result5Strings"], int64(5))
-	assert.Equal(t, GlobalVars["Result501Strings"], float64(501))
-	assert.Equal(t, GlobalVars["Result550Strings"], float64(550))
-	assert.Equal(t, GlobalVars["Result262Strings"], float64(262))
+	assert.Equal(t, GlobalVars["Result501Strings"], int64(501))
+	assert.Equal(t, GlobalVars["Result550Strings"], int64(550))
+	assert.Equal(t, GlobalVars["Result262Strings"], int64(262))
 	assert.Equal(t, GlobalVars["ResultFloat15"], float64(15))
 	assert.Equal(t, GlobalVars["ResultFloat10"], float64(10))
 
@@ -377,10 +377,11 @@ SET {{ Boolean }} String is string
 MUST Boolean is boolean
 MUST Boolean is bool
 SET {{ Integer }} 10
-MUST {{ Integer }} is float ## known issue: https://golang.org/pkg/encoding/json/#Unmarshal
+MUST {{ Integer }} is int ## known issue: https://golang.org/pkg/encoding/json/#Unmarshal
+MUST {{ Integer }} is integer ## known issue: https://golang.org/pkg/encoding/json/#Unmarshal
 `)
 
 	Run(lex)
 
-	assert.Equal(t, State.Must.Succeeded, 4)
+	assert.Equal(t, State.Must.Succeeded, 5)
 }

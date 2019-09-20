@@ -2,9 +2,8 @@ package parser
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"github.com/thedevsaddam/gojsonq"
+	"github.com/tufanbarisyildirim/microspector/pkg/lookup"
 	"github.com/tufanbarisyildirim/microspector/pkg/templating"
 	"html/template"
 	"reflect"
@@ -36,13 +35,19 @@ func executeTemplate(text string, state map[string]interface{}) (string, error) 
 
 //query basically ancodes objects and then tries to find values from objects by their path like variable.sub.value
 func query(fieldPath string, thevars map[string]interface{}) interface{} {
-	b, err := json.Marshal(thevars)
+	//b, err := json.Marshal(thevars)
+	//if err != nil {
+	//	fmt.Println("error finding variable value", err)
+	//}
+	//jq := gojsonq.New()
+	//found := jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
+	//return found
+
+	v, err := lookup.LookupString(thevars, fieldPath)
 	if err != nil {
-		fmt.Println("error finding variable value", err)
+		return nil
 	}
-	jq := gojsonq.New()
-	found := jq.JSONString(string(b)).Find(strings.TrimSpace(fieldPath))
-	return found
+	return v.Interface()
 }
 
 func isTemplate(text string) bool {
