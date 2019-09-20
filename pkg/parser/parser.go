@@ -1065,6 +1065,20 @@ type lex struct {
 	tokens chan Token
 }
 
+func (l *lex) All() []Token {
+	tokens := make([]Token, 0)
+	for {
+		v := <-l.tokens
+		if v.Type == EOF || v.Type == -1 {
+			break
+		}
+
+		tokens = append(tokens, v)
+	}
+
+	return tokens
+}
+
 func (l *lex) Lex(lval *yySymType) int {
 	v := <-l.tokens
 	if v.Type == EOF || v.Type == -1 {
@@ -1093,7 +1107,6 @@ func Parse(text string) *lex {
 	SetStateErrors()
 
 	go func() {
-
 		s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
 		for {
 			l.tokens <- s.Scan()
