@@ -299,11 +299,11 @@ func umin(a interface{}) (interface{}, error) {
 
 	switch av.Kind() {
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-		return - av.Int(), nil
+		return -av.Int(), nil
 	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return - av.Uint(), nil
+		return -av.Uint(), nil
 	case reflect.Float32, reflect.Float64:
-		return - av.Float(), nil
+		return -av.Float(), nil
 	case reflect.String:
 		ca, _ := strconv.ParseInt(av.String(), 10, 64)
 		return -ca, nil

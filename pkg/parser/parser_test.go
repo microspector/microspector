@@ -109,7 +109,7 @@ func TestParser_Http(t *testing.T) {
 	},
 	"string": "Hello World"
 	}
-	 */
+	*/
 
 	Run(Parse(`
 HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}

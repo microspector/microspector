@@ -250,7 +250,7 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 * int16       the set of all signed 16-bit integers (-32768 to 32767)
 * int32       the set of all signed 32-bit integers (-2147483648 to 2147483647)
 * int64       the set of all signed 64-bit integers (-9223372036854775808 to 9223372036854775807)
-*/
+ */
 func (s *Scanner) scanDigit() (tok Token) {
 	var buf bytes.Buffer
 	foundDecimal := false
@@ -294,7 +294,7 @@ func (s *Scanner) scanKeyword() (tok Token) {
 	}
 
 	keyword := s.readWhile(isLetter)
-	token, ok := keywords[ strings.ToUpper(keyword)]
+	token, ok := keywords[strings.ToUpper(keyword)]
 	if ok {
 		return Token{
 			Type: token,
@@ -384,14 +384,18 @@ func (s *Scanner) read() rune {
 
 var eof = rune(0)
 
-func isQuote(ch rune) bool            { return ch == '"' || ch == '\'' || ch == '`' }
-func needsEscape(ch, delim rune) bool { return ch == delim || ch == 'n' || ch == 't' || ch == '\\' || ch == 'r' }
-func isSpace(ch rune) bool            { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
-func isEndOfLine(ch rune) bool        { return ch == '\r' || ch == '\n' }
-func isDigit(ch rune) bool            { return unicode.IsDigit(ch) }
-func isLetter(ch rune) bool           { return ch == '_' || unicode.IsLetter(ch) }
-func isAlphaNumeric(ch rune) bool     { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isIdentifierChar(ch rune) bool   { return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
-func isOperator(ch rune) bool         { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
-func isVarStart(ch rune) bool         { return ch == '{' || ch == '$' }
-func isVarEnd(ch rune) bool           { return ch == '}' }
+func isQuote(ch rune) bool { return ch == '"' || ch == '\'' || ch == '`' }
+func needsEscape(ch, delim rune) bool {
+	return ch == delim || ch == 'n' || ch == 't' || ch == '\\' || ch == 'r'
+}
+func isSpace(ch rune) bool        { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
+func isEndOfLine(ch rune) bool    { return ch == '\r' || ch == '\n' }
+func isDigit(ch rune) bool        { return unicode.IsDigit(ch) }
+func isLetter(ch rune) bool       { return ch == '_' || unicode.IsLetter(ch) }
+func isAlphaNumeric(ch rune) bool { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+func isIdentifierChar(ch rune) bool {
+	return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch)
+}
+func isOperator(ch rune) bool { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
+func isVarStart(ch rune) bool { return ch == '{' || ch == '$' }
+func isVarEnd(ch rune) bool   { return ch == '}' }

@@ -247,4 +247,3 @@ func oneIsFloat(left, right interface{}) bool {
 
 	return false
 }
-
