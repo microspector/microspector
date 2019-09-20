@@ -15,7 +15,9 @@ Variables can be used like `{{ VariableName }}` OR  `$VariableName` both are sup
 
 
 ### Commands
-A Microspector script is a basic set of commands. Every command takes some params does the rest accordingly currently supported commands are:
+A Microspector script is a basic set of commands. Every command takes some params does the rest accordingly. 
+
+Currently supported commands are:
 
 1. [SET](#set) 
 2. [HTTP](#http) 
@@ -39,7 +41,15 @@ SET {{ Url }} "https://microspector.com"
 #### HTTP
 Http command takes method, url, header and body in order to make an http request
 
-Example:
+Full Example:
+```bash
+HTTP POST "https://microspector.com/dummy_api" 
+     HEADER "User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.132 Safari/537.36"
+     BODY '{ "text":"Hello World!" }'
+     INTO {{ Result }}
+```
+
+Basic Example:
 ```bash
 HTTP GET "https://microspector.com/test.json" INTO {{ result }}
 ```
@@ -91,7 +101,6 @@ End takes optional boolean expression it just skips if thruty fails when its use
 ```bash
 END WHEN {{ result.Json.boolean }} EQUALS false
 ```
-
 
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
