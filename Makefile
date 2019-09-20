@@ -18,6 +18,9 @@ yacc:
 	goyacc -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 	gofmt -w ./pkg/parser/parser.go
 
+fmt:
+	find . -name "*.go" | xargs gofmt -w
+
 deps:
 	go get -v all
 
