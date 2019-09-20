@@ -1,7 +1,7 @@
 # Microspector
 Micro Service Inspector
 
-Microspector is scripting language designed to test RESTFul APIs in a sexy way.
+Microspector is a scripting language designed to test microservices, and RESTful APIs in a sexy way.
 
 ```
 Usage of ./microspector:
@@ -27,7 +27,7 @@ MUST {{ ApiResult.Json.boolean }} == true
 
 ### Variables
 Variables can be used like `{{ VariableName }}` OR  `$VariableName` both are supported. Variables can be accessed and set in same way. 
-Accessing supports nested variables like `{{ HttpResult.Json.message  }}` but setting not yet.
+Accessing supports nested variables like `{{ HttpResult.Json.message  }}` but setting does not yet.
 
 
 ### Commands
@@ -37,9 +37,9 @@ Currently supported commands are:
 
 1. [SET](#set) 
 2. [HTTP](#http) 
-3. [MUST](#must) 
-4. [SHOULD](#should) 
-5. [ASSERT](#assert) 
+3. [ASSERT](#assert) 
+4. [MUST](#must) 
+5. [SHOULD](#should) 
 6. [DEBUG](#debug)
 7. [END](#end)
 8. [INCLUDE](#include)
@@ -86,25 +86,25 @@ type HttpResult struct {
 }
 ```
 
+#### ASSERT
+Assert is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.  
+
+```bash
+ASSERT {{ result.Json.boolean }} EQUALS true
+```
+
 #### MUST
-Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.
+Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. 
 
 ```bash
 MUST {{ result.StatusCode }} EQUALS 200
 ```
 
 #### SHOULD
-Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded  
+Should is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded  
 
 ```bash
 SHOULD {{ result.Took }} < 900 
-```
-
-#### ASSERT
-Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded  
-
-```bash
-ASSERT {{ result.Json.boolean }} EQUALS true
 ```
 
 #### DEBUG
@@ -115,13 +115,13 @@ DEBUG {{ result.Content }}
 ```
 
 #### END
-End takes optional boolean expression it just skips if thruty fails when its used without parameter or given expression passes thruty it ends the execution.
+End takes optional boolean expression. It just skips if thruty fails when its used without parameter. When the given expression passes thruty check it ends the execution.
 ```bash
 END WHEN {{ result.Json.boolean }} EQUALS false
 ```
 
 #### INCLUDE
-Include takes a file path as a parameter and parses in at runtime in same context.
+Include takes a file path as a parameter and parses in at runtime in the same context.
 ```bash
 INCLUDE "tasks/sub-commands.msf"
 ```
@@ -134,7 +134,7 @@ SLEEP 500
 
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
-just fork, do your changes and send pull requests. Just make sure all tests passed using `make test` command before sending a pull request.
+just fork, do your changes and send pull requests. Just make sure all tests pass using `make test` command before sending a pull request.
 
 ## TODO
 - [x] Support Include files
