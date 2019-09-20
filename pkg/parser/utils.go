@@ -89,6 +89,46 @@ func isTrue(val reflect.Value) (truth bool) {
 	return truth
 }
 
+var typeMap = map[reflect.Kind]string{
+	reflect.Array:   "array",
+	reflect.Map:     "array",
+	reflect.Slice:   "array",
+	reflect.String:  "string",
+	reflect.Int:     "integer",
+	reflect.Int8:    "integer",
+	reflect.Int16:   "integer",
+	reflect.Int32:   "integer",
+	reflect.Int64:   "integer",
+	reflect.Uint:    "integer",
+	reflect.Uint8:   "integer",
+	reflect.Uint16:  "integer",
+	reflect.Uint32:  "integer",
+	reflect.Uint64:  "integer",
+	reflect.Uintptr: "integer",
+	reflect.Struct:  "object",
+	reflect.Float32: "float",
+	reflect.Float64: "float",
+	reflect.Bool:    "boolean",
+}
+
+func IsTypeOf(obj interface{}, typeName string) bool {
+	kind := reflect.TypeOf(obj).Kind()
+	fmt.Println(obj,kind)
+
+	typeName = strings.ToLower(typeName)
+	if typeName == "int" {
+		typeName = "integer"
+	} else if typeName == "bool" {
+		typeName = "boolean"
+	}
+
+	if name, ok := typeMap[kind]; ok {
+		return typeName == name
+	}
+
+	return false
+}
+
 var zero reflect.Value
 
 func toVariableName(str string) string {
@@ -168,6 +208,12 @@ func runop(left, operator, right interface{}) bool {
 	case "MATCHES", "MATCH":
 		match, _ := regexp.MatchString(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 		return match
+
+	case "IS":
+		return IsTypeOf(left, right.(string))
+	case "ISNOT":
+		return !IsTypeOf(left, right.(string))
+
 	}
 
 	return false

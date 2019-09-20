@@ -69,12 +69,15 @@ AND
 OR
 MATCHES
 MATCH
+IS
+ISNOT
 
 %token <val>
 INTO
 
 %token <val>
 IDENTIFIER
+TYPE
 
 
 %type <variable> variable
@@ -383,7 +386,8 @@ any_value	:
 		}
 		|
 		number
-
+		|
+		TYPE
 
 variable	:
 		'{''{' IDENTIFIER '}''}'
@@ -419,6 +423,8 @@ operator	:
 		| STARTSWITH
 		| MATCH
 		| MATCHES
+		| IS
+		| ISNOT
 
 
 boolean_exp	:

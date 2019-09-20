@@ -31,7 +31,6 @@ var keywords = map[string]int{
 	"INCLUDE":    INCLUDE,
 	"SLEEP":      SLEEP,
 	"IDENTIFIER": IDENTIFIER,
-	"STRING":     STRING,
 	"KEYWORD":    KEYWORD,
 	"BODY":       BODY,
 	"WHEN":       WHEN,
@@ -46,6 +45,8 @@ var keywords = map[string]int{
 	"NOTEQUAL":   NOTEQUAL,
 	"CONTAINS":   CONTAINS,
 	"STARTSWITH": STARTSWITH,
+	"IS":         IS,
+	"ISNOT":      ISNOT,
 	"MATCH":      MATCH,
 	"MATCHES":    MATCHES,
 	"MUST":       MUST,
@@ -303,6 +304,14 @@ func (s *Scanner) scanKeyword() (tok Token) {
 			Val:  strings.ToUpper(keyword),
 		}
 	}
+
+	if s.Latest.Type == IS || s.Latest.Type == ISNOT {
+		return Token{
+			Type: TYPE,
+			Val:  keyword,
+		}
+	}
+
 	return Token{
 		Type: IDENTIFIER,
 		Val:  keyword,

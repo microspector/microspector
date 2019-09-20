@@ -365,3 +365,25 @@ SET {{ Regex16a }} "^cat$" MATCHES "cata" # ^cat$ will match only and only this 
 	assert.Equal(t, GlobalVars["Regex16a"], false)
 
 }
+
+func TestParser_TypeCheck(t *testing.T) {
+
+	Reset()
+
+	lex := Parse(`
+SET {{ String }} "cat"
+MUST {{ String }} is string
+SET {{ Boolean }} String is string
+MUST Boolean is boolean
+MUST Boolean is bool
+SET {{ Integer }} 1
+MUST {{ Integer }} is int
+MUST {{ Integer }} is integer
+`)
+
+	Run(lex)
+
+	assert.Equal(t, GlobalVars["Integer"], 5)
+	assert.Equal(t, State.Must.Succeeded, 5)
+
+}
