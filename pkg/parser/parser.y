@@ -19,9 +19,9 @@ EOF
 STRING
 INTEGER
 FLOAT
-STRING
 TRUE
 FALSE
+NULL
 
 //command tokens
 %token
@@ -83,14 +83,14 @@ TYPE
 %type <variable> variable
 %type <val> http_method operator
 %type <val> any_value
-%type <vals> multi_any_value
+%type <vals> multi_variable array comma_separated_values
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
 %type <boolean> boolean_exp expr_opr true_false
 
 
 //arithmetic things
-%type <val> expr number
+%type <val> expr
 %left '|'
 %left '&'
 %left '+'  '-'
@@ -202,7 +202,7 @@ include_command		:
 
 
 debug_command		:
-			DEBUG multi_any_value
+			DEBUG multi_variable
 			{
 				$$ = &DebugCommand{
 					Values : $2,
@@ -227,7 +227,8 @@ end_command		:
 
 				 $$ = &EndCommand{}
 			}
-			| END {
+			| END
+			{
 				return -1
 			}
 
@@ -268,6 +269,14 @@ should_command		:
 			}
 
 set_command		:
+			SET variable array
+			{
+				$$ = &SetCommand{
+					Name:$2.name,
+					Value:$3,
+				}
+			}
+			|
 			SET variable expr
 			{
 				//GlobalVars[$2.name] = $3
@@ -297,7 +306,8 @@ http_command		:
 			  }
 			}
 			|
-			HTTP http_method any_value {
+			HTTP http_method any_value
+			{
 				//simple http command
 				$$ = &HttpCommand{
 					Method : $2.(string),
@@ -324,20 +334,35 @@ http_command_params	:
 			}
 
 http_command_param	:
-			HEADER any_value
+			HEADER STRING
 			{
+				var passedValue string
+				if isTemplate($2.(string)) {
+					passedValue,_ = executeTemplate( $2.(string) , GlobalVars)
+				 }else{
+					passedValue = $2.(string)
+				}
+
 				//addin header
 				$$ = HttpCommandParam{
 					ParamName : $1.(string),
-					ParamValue : $2.(string),
+					ParamValue : passedValue,
 				}
 			}
 			|
-			BODY any_value {
+			BODY STRING
+			{
+				var passedValue string
+				if isTemplate($2.(string)) {
+					passedValue,_ = executeTemplate( $2.(string) , GlobalVars)
+				 }else{
+					passedValue = $2.(string)
+				}
+
 				//adding query param
 				$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : $2.(string),
+						ParamValue : passedValue,
 					}
 			}
 
@@ -345,14 +370,15 @@ http_command_param	:
 http_method	: GET | HEAD | POST | PUT | DELETE | CONNECT | OPTIONS | TRACE | PATCH
 
 
-multi_any_value	:
-		any_value
+
+multi_variable	:
+		variable
 		{
 			//getting a single value from multi_value exp
 			$$ = append($$,$1)
 		}
 		|
-		multi_any_value any_value
+		multi_variable variable
 		{
 			//multi value
 			$$ = append($$,$2)
@@ -365,7 +391,7 @@ any_value	:
 			if isTemplate($1.(string)) {
 				$$,_ = executeTemplate( $1.(string) , GlobalVars)
 			 }else{
-
+				$$ = $1.(string)
 			}
 		}
 		|
@@ -385,9 +411,31 @@ any_value	:
 
 		}
 		|
-		number
+		INTEGER
+                {
+			//number: INTEGER
+			$$ = $1;
+                }
+                |
+                FLOAT
+                {
+			//number: FLOAT
+			$$ = $1
+                }
 		|
 		TYPE
+		|
+		NULL
+		{
+			$$ = nil
+		}
+		|
+		array
+		{
+			$$ = $1
+		}
+
+
 
 variable	:
 		'{''{' IDENTIFIER '}''}'
@@ -428,13 +476,13 @@ operator	:
 
 
 boolean_exp	:
-		true_false
-		|
 		'(' boolean_exp ')'
 		{
 		 	//boolean_ex: '(' boolean_exp ')'
 		  	$$ = $2
 		}
+		|
+		true_false
 		|
 		any_value operator any_value
 		{
@@ -464,6 +512,11 @@ true_false	:
 		}
 
 expr_opr	:
+		'(' expr_opr ')'
+		{
+			$$ = $2
+		}
+		|
 		expr operator expr
 		{
 			operator_result := runop($1,$2,$3)
@@ -498,7 +551,7 @@ expr	:
 	'(' expr ')'
 		{ $$  =  $2 }
 	|    expr '+' expr
-		{ $$,_  = add ( $1 , $3 ) }
+		{ $$,_  = add ($1 , $3) }
 	|    expr '-' expr
 		{ $$,_  =  subtract($3 , $1) }
 	|    expr '*' expr
@@ -511,18 +564,28 @@ expr	:
 	;
 
 
-number	:
-	INTEGER
+array	:
+	'['']'
 	{
-		//number: INTEGER
-		$$ = $1;
+		$$ = make([]interface{},0)
 	}
 	|
-	FLOAT
+	'[' comma_separated_values ']'
 	{
-		//number: FLOAT
-	 	$$ = $1
+		$$ = $2
 	}
+
+comma_separated_values	:
+			any_value
+			{
+			    $$ = append($$,$1)
+			}
+			|
+			comma_separated_values ',' any_value
+			{
+			   $$ = append($$,$3)
+			}
+
 
 %%
 

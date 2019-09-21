@@ -56,6 +56,7 @@ var keywords = map[string]int{
 	"DEBUG":      DEBUG,
 	"ASSERT":     ASSERT,
 	"END":        END,
+	"NULL":       NULL,
 }
 
 func NewScanner(r io.Reader) *Scanner {
@@ -86,17 +87,18 @@ func (s *Scanner) Scan() Token {
 }
 
 func (s *Scanner) getNextToken() Token {
+reToken:
 	ch := s.Peek()
 
 	if isSpace(ch) {
 		s.skipWhitespace()
-		ch = s.Peek()
+		goto reToken
 	}
 
 	// skip comments.
 	if ch == '#' {
 		s.readUntilWith(isEndOfLine)
-		ch = s.Peek()
+		goto reToken
 	}
 
 	if isOperator(ch) {
@@ -232,7 +234,7 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 		}
 
 		if ch == delimiter {
-			s.read() //consume delimiter
+			//s.read() //consume delimiter
 			break
 		}
 
@@ -394,18 +396,46 @@ func (s *Scanner) read() rune {
 
 var eof = rune(0)
 
-func isQuote(ch rune) bool { return ch == '"' || ch == '\'' || ch == '`' }
+func isQuote(ch rune) bool {
+	return ch == '"' || ch == '\'' || ch == '`'
+}
+
 func needsEscape(ch, delim rune) bool {
 	return ch == delim || ch == 'n' || ch == 't' || ch == '\\' || ch == 'r'
 }
-func isSpace(ch rune) bool        { return ch == ' ' || ch == '\t' || isEndOfLine(ch) }
-func isEndOfLine(ch rune) bool    { return ch == '\r' || ch == '\n' }
-func isDigit(ch rune) bool        { return unicode.IsDigit(ch) }
-func isLetter(ch rune) bool       { return ch == '_' || unicode.IsLetter(ch) }
-func isAlphaNumeric(ch rune) bool { return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch) }
+
+func isSpace(ch rune) bool {
+	return ch == ' ' || ch == '\t' || isEndOfLine(ch)
+}
+
+func isEndOfLine(ch rune) bool {
+	return ch == '\r' || ch == '\n'
+}
+
+func isDigit(ch rune) bool {
+	return unicode.IsDigit(ch)
+}
+
+func isLetter(ch rune) bool {
+	return ch == '_' || unicode.IsLetter(ch)
+}
+
+func isAlphaNumeric(ch rune) bool {
+	return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch)
+}
+
 func isIdentifierChar(ch rune) bool {
 	return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch)
 }
-func isOperator(ch rune) bool { return ch == '<' || ch == '>' || ch == '=' || ch == '!' }
-func isVarStart(ch rune) bool { return ch == '{' || ch == '$' }
-func isVarEnd(ch rune) bool   { return ch == '}' }
+
+func isOperator(ch rune) bool {
+	return ch == '<' || ch == '>' || ch == '=' || ch == '!'
+}
+
+func isVarStart(ch rune) bool {
+	return ch == '{' || ch == '$'
+}
+
+func isVarEnd(ch rune) bool {
+	return ch == '}'
+}
