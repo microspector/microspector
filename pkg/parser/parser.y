@@ -4,6 +4,7 @@ package parser
 import (
     "log"
     "strings"
+    "fmt"
 
 )
 var GlobalVars = map[string]interface{}{}
@@ -87,6 +88,7 @@ TYPE
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
 %type <boolean> boolean_exp expr_opr true_false
+%type <str> string_var
 
 
 //arithmetic things
@@ -296,22 +298,22 @@ set_command		:
 			}
 
 http_command		:
-			HTTP http_method any_value http_command_params
+			HTTP http_method string_var http_command_params
 			{
 			  //call http with header here.
 			  $$ = &HttpCommand{
 				Method : $2.(string),
 				CommandParams: $4,
-				Url: $3.(string),
+				Url: $3,
 			  }
 			}
 			|
-			HTTP http_method any_value
+			HTTP http_method string_var
 			{
 				//simple http command
 				$$ = &HttpCommand{
 					Method : $2.(string),
-					Url: $3.(string),
+					Url: $3,
 				  }
 			}
 
@@ -334,35 +336,20 @@ http_command_params	:
 			}
 
 http_command_param	:
-			HEADER STRING
+			HEADER string_var
 			{
-				var passedValue string
-				if isTemplate($2.(string)) {
-					passedValue,_ = executeTemplate( $2.(string) , GlobalVars)
-				 }else{
-					passedValue = $2.(string)
-				}
-
 				//addin header
 				$$ = HttpCommandParam{
 					ParamName : $1.(string),
-					ParamValue : passedValue,
+					ParamValue : $2,
 				}
 			}
 			|
-			BODY STRING
+			BODY string_var
 			{
-				var passedValue string
-				if isTemplate($2.(string)) {
-					passedValue,_ = executeTemplate( $2.(string) , GlobalVars)
-				 }else{
-					passedValue = $2.(string)
-				}
-
-				//adding query param
 				$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : passedValue,
+						ParamValue : $2,
 					}
 			}
 
@@ -545,6 +532,33 @@ expr_opr	:
 		{
 			//boolean_ex: boolean_exp OR boolean_exp
 			$$ = $1 || $3
+		}
+
+string_var	:
+		STRING
+		{
+			//string_var : STRING
+			if isTemplate($1.(string)) {
+				$$,_ = executeTemplate( $1.(string) , GlobalVars)
+			 }else{
+				$$ = $1.(string)
+			}
+		}
+		|
+		variable
+		{
+			//string_var : variable
+			 switch  $1.value.(type) {
+			     case string :
+				     if isTemplate($1.value.(string)) {
+					    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
+				     }else{
+					$$ = $1.value.(string)
+				     }
+			     default:
+					$$ = fmt.Sprintf("%s",$1.value)
+			     }
+
 		}
 
 expr	:

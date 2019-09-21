@@ -5,6 +5,7 @@ package parser
 import __yyfmt__ "fmt"
 
 import (
+	"fmt"
 	"log"
 	"strings"
 )
@@ -88,7 +89,7 @@ const (
 	yyErrCode  = 57345
 
 	yyMaxDepth = 200
-	yyTabOfs   = -94
+	yyTabOfs   = -96
 )
 
 var (
@@ -103,99 +104,100 @@ var (
 	}
 
 	yyXLAT = map[int]int{
-		57344: 0,  // $end (69x)
-		57361: 1,  // ASSERT (69x)
-		57359: 2,  // DEBUG (69x)
-		57360: 3,  // END (69x)
-		57356: 4,  // HTTP (69x)
-		57362: 5,  // INCLUDE (69x)
-		57357: 6,  // MUST (69x)
-		57355: 7,  // SET (69x)
-		57358: 8,  // SHOULD (69x)
-		57363: 9,  // SLEEP (69x)
-		57386: 10, // WHEN (64x)
-		57393: 11, // INTO (63x)
-		57394: 12, // IDENTIFIER (59x)
-		123:   13, // '{' (58x)
-		36:    14, // '$' (57x)
+		57344: 0,  // $end (71x)
+		57361: 1,  // ASSERT (71x)
+		57359: 2,  // DEBUG (71x)
+		57360: 3,  // END (71x)
+		57356: 4,  // HTTP (71x)
+		57362: 5,  // INCLUDE (71x)
+		57357: 6,  // MUST (71x)
+		57355: 7,  // SET (71x)
+		57358: 8,  // SHOULD (71x)
+		57363: 9,  // SLEEP (71x)
+		57386: 10, // WHEN (66x)
+		57393: 11, // INTO (65x)
+		57394: 12, // IDENTIFIER (61x)
+		123:   13, // '{' (60x)
+		36:    14, // '$' (59x)
 		57348: 15, // STRING (53x)
-		91:    16, // '[' (51x)
-		57350: 17, // FLOAT (51x)
-		57349: 18, // INTEGER (51x)
-		57353: 19, // NULL (51x)
-		57395: 20, // TYPE (51x)
-		57387: 21, // AND (42x)
-		57388: 22, // OR (42x)
+		57387: 16, // AND (42x)
+		57388: 17, // OR (42x)
+		91:    18, // '[' (41x)
+		57350: 19, // FLOAT (41x)
+		57349: 20, // INTEGER (41x)
+		57353: 21, // NULL (41x)
+		57395: 22, // TYPE (41x)
 		40:    23, // '(' (37x)
 		41:    24, // ')' (37x)
 		57352: 25, // FALSE (30x)
 		57351: 26, // TRUE (30x)
-		37:    27, // '%' (29x)
-		42:    28, // '*' (29x)
-		43:    29, // '+' (29x)
-		45:    30, // '-' (29x)
-		47:    31, // '/' (29x)
-		57421: 32, // variable (28x)
-		57398: 33, // any_value (24x)
-		57399: 34, // array (24x)
-		57384: 35, // CONTAIN (24x)
-		57383: 36, // CONTAINS (24x)
-		57376: 37, // EQUAL (24x)
-		57375: 38, // EQUALS (24x)
-		57380: 39, // GE (24x)
-		57379: 40, // GT (24x)
-		57391: 41, // IS (24x)
-		57392: 42, // ISNOT (24x)
-		57382: 43, // LE (24x)
-		57381: 44, // LT (24x)
-		57390: 45, // MATCH (24x)
-		57389: 46, // MATCHES (24x)
-		57378: 47, // NOTEQUAL (24x)
-		57377: 48, // NOTEQUALS (24x)
-		57385: 49, // STARTSWITH (24x)
+		57422: 27, // variable (30x)
+		37:    28, // '%' (29x)
+		42:    29, // '*' (29x)
+		43:    30, // '+' (29x)
+		45:    31, // '-' (29x)
+		47:    32, // '/' (29x)
+		57384: 33, // CONTAIN (24x)
+		57383: 34, // CONTAINS (24x)
+		57376: 35, // EQUAL (24x)
+		57375: 36, // EQUALS (24x)
+		57380: 37, // GE (24x)
+		57379: 38, // GT (24x)
+		57391: 39, // IS (24x)
+		57392: 40, // ISNOT (24x)
+		57382: 41, // LE (24x)
+		57381: 42, // LT (24x)
+		57390: 43, // MATCH (24x)
+		57389: 44, // MATCHES (24x)
+		57378: 45, // NOTEQUAL (24x)
+		57377: 46, // NOTEQUALS (24x)
+		57385: 47, // STARTSWITH (24x)
+		57398: 48, // any_value (23x)
+		57399: 49, // array (23x)
 		57407: 50, // expr (19x)
-		57374: 51, // BODY (18x)
-		57373: 52, // HEADER (18x)
-		93:    53, // ']' (16x)
-		44:    54, // ',' (15x)
-		57420: 55, // true_false (12x)
-		57401: 56, // boolean_exp (11x)
-		57408: 57, // expr_opr (11x)
+		93:    51, // ']' (16x)
+		44:    52, // ',' (15x)
+		57421: 53, // true_false (12x)
+		57374: 54, // BODY (11x)
+		57401: 55, // boolean_exp (11x)
+		57408: 56, // expr_opr (11x)
+		57373: 57, // HEADER (11x)
 		57416: 58, // operator (4x)
-		125:   59, // '}' (2x)
-		57410: 60, // http_command_param (2x)
-		57397: 61, // any_command (1x)
-		57400: 62, // assert_command (1x)
-		57402: 63, // comma_separated_values (1x)
-		57403: 64, // command (1x)
-		57404: 65, // command_with_condition_opt (1x)
-		57369: 66, // CONNECT (1x)
-		57405: 67, // debug_command (1x)
-		57368: 68, // DELETE (1x)
-		57406: 69, // end_command (1x)
-		57364: 70, // GET (1x)
-		57365: 71, // HEAD (1x)
-		57409: 72, // http_command (1x)
-		57411: 73, // http_command_params (1x)
-		57412: 74, // http_method (1x)
-		57413: 75, // include_command (1x)
-		57414: 76, // multi_variable (1x)
-		57415: 77, // must_command (1x)
-		57370: 78, // OPTIONS (1x)
-		57372: 79, // PATCH (1x)
-		57366: 80, // POST (1x)
-		57367: 81, // PUT (1x)
-		57417: 82, // set_command (1x)
-		57418: 83, // should_command (1x)
-		57419: 84, // sleep_command (1x)
-		57371: 85, // TRACE (1x)
-		57396: 86, // $default (0x)
-		38:    87, // '&' (0x)
-		124:   88, // '|' (0x)
-		57347: 89, // EOF (0x)
-		57346: 90, // EOL (0x)
-		57345: 91, // error (0x)
-		57354: 92, // KEYWORD (0x)
+		57420: 59, // string_var (3x)
+		125:   60, // '}' (2x)
+		57410: 61, // http_command_param (2x)
+		57397: 62, // any_command (1x)
+		57400: 63, // assert_command (1x)
+		57402: 64, // comma_separated_values (1x)
+		57403: 65, // command (1x)
+		57404: 66, // command_with_condition_opt (1x)
+		57369: 67, // CONNECT (1x)
+		57405: 68, // debug_command (1x)
+		57368: 69, // DELETE (1x)
+		57406: 70, // end_command (1x)
+		57364: 71, // GET (1x)
+		57365: 72, // HEAD (1x)
+		57409: 73, // http_command (1x)
+		57411: 74, // http_command_params (1x)
+		57412: 75, // http_method (1x)
+		57413: 76, // include_command (1x)
+		57414: 77, // multi_variable (1x)
+		57415: 78, // must_command (1x)
+		57370: 79, // OPTIONS (1x)
+		57372: 80, // PATCH (1x)
+		57366: 81, // POST (1x)
+		57367: 82, // PUT (1x)
+		57417: 83, // set_command (1x)
+		57418: 84, // should_command (1x)
+		57419: 85, // sleep_command (1x)
+		57371: 86, // TRACE (1x)
+		57396: 87, // $default (0x)
+		38:    88, // '&' (0x)
+		124:   89, // '|' (0x)
+		57347: 90, // EOF (0x)
+		57346: 91, // EOL (0x)
+		57345: 92, // error (0x)
+		57354: 93, // KEYWORD (0x)
 	}
 
 	yySymNames = []string{
@@ -215,25 +217,23 @@ var (
 		"'{'",
 		"'$'",
 		"STRING",
+		"AND",
+		"OR",
 		"'['",
 		"FLOAT",
 		"INTEGER",
 		"NULL",
 		"TYPE",
-		"AND",
-		"OR",
 		"'('",
 		"')'",
 		"FALSE",
 		"TRUE",
+		"variable",
 		"'%'",
 		"'*'",
 		"'+'",
 		"'-'",
 		"'/'",
-		"variable",
-		"any_value",
-		"array",
 		"CONTAIN",
 		"CONTAINS",
 		"EQUAL",
@@ -249,15 +249,18 @@ var (
 		"NOTEQUAL",
 		"NOTEQUALS",
 		"STARTSWITH",
+		"any_value",
+		"array",
 		"expr",
-		"BODY",
-		"HEADER",
 		"']'",
 		"','",
 		"true_false",
+		"BODY",
 		"boolean_exp",
 		"expr_opr",
+		"HEADER",
 		"operator",
+		"string_var",
 		"'}'",
 		"http_command_param",
 		"any_command",
@@ -298,60 +301,60 @@ var (
 
 	yyReductions = map[int]struct{ xsym, components int }{
 		0:  {0, 1},
-		1:  {61, 0},
-		2:  {61, 2},
-		3:  {65, 5},
-		4:  {65, 3},
-		5:  {65, 3},
-		6:  {65, 1},
-		7:  {64, 1},
-		8:  {64, 1},
-		9:  {64, 1},
-		10: {64, 1},
-		11: {64, 1},
-		12: {64, 1},
-		13: {64, 1},
-		14: {64, 1},
-		15: {64, 1},
-		16: {84, 2},
-		17: {75, 2},
-		18: {67, 2},
-		19: {69, 3},
-		20: {69, 2},
-		21: {69, 1},
-		22: {62, 2},
-		23: {77, 2},
-		24: {83, 2},
-		25: {82, 3},
-		26: {82, 3},
-		27: {82, 3},
-		28: {72, 4},
-		29: {72, 3},
-		30: {73, 1},
-		31: {73, 2},
-		32: {60, 2},
-		33: {60, 2},
-		34: {74, 1},
-		35: {74, 1},
-		36: {74, 1},
-		37: {74, 1},
-		38: {74, 1},
-		39: {74, 1},
-		40: {74, 1},
-		41: {74, 1},
-		42: {74, 1},
-		43: {76, 1},
-		44: {76, 2},
-		45: {33, 1},
-		46: {33, 1},
-		47: {33, 1},
-		48: {33, 1},
-		49: {33, 1},
-		50: {33, 1},
-		51: {33, 1},
-		52: {32, 5},
-		53: {32, 2},
-		54: {32, 1},
+		1:  {62, 0},
+		2:  {62, 2},
+		3:  {66, 5},
+		4:  {66, 3},
+		5:  {66, 3},
+		6:  {66, 1},
+		7:  {65, 1},
+		8:  {65, 1},
+		9:  {65, 1},
+		10: {65, 1},
+		11: {65, 1},
+		12: {65, 1},
+		13: {65, 1},
+		14: {65, 1},
+		15: {65, 1},
+		16: {85, 2},
+		17: {76, 2},
+		18: {68, 2},
+		19: {70, 3},
+		20: {70, 2},
+		21: {70, 1},
+		22: {63, 2},
+		23: {78, 2},
+		24: {84, 2},
+		25: {83, 3},
+		26: {83, 3},
+		27: {83, 3},
+		28: {73, 4},
+		29: {73, 3},
+		30: {74, 1},
+		31: {74, 2},
+		32: {61, 2},
+		33: {61, 2},
+		34: {75, 1},
+		35: {75, 1},
+		36: {75, 1},
+		37: {75, 1},
+		38: {75, 1},
+		39: {75, 1},
+		40: {75, 1},
+		41: {75, 1},
+		42: {75, 1},
+		43: {77, 1},
+		44: {77, 2},
+		45: {48, 1},
+		46: {48, 1},
+		47: {48, 1},
+		48: {48, 1},
+		49: {48, 1},
+		50: {48, 1},
+		51: {48, 1},
+		52: {27, 5},
+		53: {27, 2},
+		54: {27, 1},
 		55: {58, 1},
 		56: {58, 1},
 		57: {58, 1},
@@ -367,117 +370,118 @@ var (
 		67: {58, 1},
 		68: {58, 1},
 		69: {58, 1},
-		70: {56, 3},
-		71: {56, 1},
-		72: {56, 3},
-		73: {56, 3},
-		74: {56, 1},
-		75: {55, 1},
-		76: {55, 1},
-		77: {57, 3},
-		78: {57, 3},
-		79: {57, 3},
-		80: {57, 3},
-		81: {57, 3},
-		82: {57, 3},
-		83: {50, 3},
-		84: {50, 3},
+		70: {55, 3},
+		71: {55, 1},
+		72: {55, 3},
+		73: {55, 3},
+		74: {55, 1},
+		75: {53, 1},
+		76: {53, 1},
+		77: {56, 3},
+		78: {56, 3},
+		79: {56, 3},
+		80: {56, 3},
+		81: {56, 3},
+		82: {56, 3},
+		83: {59, 1},
+		84: {59, 1},
 		85: {50, 3},
 		86: {50, 3},
 		87: {50, 3},
 		88: {50, 3},
-		89: {50, 1},
-		90: {34, 2},
-		91: {34, 3},
-		92: {63, 1},
-		93: {63, 3},
+		89: {50, 3},
+		90: {50, 3},
+		91: {50, 1},
+		92: {49, 2},
+		93: {49, 3},
+		94: {64, 1},
+		95: {64, 3},
 	}
 
 	yyXErrors = map[yyXError]string{
-		yyXError{40, -1}:  "expected '{'",
-		yyXError{52, -1}:  "expected '}'",
-		yyXError{53, -1}:  "expected '}'",
-		yyXError{41, -1}:  "expected IDENTIFIER",
-		yyXError{51, -1}:  "expected IDENTIFIER",
-		yyXError{57, -1}:  "expected STRING",
-		yyXError{58, -1}:  "expected STRING",
+		yyXError{33, -1}:  "expected '{'",
+		yyXError{40, -1}:  "expected '}'",
+		yyXError{41, -1}:  "expected '}'",
+		yyXError{34, -1}:  "expected IDENTIFIER",
+		yyXError{39, -1}:  "expected IDENTIFIER",
 		yyXError{0, -1}:   "expected any_command or one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]",
-		yyXError{108, -1}: "expected any_value or expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{87, -1}:  "expected any_value or expr or true_false or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{110, -1}: "expected any_value or expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{89, -1}:  "expected any_value or expr or true_false or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{13, -1}:  "expected any_value or one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
 		yyXError{14, -1}:  "expected any_value or one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{22, -1}:  "expected any_value or one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{48, -1}:  "expected any_value or one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{62, -1}:  "expected array or boolean_exp or expr or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{66, -1}:  "expected boolean_exp or expr or expr_opr or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{72, -1}:  "expected any_value or one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{50, -1}:  "expected array or boolean_exp or expr or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{60, -1}:  "expected boolean_exp or expr or expr_opr or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{16, -1}:  "expected boolean_exp or one of [$end, '$', '(', '[', '{', ASSERT, DEBUG, END, FALSE, FLOAT, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, MUST, NULL, SET, SHOULD, SLEEP, STRING, TRUE, TYPE, WHEN]",
 		yyXError{17, -1}:  "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{18, -1}:  "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{19, -1}:  "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{113, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{114, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{121, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{130, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{133, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{43, -1}:  "expected comma_separated_values or one of ['$', '[', ']', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{115, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{116, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{123, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{132, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{135, -1}: "expected boolean_exp or one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{66, -1}:  "expected comma_separated_values or one of ['$', '[', ']', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
 		yyXError{1, -1}:   "expected command_with_condition_opt or one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]",
-		yyXError{91, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{95, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{96, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{93, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
 		yyXError{97, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
 		yyXError{98, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
 		yyXError{99, -1}:  "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{55, -1}:  "expected http_command_param or one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{100, -1}: "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{101, -1}: "expected expr or one of ['$', '(', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
+		yyXError{43, -1}:  "expected http_command_param or one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{32, -1}:  "expected http_command_params or one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{21, -1}:  "expected http_method or one of [CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE]",
 		yyXError{15, -1}:  "expected multi_variable or one of ['$', '{', IDENTIFIER]",
+		yyXError{35, -1}:  "expected one of [$end, '$', '%', '(', ')', '*', '+', ',', '-', '/', '[', ']', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, NULL, OR, SET, SHOULD, SLEEP, STARTSWITH, STRING, TRUE, TYPE, WHEN]",
+		yyXError{38, -1}:  "expected one of [$end, '$', '%', '(', ')', '*', '+', ',', '-', '/', '[', ']', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, NULL, OR, SET, SHOULD, SLEEP, STARTSWITH, STRING, TRUE, TYPE, WHEN]",
 		yyXError{42, -1}:  "expected one of [$end, '$', '%', '(', ')', '*', '+', ',', '-', '/', '[', ']', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, NULL, OR, SET, SHOULD, SLEEP, STARTSWITH, STRING, TRUE, TYPE, WHEN]",
-		yyXError{50, -1}:  "expected one of [$end, '$', '%', '(', ')', '*', '+', ',', '-', '/', '[', ']', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, NULL, OR, SET, SHOULD, SLEEP, STARTSWITH, STRING, TRUE, TYPE, WHEN]",
-		yyXError{54, -1}:  "expected one of [$end, '$', '%', '(', ')', '*', '+', ',', '-', '/', '[', ']', '{', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, FALSE, FLOAT, GE, GT, HEADER, HTTP, IDENTIFIER, INCLUDE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, NULL, OR, SET, SHOULD, SLEEP, STARTSWITH, STRING, TRUE, TYPE, WHEN]",
-		yyXError{125, -1}: "expected one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{126, -1}: "expected one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{33, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{34, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{35, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{36, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{37, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{38, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{39, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{44, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{47, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, BODY, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HEADER, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{93, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{94, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{100, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{101, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{127, -1}: "expected one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{128, -1}: "expected one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{54, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{55, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{56, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{57, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{58, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{59, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{67, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{68, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{71, -1}:  "expected one of [$end, '%', ')', '*', '+', ',', '-', '/', ']', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{95, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{96, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
 		yyXError{102, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
 		yyXError{103, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
 		yyXError{104, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{88, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{105, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{106, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, OR, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
 		yyXError{90, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{109, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{110, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{63, -1}:  "expected one of [$end, '%', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{67, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{69, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{70, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{71, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{89, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{111, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{112, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{116, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{117, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{65, -1}:  "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{118, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{119, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{92, -1}:  "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{111, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{112, -1}: "expected one of [$end, '%', ')', '*', '+', '-', '/', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{51, -1}:  "expected one of [$end, '%', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{61, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{63, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{64, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{65, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{91, -1}:  "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{113, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{114, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{118, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{119, -1}: "expected one of [$end, ')', AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{53, -1}:  "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{120, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{121, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{122, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{123, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{131, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, OR, SET, SHOULD, SLEEP]",
-		yyXError{134, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, OR, SET, SHOULD, SLEEP]",
-		yyXError{56, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{59, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{60, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{61, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{124, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{125, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, OR, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{133, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, OR, SET, SHOULD, SLEEP]",
+		yyXError{136, -1}: "expected one of [$end, AND, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, OR, SET, SHOULD, SLEEP]",
+		yyXError{36, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{37, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{44, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{47, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{48, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{49, -1}:  "expected one of [$end, ASSERT, BODY, DEBUG, END, HEADER, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{3, -1}:   "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{4, -1}:   "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{5, -1}:   "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
@@ -488,12 +492,10 @@ var (
 		yyXError{10, -1}:  "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{11, -1}:  "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{12, -1}:  "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{127, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{128, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
-		yyXError{132, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{129, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{130, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{134, -1}: "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{2, -1}:   "expected one of [$end, ASSERT, DEBUG, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]",
-		yyXError{72, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{73, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{74, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{75, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{76, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
@@ -507,193 +509,201 @@ var (
 		yyXError{84, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{85, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
 		yyXError{86, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
-		yyXError{23, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{24, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{25, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{26, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{27, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{28, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{29, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{30, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{31, -1}:  "expected one of ['$', '[', '{', FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TYPE]",
-		yyXError{92, -1}:  "expected one of ['%', ')', '*', '+', '-', '/']",
-		yyXError{105, -1}: "expected one of [')', AND, OR]",
-		yyXError{106, -1}: "expected one of [')', AND, OR]",
-		yyXError{45, -1}:  "expected one of [',', ']']",
-		yyXError{46, -1}:  "expected one of [',', ']']",
-		yyXError{49, -1}:  "expected one of [',', ']']",
-		yyXError{68, -1}:  "expected operator or one of [$end, '%', ')', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{64, -1}:  "expected operator or one of [$end, '%', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
-		yyXError{107, -1}: "expected operator or one of ['%', ')', '*', '+', '-', '/', CONTAIN, CONTAINS, EQUAL, EQUALS, GE, GT, IS, ISNOT, LE, LT, MATCH, MATCHES, NOTEQUAL, NOTEQUALS, STARTSWITH]",
-		yyXError{115, -1}: "expected operator or one of ['%', '*', '+', '-', '/', CONTAIN, CONTAINS, EQUAL, EQUALS, GE, GT, IS, ISNOT, LE, LT, MATCH, MATCHES, NOTEQUAL, NOTEQUALS, STARTSWITH]",
-		yyXError{124, -1}: "expected variable or one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
+		yyXError{87, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{88, -1}:  "expected one of ['$', '(', '[', '{', FALSE, FLOAT, IDENTIFIER, INTEGER, NULL, STRING, TRUE, TYPE]",
+		yyXError{23, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{24, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{25, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{26, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{27, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{28, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{29, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{30, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{31, -1}:  "expected one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{94, -1}:  "expected one of ['%', ')', '*', '+', '-', '/']",
+		yyXError{107, -1}: "expected one of [')', AND, OR]",
+		yyXError{108, -1}: "expected one of [')', AND, OR]",
+		yyXError{69, -1}:  "expected one of [',', ']']",
+		yyXError{70, -1}:  "expected one of [',', ']']",
+		yyXError{73, -1}:  "expected one of [',', ']']",
+		yyXError{62, -1}:  "expected operator or one of [$end, '%', ')', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{52, -1}:  "expected operator or one of [$end, '%', '*', '+', '-', '/', ASSERT, CONTAIN, CONTAINS, DEBUG, END, EQUAL, EQUALS, GE, GT, HTTP, INCLUDE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOTEQUAL, NOTEQUALS, SET, SHOULD, SLEEP, STARTSWITH, WHEN]",
+		yyXError{109, -1}: "expected operator or one of ['%', ')', '*', '+', '-', '/', CONTAIN, CONTAINS, EQUAL, EQUALS, GE, GT, IS, ISNOT, LE, LT, MATCH, MATCHES, NOTEQUAL, NOTEQUALS, STARTSWITH]",
+		yyXError{117, -1}: "expected operator or one of ['%', '*', '+', '-', '/', CONTAIN, CONTAINS, EQUAL, EQUALS, GE, GT, IS, ISNOT, LE, LT, MATCH, MATCHES, NOTEQUAL, NOTEQUALS, STARTSWITH]",
+		yyXError{22, -1}:  "expected string_var or one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{45, -1}:  "expected string_var or one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{46, -1}:  "expected string_var or one of ['$', '{', IDENTIFIER, STRING]",
+		yyXError{126, -1}: "expected variable or one of [$end, '$', '{', ASSERT, DEBUG, END, HTTP, IDENTIFIER, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]",
 		yyXError{20, -1}:  "expected variable or one of ['$', '{', IDENTIFIER]",
-		yyXError{129, -1}: "expected variable or one of ['$', '{', IDENTIFIER]",
+		yyXError{131, -1}: "expected variable or one of ['$', '{', IDENTIFIER]",
 	}
 
-	yyParseTab = [135][]uint16{
+	yyParseTab = [137][]uint16{
 		// 0
-		{93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 61: 95},
-		{94, 111, 109, 110, 115, 108, 112, 114, 113, 107, 62: 102, 64: 97, 96, 67: 100, 69: 101, 72: 99, 75: 105, 77: 103, 82: 98, 104, 106},
-		{92, 92, 92, 92, 92, 92, 92, 92, 92, 92},
-		{88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 224, 223},
-		{87, 87, 87, 87, 87, 87, 87, 87, 87, 87, 87, 87},
+		{95, 95, 95, 95, 95, 95, 95, 95, 95, 95, 62: 97},
+		{96, 113, 111, 112, 117, 110, 114, 116, 115, 109, 63: 104, 65: 99, 98, 68: 102, 70: 103, 73: 101, 76: 107, 78: 105, 83: 100, 106, 108},
+		{94, 94, 94, 94, 94, 94, 94, 94, 94, 94},
+		{90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 228, 227},
+		{89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 89},
 		// 5
+		{88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88, 88},
+		{87, 87, 87, 87, 87, 87, 87, 87, 87, 87, 87, 87},
 		{86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86, 86},
 		{85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85, 85},
 		{84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84},
+		// 10
 		{83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83, 83},
 		{82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82, 82},
-		// 10
 		{81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81, 81},
-		{80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80},
-		{79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 32: 128, 222, 133},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 32: 128, 221, 133},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 27: 151, 48: 226, 163},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 27: 151, 48: 225, 163},
 		// 15
-		{12: 136, 134, 135, 32: 219, 76: 218},
-		{73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 215, 73, 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 216, 163},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 214, 163},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 213, 163},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 212, 163},
+		{12: 131, 129, 130, 27: 223, 77: 222},
+		{75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 219, 75, 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 220, 159},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 218, 159},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 217, 159},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 216, 159},
 		// 20
-		{12: 136, 134, 135, 32: 156},
-		{66: 122, 68: 121, 70: 117, 118, 74: 116, 78: 123, 125, 119, 120, 85: 124},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 32: 128, 126, 133},
-		{12: 60, 60, 60, 60, 60, 60, 60, 60, 60},
-		{12: 59, 59, 59, 59, 59, 59, 59, 59, 59},
+		{12: 131, 129, 130, 27: 146},
+		{67: 124, 69: 123, 71: 119, 120, 75: 118, 79: 125, 127, 121, 122, 86: 126},
+		{12: 131, 129, 130, 132, 27: 133, 59: 128},
+		{12: 62, 62, 62, 62},
+		{12: 61, 61, 61, 61},
 		// 25
-		{12: 58, 58, 58, 58, 58, 58, 58, 58, 58},
-		{12: 57, 57, 57, 57, 57, 57, 57, 57, 57},
-		{12: 56, 56, 56, 56, 56, 56, 56, 56, 56},
-		{12: 55, 55, 55, 55, 55, 55, 55, 55, 55},
-		{12: 54, 54, 54, 54, 54, 54, 54, 54, 54},
+		{12: 60, 60, 60, 60},
+		{12: 59, 59, 59, 59},
+		{12: 58, 58, 58, 58},
+		{12: 57, 57, 57, 57},
+		{12: 56, 56, 56, 56},
 		// 30
-		{12: 53, 53, 53, 53, 53, 53, 53, 53, 53},
-		{12: 52, 52, 52, 52, 52, 52, 52, 52, 52},
-		{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 51: 152, 151, 60: 150, 73: 149},
-		{49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 21: 49, 49, 24: 49, 27: 49, 49, 49, 49, 49, 35: 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 51: 49, 49, 49, 49},
-		{48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 21: 48, 48, 24: 48, 27: 48, 48, 48, 48, 48, 35: 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 51: 48, 48, 48, 48},
+		{12: 55, 55, 55, 55},
+		{12: 54, 54, 54, 54},
+		{67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 54: 142, 57: 141, 61: 140, 74: 139},
+		{13: 135},
+		{12: 134},
 		// 35
-		{47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 21: 47, 47, 24: 47, 27: 47, 47, 47, 47, 47, 35: 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51: 47, 47, 47, 47},
-		{46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 21: 46, 46, 24: 46, 27: 46, 46, 46, 46, 46, 35: 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 51: 46, 46, 46, 46},
-		{45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 21: 45, 45, 24: 45, 27: 45, 45, 45, 45, 45, 35: 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 51: 45, 45, 45, 45},
-		{44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 21: 44, 44, 24: 44, 27: 44, 44, 44, 44, 44, 35: 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 51: 44, 44, 44, 44},
-		{43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 21: 43, 43, 24: 43, 27: 43, 43, 43, 43, 43, 35: 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 51: 43, 43, 43, 43},
+		{42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 28: 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 51: 42, 42, 54: 42, 57: 42},
+		{13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 54: 13, 57: 13},
+		{12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 54: 12, 57: 12},
+		{43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 28: 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 51: 43, 43, 54: 43, 57: 43},
+		{12: 136},
 		// 40
-		{13: 145},
-		{12: 144},
-		{40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 35: 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 40, 51: 40, 40, 40, 40},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 32: 128, 140, 133, 53: 138, 63: 139},
-		{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 21: 4, 4, 24: 4, 27: 4, 4, 4, 4, 4, 35: 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 51: 4, 4, 4, 4},
+		{60: 137},
+		{60: 138},
+		{44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 28: 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 44, 51: 44, 44, 54: 44, 57: 44},
+		{68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 54: 142, 57: 141, 61: 145},
+		{66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 54: 66, 57: 66},
 		// 45
-		{53: 141, 142},
-		{53: 2, 2},
-		{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 21: 3, 3, 24: 3, 27: 3, 3, 3, 3, 3, 35: 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 51: 3, 3, 3, 3},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 32: 128, 143, 133},
-		{53: 1, 1},
+		{12: 131, 129, 130, 132, 27: 133, 59: 144},
+		{12: 131, 129, 130, 132, 27: 133, 59: 143},
+		{63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 54: 63, 57: 63},
+		{64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 54: 64, 57: 64},
+		{65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 65, 54: 65, 57: 65},
 		// 50
-		{41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 35: 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 51: 41, 41, 41, 41},
-		{12: 146},
-		{59: 147},
-		{59: 148},
-		{42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 35: 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 51: 42, 42, 42, 42},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 147, 148, 53: 157, 55: 149, 159},
+		{71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 28: 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45},
+		{70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 28: 197, 195, 193, 194, 196, 179, 178, 171, 170, 175, 174, 183, 184, 177, 176, 181, 182, 173, 172, 180, 58: 206},
+		{69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 16: 211, 212},
+		{51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 16: 51, 51, 24: 51, 28: 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51: 51, 51},
 		// 55
-		{66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 66, 51: 152, 151, 60: 155},
-		{64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 51: 64, 64},
-		{15: 154},
-		{15: 153},
-		{61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 61, 51: 61, 61},
+		{50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 16: 50, 50, 24: 50, 28: 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 51: 50, 50},
+		{49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 16: 49, 49, 24: 49, 28: 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 51: 49, 49},
+		{48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 16: 48, 48, 24: 48, 28: 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 48, 51: 48, 48},
+		{47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 16: 47, 47, 24: 47, 28: 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 47, 51: 47, 47},
+		{46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 16: 46, 46, 24: 46, 28: 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 46, 51: 46, 46},
 		// 60
-		{62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 62, 51: 62, 62},
-		{63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 63, 51: 63, 63},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 157, 50: 158, 55: 161, 159, 163},
-		{69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 69, 27: 43, 43, 43, 43, 43, 35: 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43, 43},
-		{68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 68, 27: 193, 191, 189, 190, 192, 35: 175, 174, 167, 166, 171, 170, 179, 180, 173, 172, 177, 178, 169, 168, 176, 58: 202},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 205, 53: 157, 55: 203, 204},
+		{25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 25, 16: 25, 25, 24: 25},
+		{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 24: 5, 28: 5, 5, 5, 5, 5, 179, 178, 171, 170, 175, 174, 183, 184, 177, 176, 181, 182, 173, 172, 180, 58: 185},
+		{22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 16: 22, 22, 24: 22},
+		{21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 16: 21, 21, 24: 21},
 		// 65
-		{67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 67, 21: 207, 208},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 201, 55: 161, 199, 200},
-		{23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 21: 23, 23, 24: 23},
-		{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 24: 5, 27: 5, 5, 5, 5, 5, 35: 175, 174, 167, 166, 171, 170, 179, 180, 173, 172, 177, 178, 169, 168, 176, 58: 181},
-		{20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 21: 20, 20, 24: 20},
+		{20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 16: 20, 20, 24: 20},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 27: 151, 48: 166, 163, 51: 164, 64: 165},
+		{45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 16: 45, 45, 24: 45, 28: 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 45, 51: 45, 45},
+		{4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 16: 4, 4, 24: 4, 28: 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 51: 4, 4},
+		{51: 167, 168},
 		// 70
-		{19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 21: 19, 19, 24: 19},
-		{18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 21: 18, 18, 24: 18},
-		{12: 39, 39, 39, 39, 39, 39, 39, 39, 39, 23: 39, 25: 39, 39},
-		{12: 38, 38, 38, 38, 38, 38, 38, 38, 38, 23: 38, 25: 38, 38},
-		{12: 37, 37, 37, 37, 37, 37, 37, 37, 37, 23: 37, 25: 37, 37},
+		{51: 2, 2},
+		{3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 16: 3, 3, 24: 3, 28: 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 51: 3, 3},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 27: 151, 48: 169, 163},
+		{51: 1, 1},
+		{12: 41, 41, 41, 41, 18: 41, 41, 41, 41, 41, 41, 25: 41, 41},
 		// 75
-		{12: 36, 36, 36, 36, 36, 36, 36, 36, 36, 23: 36, 25: 36, 36},
-		{12: 35, 35, 35, 35, 35, 35, 35, 35, 35, 23: 35, 25: 35, 35},
-		{12: 34, 34, 34, 34, 34, 34, 34, 34, 34, 23: 34, 25: 34, 34},
-		{12: 33, 33, 33, 33, 33, 33, 33, 33, 33, 23: 33, 25: 33, 33},
-		{12: 32, 32, 32, 32, 32, 32, 32, 32, 32, 23: 32, 25: 32, 32},
+		{12: 40, 40, 40, 40, 18: 40, 40, 40, 40, 40, 40, 25: 40, 40},
+		{12: 39, 39, 39, 39, 18: 39, 39, 39, 39, 39, 39, 25: 39, 39},
+		{12: 38, 38, 38, 38, 18: 38, 38, 38, 38, 38, 38, 25: 38, 38},
+		{12: 37, 37, 37, 37, 18: 37, 37, 37, 37, 37, 37, 25: 37, 37},
+		{12: 36, 36, 36, 36, 18: 36, 36, 36, 36, 36, 36, 25: 36, 36},
 		// 80
-		{12: 31, 31, 31, 31, 31, 31, 31, 31, 31, 23: 31, 25: 31, 31},
-		{12: 30, 30, 30, 30, 30, 30, 30, 30, 30, 23: 30, 25: 30, 30},
-		{12: 29, 29, 29, 29, 29, 29, 29, 29, 29, 23: 29, 25: 29, 29},
-		{12: 28, 28, 28, 28, 28, 28, 28, 28, 28, 23: 28, 25: 28, 28},
-		{12: 27, 27, 27, 27, 27, 27, 27, 27, 27, 23: 27, 25: 27, 27},
+		{12: 35, 35, 35, 35, 18: 35, 35, 35, 35, 35, 35, 25: 35, 35},
+		{12: 34, 34, 34, 34, 18: 34, 34, 34, 34, 34, 34, 25: 34, 34},
+		{12: 33, 33, 33, 33, 18: 33, 33, 33, 33, 33, 33, 25: 33, 33},
+		{12: 32, 32, 32, 32, 18: 32, 32, 32, 32, 32, 32, 25: 32, 32},
+		{12: 31, 31, 31, 31, 18: 31, 31, 31, 31, 31, 31, 25: 31, 31},
 		// 85
-		{12: 26, 26, 26, 26, 26, 26, 26, 26, 26, 23: 26, 25: 26, 26},
-		{12: 25, 25, 25, 25, 25, 25, 25, 25, 25, 23: 25, 25: 25, 25},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 25: 165, 164, 32: 128, 182, 133, 50: 184, 55: 183},
-		{22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 22, 21: 22, 22, 24: 22, 27: 5, 5, 5, 5, 5},
-		{21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21, 21: 21, 21, 24: 21},
+		{12: 30, 30, 30, 30, 18: 30, 30, 30, 30, 30, 30, 25: 30, 30},
+		{12: 29, 29, 29, 29, 18: 29, 29, 29, 29, 29, 29, 25: 29, 29},
+		{12: 28, 28, 28, 28, 18: 28, 28, 28, 28, 28, 28, 25: 28, 28},
+		{12: 27, 27, 27, 27, 18: 27, 27, 27, 27, 27, 27, 25: 27, 27},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 25: 161, 160, 151, 48: 186, 163, 188, 53: 187},
 		// 90
-		{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 21: 15, 15, 24: 15, 27: 193, 191, 189, 190, 192},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 186},
-		{24: 188, 27: 193, 191, 189, 190, 192},
-		{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 21: 5, 5, 24: 5, 27: 5, 5, 5, 5, 5, 35: 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
-		{11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 21: 11, 11, 24: 11, 27: 11, 11, 11, 11, 11, 35: 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11},
+		{24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 16: 24, 24, 24: 24, 28: 5, 5, 5, 5, 5},
+		{23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 23, 16: 23, 23, 24: 23},
+		{17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 16: 17, 17, 24: 17, 28: 197, 195, 193, 194, 196},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 190},
+		{24: 192, 28: 197, 195, 193, 194, 196},
 		// 95
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 198},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 197},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 196},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 195},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 187, 133, 50: 194},
+		{5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 16: 5, 5, 24: 5, 28: 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5},
+		{11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 16: 11, 11, 24: 11, 28: 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 202},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 201},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 200},
 		// 100
-		{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 21: 6, 6, 24: 6, 27: 6, 6, 6, 6, 6, 35: 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
-		{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 21: 7, 7, 24: 7, 27: 7, 7, 7, 7, 7, 35: 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
-		{8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 21: 8, 8, 24: 8, 27: 8, 8, 8, 8, 8, 35: 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8},
-		{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 21: 9, 9, 24: 9, 27: 193, 191, 9, 9, 192, 35: 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
-		{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 21: 10, 10, 24: 10, 27: 193, 191, 10, 10, 192, 35: 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 199},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 191, 163, 198},
+		{6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 16: 6, 6, 24: 6, 28: 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6},
+		{7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 16: 7, 7, 24: 7, 28: 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7},
+		{8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 16: 8, 8, 24: 8, 28: 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8},
 		// 105
-		{21: 207, 208, 24: 206},
-		{21: 20, 20, 24: 205},
-		{24: 188, 27: 193, 191, 189, 190, 192, 35: 175, 174, 167, 166, 171, 170, 179, 180, 173, 172, 177, 178, 169, 168, 176, 58: 202},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 185, 32: 128, 204, 133, 50: 203},
-		{16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 21: 16, 16, 24: 16, 27: 193, 191, 189, 190, 192},
+		{9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 16: 9, 9, 24: 9, 28: 197, 195, 9, 9, 196, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9},
+		{10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 16: 10, 10, 24: 10, 28: 197, 195, 10, 10, 196, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10},
+		{16: 211, 212, 24: 210},
+		{16: 22, 22, 24: 209},
+		{24: 192, 28: 197, 195, 193, 194, 196, 179, 178, 171, 170, 175, 174, 183, 184, 177, 176, 181, 182, 173, 172, 180, 58: 206},
 		// 110
-		{14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 21: 14, 14, 24: 14, 27: 5, 5, 5, 5, 5},
-		{17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 17, 21: 17, 17, 24: 17},
-		{24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 24, 21: 24, 24, 24: 24},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 211, 163},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 210, 163},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 189, 27: 151, 48: 208, 163, 207},
+		{18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 16: 18, 18, 24: 18, 28: 197, 195, 193, 194, 196},
+		{16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16, 16: 16, 16, 24: 16, 28: 5, 5, 5, 5, 5},
+		{19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 19, 16: 19, 19, 24: 19},
+		{26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 26, 16: 26, 26, 24: 26},
 		// 115
-		{27: 193, 191, 189, 190, 192, 35: 175, 174, 167, 166, 171, 170, 179, 180, 173, 172, 177, 178, 169, 168, 176, 58: 202},
-		{12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 21: 207, 208, 24: 12},
-		{13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 21: 207, 208, 24: 13},
-		{70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 70, 21: 207, 208},
-		{71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 71, 21: 207, 208},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 215, 159},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 214, 159},
+		{28: 197, 195, 193, 194, 196, 179, 178, 171, 170, 175, 174, 183, 184, 177, 176, 181, 182, 173, 172, 180, 58: 206},
+		{14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 16: 211, 212, 24: 14},
+		{15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 16: 211, 212, 24: 15},
 		// 120
-		{72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 21: 207, 208},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 217, 163},
-		{74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 21: 207, 208},
-		{75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 75, 21: 207, 208},
-		{76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 136, 134, 135, 32: 220},
+		{72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 16: 211, 212},
+		{73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 16: 211, 212},
+		{74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 74, 16: 211, 212},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 221, 159},
+		{76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 76, 16: 211, 212},
 		// 125
-		{51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51, 51},
-		{50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50},
-		{77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77},
-		{78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78},
-		{12: 136, 134, 135, 32: 226},
+		{77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 77, 16: 211, 212},
+		{78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 131, 129, 130, 27: 224},
+		{53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53, 53},
+		{52, 52, 52, 52, 52, 52, 52, 52, 52, 52, 52, 52, 52, 52, 52},
+		{79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79, 79},
 		// 130
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 225, 163},
-		{89, 89, 89, 89, 89, 89, 89, 89, 89, 89, 21: 207, 208},
-		{90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 227},
-		{12: 136, 134, 135, 127, 137, 130, 129, 132, 131, 23: 160, 25: 165, 164, 32: 128, 162, 133, 50: 209, 55: 161, 228, 163},
-		{91, 91, 91, 91, 91, 91, 91, 91, 91, 91, 21: 207, 208},
+		{80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80},
+		{12: 131, 129, 130, 27: 230},
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 229, 159},
+		{91, 91, 91, 91, 91, 91, 91, 91, 91, 91, 16: 211, 212},
+		{92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 231},
+		// 135
+		{12: 131, 129, 130, 150, 18: 162, 153, 152, 155, 154, 156, 25: 161, 160, 151, 48: 158, 163, 213, 53: 157, 55: 232, 159},
+		{93, 93, 93, 93, 93, 93, 93, 93, 93, 93, 16: 211, 212},
 	}
 )
 
@@ -734,7 +744,7 @@ func yylex1(yylex yyLexer, lval *yySymType) (n int) {
 }
 
 func yyParse(yylex yyLexer) int {
-	const yyError = 91
+	const yyError = 92
 
 	yyEx, _ := yylex.(yyLexerEx)
 	var yyn int
@@ -1050,7 +1060,7 @@ yynewstate:
 			yyVAL.cmd = &HttpCommand{
 				Method:        yyS[yypt-2].val.(string),
 				CommandParams: yyS[yypt-0].http_command_params,
-				Url:           yyS[yypt-1].val.(string),
+				Url:           yyS[yypt-1].str,
 			}
 		}
 	case 29:
@@ -1058,7 +1068,7 @@ yynewstate:
 			//simple http command
 			yyVAL.cmd = &HttpCommand{
 				Method: yyS[yypt-1].val.(string),
-				Url:    yyS[yypt-0].val.(string),
+				Url:    yyS[yypt-0].str,
 			}
 		}
 	case 30:
@@ -1078,32 +1088,17 @@ yynewstate:
 		}
 	case 32:
 		{
-			var passedValue string
-			if isTemplate(yyS[yypt-0].val.(string)) {
-				passedValue, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
-			} else {
-				passedValue = yyS[yypt-0].val.(string)
-			}
-
 			//addin header
 			yyVAL.http_command_param = HttpCommandParam{
 				ParamName:  yyS[yypt-1].val.(string),
-				ParamValue: passedValue,
+				ParamValue: yyS[yypt-0].str,
 			}
 		}
 	case 33:
 		{
-			var passedValue string
-			if isTemplate(yyS[yypt-0].val.(string)) {
-				passedValue, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
-			} else {
-				passedValue = yyS[yypt-0].val.(string)
-			}
-
-			//adding query param
 			yyVAL.http_command_param = HttpCommandParam{
 				ParamName:  yyS[yypt-1].val.(string),
-				ParamValue: passedValue,
+				ParamValue: yyS[yypt-0].str,
 			}
 		}
 	case 43:
@@ -1230,41 +1225,65 @@ yynewstate:
 		}
 	case 83:
 		{
-			yyVAL.val = yyS[yypt-1].val
+			//string_var : STRING
+			if isTemplate(yyS[yypt-0].val.(string)) {
+				yyVAL.str, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
+			} else {
+				yyVAL.str = yyS[yypt-0].val.(string)
+			}
 		}
 	case 84:
 		{
-			yyVAL.val, _ = add(yyS[yypt-2].val, yyS[yypt-0].val)
+			//string_var : variable
+			switch yyS[yypt-0].variable.value.(type) {
+			case string:
+				if isTemplate(yyS[yypt-0].variable.value.(string)) {
+					yyVAL.str, _ = executeTemplate(yyS[yypt-0].variable.value.(string), GlobalVars)
+				} else {
+					yyVAL.str = yyS[yypt-0].variable.value.(string)
+				}
+			default:
+				yyVAL.str = fmt.Sprintf("%s", yyS[yypt-0].variable.value)
+			}
+
 		}
 	case 85:
 		{
-			yyVAL.val, _ = subtract(yyS[yypt-0].val, yyS[yypt-2].val)
+			yyVAL.val = yyS[yypt-1].val
 		}
 	case 86:
 		{
-			yyVAL.val, _ = multiply(yyS[yypt-0].val, yyS[yypt-2].val)
+			yyVAL.val, _ = add(yyS[yypt-2].val, yyS[yypt-0].val)
 		}
 	case 87:
 		{
-			yyVAL.val, _ = divide(yyS[yypt-0].val, yyS[yypt-2].val)
+			yyVAL.val, _ = subtract(yyS[yypt-0].val, yyS[yypt-2].val)
 		}
 	case 88:
 		{
-			yyVAL.val, _ = mod(yyS[yypt-0].val, yyS[yypt-2].val)
+			yyVAL.val, _ = multiply(yyS[yypt-0].val, yyS[yypt-2].val)
+		}
+	case 89:
+		{
+			yyVAL.val, _ = divide(yyS[yypt-0].val, yyS[yypt-2].val)
 		}
 	case 90:
 		{
-			yyVAL.vals = make([]interface{}, 0)
-		}
-	case 91:
-		{
-			yyVAL.vals = yyS[yypt-1].vals
+			yyVAL.val, _ = mod(yyS[yypt-0].val, yyS[yypt-2].val)
 		}
 	case 92:
 		{
-			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].val)
+			yyVAL.vals = make([]interface{}, 0)
 		}
 	case 93:
+		{
+			yyVAL.vals = yyS[yypt-1].vals
+		}
+	case 94:
+		{
+			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].val)
+		}
+	case 95:
 		{
 			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].val)
 		}

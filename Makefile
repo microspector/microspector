@@ -10,9 +10,11 @@ run: yacc
 test: yacc
 	go test ${PWD}/pkg/parser
 
+trainyacc:
+	goyacc -xegen ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
+
 yacc:
-	goyacc -xegen ./tasks/main.msf -o ./pkg/parser/parser.go ./pkg/parser/parser.y
-	goyacc -xe ./tasks/main.msf -o ./pkg/parser/parser.go ./pkg/parser/parser.y
+	goyacc -xe ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 	gofmt -w ./pkg/parser/parser.go
 
 fmt:
