@@ -62,6 +62,7 @@ Example:
 ```bash
 SET $Url "https://microspector.com"
 SET  Url  "https://microspector.com"
+SET  MyElements  [1,2,3,4,5,6,7,8]
 ```
 
 
@@ -147,10 +148,11 @@ Any contributions are more than welcome. Create issues as proposal if you have a
 just fork, do your changes and send pull requests. Just make sure all tests pass using `make test` command before sending a pull request.
 
 ## TODO
-- [x] Support Include files
-- [x] Support Sleep
-- [x] Support `IS` operator to check type of a var in json
-- [ ] Support arrays
+- [x] ~~Support Including files~~
+- [x] ~~Support Sleep~~
+- [x] ~~Support `IS` operator to check type of a var in json~~
+- [x] ~~Support arrays~~
+- [ ] Support `IN` operator to  check elements in arrays
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in script
 - [ ] Support setting nested variables
