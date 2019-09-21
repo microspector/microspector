@@ -633,8 +633,6 @@ func Parse(text string) *lex {
 		yyDebug = 3
 	}
 
-	SetStateErrors()
-
 	go func() {
 		s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
 		for {
