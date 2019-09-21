@@ -1,7 +1,7 @@
 # Microspector
 Micro Service Inspector
 
-Microspector is a scripting language designed to test microservices, and RESTful APIs in a sexy way.
+Microspector is a scripting language designed to test microservices and RESTful APIs in a sexy way.
 
 ```
 Usage of ./microspector:

@@ -160,6 +160,11 @@ MUST "{{ .VarFalse }}" EQUALS "false"
 MUST {{ VarFalse }} EQUALS false
 MUST {{ Var50 }} EQUALS 50
 MUST {{ Var50 }} EQUALS 49
+SET MyVar "microspector"
+SHOULD $MyVar contain "micro"
+SHOULD $MyVar contain "amicro"
+ASSERT $MyVar contain "amicro"
+ASSERT $MyVar contain "micro"
 `)
 
 	Run(lex)
@@ -167,6 +172,10 @@ MUST {{ Var50 }} EQUALS 49
 	assert.Equal(t, GlobalVars["VarFalse"], false)
 	assert.Equal(t, State.Must.Failed, 1)
 	assert.Equal(t, State.Must.Succeeded, 3)
+	assert.Equal(t, State.Should.Succeeded, 1)
+	assert.Equal(t, State.Should.Failed, 1)
+	assert.Equal(t, State.Assertion.Failed, 1)
+	assert.Equal(t, State.Assertion.Succeeded, 1)
 }
 
 func TestParser_Assert(t *testing.T) {

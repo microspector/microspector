@@ -161,9 +161,9 @@ func runop(left, operator, right interface{}) bool {
 			return l != r
 		}
 		return left != right
-	case "CONTAINS":
+	case "CONTAINS", "CONTAIN":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
-	case "STARTSWITH":
+	case "STARTSWITH","STARTWITH":
 		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "LT", "GT", ">", "<":
 

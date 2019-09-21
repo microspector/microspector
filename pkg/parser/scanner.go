@@ -44,6 +44,7 @@ var keywords = map[string]int{
 	"NOTEQUALS":  NOTEQUALS,
 	"NOTEQUAL":   NOTEQUAL,
 	"CONTAINS":   CONTAINS,
+	"CONTAIN":    CONTAIN,
 	"STARTSWITH": STARTSWITH,
 	"IS":         IS,
 	"ISNOT":      ISNOT,
