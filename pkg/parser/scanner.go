@@ -425,7 +425,7 @@ func isAlphaNumeric(ch rune) bool {
 }
 
 func isIdentifierChar(ch rune) bool {
-	return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch)
+	return ch == '_' || ch == '.' || unicode.IsLetter(ch) || unicode.IsDigit(ch) || ch == '[' || ch == ']'
 }
 
 func isOperator(ch rune) bool {

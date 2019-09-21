@@ -386,21 +386,20 @@ MUST {{ Integer }} is integer ## known issue: https://golang.org/pkg/encoding/js
 	assert.Equal(t, State.Must.Succeeded, 5)
 }
 
-
 func TestParser_Arrays(t *testing.T) {
-//t.SkipNow()
+	//t.SkipNow()
 	Reset()
 
 	lex := Parse(`
 SET {{ String }} "onestring"
-SET {{ Array }} ["cat",1,"2",1.0,$String]
+SET {{ Array }} ["cat",1,"2",1.0,{{ String }},[1,2,3,4]]
 `)
 
-
-//	assert.Equal(t, lex.All(), 5)
+	//	assert.Equal(t, lex.All(), 5)
 
 	Run(lex)
 
-	assert.Equal(t, len(GlobalVars["Array"].([]interface{})), 5)
-	assert.Equal(t, GlobalVars["Array"].([]interface{})[4], "onestring") //5th element of array should $String which is "onestring"
+	assert.Equal(t, len(GlobalVars["Array"].([]interface{})), 6)
+	assert.Equal(t, GlobalVars["Array"].([]interface{})[4], "onestring")                                               //5th element of array should $String which is "onestring"
+	assert.DeepEqual(t, GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)}) //5th element of array should $String which is "onestring"
 }
