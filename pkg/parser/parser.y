@@ -2,12 +2,10 @@
 package parser
 
 import (
-    "log"
     "strings"
     "fmt"
 
 )
-var GlobalVars = map[string]interface{}{}
 %}
 
 
@@ -145,7 +143,7 @@ command_with_condition_opt	:
 					}
 
 					if $5 {
-					   GlobalVars[$3.name] = $1.Run()
+					   yylex.(*lex).GlobalVars[$3.name] = $1.Run(yylex.(*lex))
 					}
 				}
 				|
@@ -155,21 +153,21 @@ command_with_condition_opt	:
 					if strings.Contains($3.name,".") {
 					   yylex.Error("nested variables are not supported yet")
 					}
-					GlobalVars[$3.name] = $1.Run()
+					yylex.(*lex).GlobalVars[$3.name] = $1.Run( yylex.(*lex) )
 				}
 				|
 				command WHEN boolean_exp
 				{
 					//run the command only if boolean_exp is true
 					if $3 {
-					  $1.Run()
+					  $1.Run( yylex.(*lex))
 					}
 				}
 				|
 				command
 				{
 					//just run the command
-					$1.Run()
+					$1.Run( yylex.(*lex))
 					//run command without condition
 
 				}
@@ -238,9 +236,9 @@ assert_command		:
 			ASSERT boolean_exp
 			{
 				if !$2 {
-					State.Assertion.Failed++
+					yylex.(*lex).State.Assertion.Failed++
 				}else{
-					State.Assertion.Succeeded++
+					yylex.(*lex).State.Assertion.Succeeded++
 				}
 				 $$ = &AssertCommand{}
 			}
@@ -249,9 +247,9 @@ must_command		:
 			MUST boolean_exp
 			{
 				if !$2 {
-						State.Must.Failed++
+						yylex.(*lex).State.Must.Failed++
 					}else{
-						State.Must.Succeeded++
+						yylex.(*lex).State.Must.Succeeded++
 					}
 
 				$$ = &MustCommand{}
@@ -263,9 +261,9 @@ should_command		:
 			SHOULD boolean_exp
 			{
 				if !$2 {
-						State.Should.Failed++
+						yylex.(*lex).State.Should.Failed++
 					}else{
-						State.Should.Succeeded++
+						yylex.(*lex).State.Should.Succeeded++
 					}
 				$$ = &ShouldCommand{}
 			}
@@ -376,7 +374,7 @@ any_value	:
 		{
 			//string_or_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = executeTemplate( $1.(string) , GlobalVars)
+				$$,_ = executeTemplate( $1.(string) , yylex.(*lex).GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -388,7 +386,7 @@ any_value	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
+					    $$,_ = executeTemplate( $1.value.(string) , yylex.(*lex).GlobalVars)
 				     }else{
 					$$ = $1.value
 				     }
@@ -429,19 +427,19 @@ variable	:
 		{
 			//getting variable
 			$$.name = $3.(string)
-			$$.value = query($3.(string),GlobalVars)
+			$$.value = query($3.(string),yylex.(*lex).GlobalVars)
 		}
 		|
 		'$' IDENTIFIER
 		{
 			$$.name = $2.(string)
-                	$$.value = query($2.(string),GlobalVars)
+                	$$.value = query($2.(string),yylex.(*lex).GlobalVars)
 		}
 		|
 		IDENTIFIER
 		{
 			$$.name = $1.(string)
-                        $$.value = query($1.(string),GlobalVars)
+                        $$.value = query($1.(string),yylex.(*lex).GlobalVars)
 		}
 
 operator	:
@@ -539,7 +537,7 @@ string_var	:
 		{
 			//string_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = executeTemplate( $1.(string) , GlobalVars)
+				$$,_ = executeTemplate( $1.(string) ,yylex.(*lex). GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -551,7 +549,7 @@ string_var	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = executeTemplate( $1.value.(string) , GlobalVars)
+					    $$,_ = executeTemplate( $1.value.(string) ,yylex.(*lex). GlobalVars)
 				     }else{
 					$$ = $1.value.(string)
 				     }
@@ -603,44 +601,12 @@ comma_separated_values	:
 
 %%
 
-
-type lex struct {
-    tokens chan Token
-}
-
-func (l *lex) All() []Token {
-	tokens := make([]Token, 0)
-	for {
-		v := <-l.tokens
-		if v.Type == EOF || v.Type == -1 {
-			break
-		}
-
-		tokens = append(tokens,v)
-	}
-
-	return tokens
-}
-
-func (l *lex) Lex(lval *yySymType) int {
-    v := <- l.tokens
-    if v.Type == EOF || v.Type == -1{
-    	return 0
-    }
-    lval.val = v.Val
-    return v.Type
-}
-
-func (l *lex) Error(e string) {
-    log.Fatal(e)
-}
-
-//TODO: use channels here.
-//Parse parses a given string and returns a lex
 func Parse(text string) *lex {
 
 	l := &lex{
-	 tokens : make(chan Token),
+	 	tokens : make(chan Token),
+	 	State:      NewStats(),
+		GlobalVars: map[string]interface{}{},
 	}
 
 	if Verbose {
@@ -657,11 +623,6 @@ func Parse(text string) *lex {
 	return l
 }
 
-//Resets the state to start over
-func Reset(){
-   	GlobalVars = map[string]interface{}{}
-   	State = NewStats()
-}
 
 func Run(l *lex){
 	yyParse(l)

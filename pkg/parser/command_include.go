@@ -10,7 +10,7 @@ type IncludeCommand struct {
 	File string
 }
 
-func (ic *IncludeCommand) Run() interface{} {
+func (ic *IncludeCommand) Run(l *lex) interface{} {
 
 	bytes, err := ioutil.ReadFile(ic.File)
 

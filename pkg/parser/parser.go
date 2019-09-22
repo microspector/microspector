@@ -6,11 +6,8 @@ import __yyfmt__ "fmt"
 
 import (
 	"fmt"
-	"log"
 	"strings"
 )
-
-var GlobalVars = map[string]interface{}{}
 
 type yySymType struct {
 	yys      int
@@ -940,7 +937,7 @@ yynewstate:
 			}
 
 			if yyS[yypt-0].boolean {
-				GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run()
+				yylex.(*lex).GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run(yylex.(*lex))
 			}
 		}
 	case 4:
@@ -949,19 +946,19 @@ yynewstate:
 			if strings.Contains(yyS[yypt-0].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
-			GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run()
+			yylex.(*lex).GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run(yylex.(*lex))
 		}
 	case 5:
 		{
 			//run the command only if boolean_exp is true
 			if yyS[yypt-0].boolean {
-				yyS[yypt-2].cmd.Run()
+				yyS[yypt-2].cmd.Run(yylex.(*lex))
 			}
 		}
 	case 6:
 		{
 			//just run the command
-			yyS[yypt-0].cmd.Run()
+			yyS[yypt-0].cmd.Run(yylex.(*lex))
 			//run command without condition
 
 		}
@@ -1006,18 +1003,18 @@ yynewstate:
 	case 22:
 		{
 			if !yyS[yypt-0].boolean {
-				State.Assertion.Failed++
+				yylex.(*lex).State.Assertion.Failed++
 			} else {
-				State.Assertion.Succeeded++
+				yylex.(*lex).State.Assertion.Succeeded++
 			}
 			yyVAL.cmd = &AssertCommand{}
 		}
 	case 23:
 		{
 			if !yyS[yypt-0].boolean {
-				State.Must.Failed++
+				yylex.(*lex).State.Must.Failed++
 			} else {
-				State.Must.Succeeded++
+				yylex.(*lex).State.Must.Succeeded++
 			}
 
 			yyVAL.cmd = &MustCommand{}
@@ -1025,9 +1022,9 @@ yynewstate:
 	case 24:
 		{
 			if !yyS[yypt-0].boolean {
-				State.Should.Failed++
+				yylex.(*lex).State.Should.Failed++
 			} else {
-				State.Should.Succeeded++
+				yylex.(*lex).State.Should.Succeeded++
 			}
 			yyVAL.cmd = &ShouldCommand{}
 		}
@@ -1115,7 +1112,7 @@ yynewstate:
 		{
 			//string_or_var : STRING
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
+				yyVAL.val, _ = executeTemplate(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
 			} else {
 				yyVAL.val = yyS[yypt-0].val.(string)
 			}
@@ -1126,7 +1123,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), GlobalVars)
+					yyVAL.val, _ = executeTemplate(yyS[yypt-0].variable.value.(string), yylex.(*lex).GlobalVars)
 				} else {
 					yyVAL.val = yyS[yypt-0].variable.value
 				}
@@ -1157,17 +1154,17 @@ yynewstate:
 		{
 			//getting variable
 			yyVAL.variable.name = yyS[yypt-2].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-2].val.(string), GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-2].val.(string), yylex.(*lex).GlobalVars)
 		}
 	case 53:
 		{
 			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
 		}
 	case 54:
 		{
 			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
 		}
 	case 70:
 		{
@@ -1227,7 +1224,7 @@ yynewstate:
 		{
 			//string_var : STRING
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.str, _ = executeTemplate(yyS[yypt-0].val.(string), GlobalVars)
+				yyVAL.str, _ = executeTemplate(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
 			} else {
 				yyVAL.str = yyS[yypt-0].val.(string)
 			}
@@ -1238,7 +1235,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.str, _ = executeTemplate(yyS[yypt-0].variable.value.(string), GlobalVars)
+					yyVAL.str, _ = executeTemplate(yyS[yypt-0].variable.value.(string), yylex.(*lex).GlobalVars)
 				} else {
 					yyVAL.str = yyS[yypt-0].variable.value.(string)
 				}
@@ -1296,43 +1293,12 @@ yynewstate:
 	goto yystack /* stack new state and value */
 }
 
-type lex struct {
-	tokens chan Token
-}
-
-func (l *lex) All() []Token {
-	tokens := make([]Token, 0)
-	for {
-		v := <-l.tokens
-		if v.Type == EOF || v.Type == -1 {
-			break
-		}
-
-		tokens = append(tokens, v)
-	}
-
-	return tokens
-}
-
-func (l *lex) Lex(lval *yySymType) int {
-	v := <-l.tokens
-	if v.Type == EOF || v.Type == -1 {
-		return 0
-	}
-	lval.val = v.Val
-	return v.Type
-}
-
-func (l *lex) Error(e string) {
-	log.Fatal(e)
-}
-
-//TODO: use channels here.
-//Parse parses a given string and returns a lex
 func Parse(text string) *lex {
 
 	l := &lex{
-		tokens: make(chan Token),
+		tokens:     make(chan Token),
+		State:      NewStats(),
+		GlobalVars: map[string]interface{}{},
 	}
 
 	if Verbose {
@@ -1347,12 +1313,6 @@ func Parse(text string) *lex {
 	}()
 
 	return l
-}
-
-//Resets the state to start over
-func Reset() {
-	GlobalVars = map[string]interface{}{}
-	State = NewStats()
 }
 
 func Run(l *lex) {

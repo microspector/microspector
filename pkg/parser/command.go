@@ -1,5 +1,5 @@
 package parser
 
 type Command interface {
-	Run() interface{}
+	Run(l *lex) interface{}
 }

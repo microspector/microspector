@@ -59,7 +59,7 @@ func NewFromResponse(response *http.Response) HttpResult {
 	return result
 }
 
-func (hc *HttpCommand) Run() interface{} {
+func (hc *HttpCommand) Run(l *lex) interface{} {
 	_, urlError := url.Parse(hc.Url)
 
 	if urlError != nil {

@@ -25,8 +25,6 @@ func setupTest() *httptest.Server {
 }
 func TestParser_Set(t *testing.T) {
 
-	Reset()
-
 	lex := Parse(`
 SET {{ Domain }} 'microspector.com'
 SET $ContainsTrue  "microspector.com" contains "microspector"
@@ -56,39 +54,36 @@ SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
 
 	Run(lex)
 
-	assert.Equal(t, GlobalVars["Domain"], "microspector.com")
-	assert.Equal(t, GlobalVars["ContainsTrue"], true)
-	assert.Equal(t, GlobalVars["ContainsFalse"], false)
-	assert.Equal(t, GlobalVars["StartsWithTrue"], true)
-	assert.Equal(t, GlobalVars["StartsWithFalse"], false)
-	assert.Equal(t, GlobalVars["DoubleDomain"], "microspector.com microspector.com")
-	assert.Equal(t, GlobalVars["StringDigitCompare1"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare2"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare3"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare4"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare5"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare6"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare7"], false)
-	assert.Equal(t, GlobalVars["StringDigitCompare8"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare9"], false)
-	assert.Equal(t, GlobalVars["StringDigitCompare10"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare11"], true)
-	assert.Equal(t, GlobalVars["StringDigitCompare12"], false)
-	assert.Equal(t, GlobalVars["WhenFalse"], false)
-	assert.Equal(t, GlobalVars["SSLRandSize"], "64")
-	assert.Equal(t, len(GlobalVars["HashMd5"].(string)), 32)
-	assert.Equal(t, GlobalVars["HashMd5"].(string), "c4ca4238a0b923820dcc509a6f75849b")
-	assert.Equal(t, len(GlobalVars["Hash256"].(string)), 64)
-	assert.Equal(t, GlobalVars["Hash256"].(string), "08428467285068b426356b9b0d0ae1e80378d9137d5e559e5f8377dbd6dde29f")
+	assert.Equal(t, lex.GlobalVars["Domain"], "microspector.com")
+	assert.Equal(t, lex.GlobalVars["ContainsTrue"], true)
+	assert.Equal(t, lex.GlobalVars["ContainsFalse"], false)
+	assert.Equal(t, lex.GlobalVars["StartsWithTrue"], true)
+	assert.Equal(t, lex.GlobalVars["StartsWithFalse"], false)
+	assert.Equal(t, lex.GlobalVars["DoubleDomain"], "microspector.com microspector.com")
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare1"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare2"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare3"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare4"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare5"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare6"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare7"], false)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare8"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare9"], false)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare10"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare11"], true)
+	assert.Equal(t, lex.GlobalVars["StringDigitCompare12"], false)
+	assert.Equal(t, lex.GlobalVars["WhenFalse"], false)
+	assert.Equal(t, lex.GlobalVars["SSLRandSize"], "64")
+	assert.Equal(t, len(lex.GlobalVars["HashMd5"].(string)), 32)
+	assert.Equal(t, lex.GlobalVars["HashMd5"].(string), "c4ca4238a0b923820dcc509a6f75849b")
+	assert.Equal(t, len(lex.GlobalVars["Hash256"].(string)), 64)
+	assert.Equal(t, lex.GlobalVars["Hash256"].(string), "08428467285068b426356b9b0d0ae1e80378d9137d5e559e5f8377dbd6dde29f")
 }
 
 func TestParser_Http(t *testing.T) {
-	Reset()
 
 	server := setupTest()
 	defer server.Close()
-
-	GlobalVars["ServerMux"] = server.URL
 
 	/**
 	content of https://microspector.com/test.json :
@@ -111,28 +106,31 @@ func TestParser_Http(t *testing.T) {
 	}
 	*/
 
-	Run(Parse(`
+	l := Parse(`
 HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
 SET {{ ContentLength }} {{ ServerResult.ContentLength }}
 set {{ RawContent }} {{ ServerResult.Content }}
 SET {{ ContentData }}  ServerResult.Json.data 
 MUST $ContentData equals "microspector.com"
 MUST ServerResult.Json.data  equals "microspector.com"
-	`))
+	`)
 
-	assert.Equal(t, GlobalVars["ServerMux"], server.URL)
-	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).ContentLength, 27)
-	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
-	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
-	assert.Equal(t, GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
-	assert.Equal(t, GlobalVars["RawContent"], `{"data":"microspector.com"}`)
-	assert.Equal(t, GlobalVars["ContentData"], "microspector.com")
-	assert.Equal(t, State.Must.Succeeded, 2)
+	l.GlobalVars["ServerMux"] = server.URL
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["ServerMux"], server.URL)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).ContentLength, 27)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
+	assert.Equal(t, l.GlobalVars["RawContent"], `{"data":"microspector.com"}`)
+	assert.Equal(t, l.GlobalVars["ContentData"], "microspector.com")
+	assert.Equal(t, l.State.Must.Succeeded, 2)
 
 }
 
 func TestParser_End(t *testing.T) {
-	Reset()
 
 	lex := Parse(`
 SET {{ Var50 }} 49
@@ -145,14 +143,13 @@ SET {{ NilVar }} "this should not be assigned"
 
 	Run(lex)
 
-	assert.Equal(t, GlobalVars["Var50"], int64(50))
-	assert.Equal(t, GlobalVars["NilVar"], nil)
+	assert.Equal(t, lex.GlobalVars["Var50"], int64(50))
+	assert.Equal(t, lex.GlobalVars["NilVar"], nil)
 }
 
 func TestParser_Must(t *testing.T) {
-	Reset()
 
-	lex := Parse(`
+	l := Parse(`
 SET {{ Var50 }} 49
 SET {{ VarTrue }} true
 SET {{ VarFalse }} true AND false
@@ -167,21 +164,20 @@ ASSERT $MyVar contain "amicro"
 ASSERT $MyVar contain "micro"
 `)
 
-	Run(lex)
+	Run(l)
 	//TODO: do some more assertion, like, must fail and success counts
-	assert.Equal(t, GlobalVars["VarFalse"], false)
-	assert.Equal(t, State.Must.Failed, 1)
-	assert.Equal(t, State.Must.Succeeded, 3)
-	assert.Equal(t, State.Should.Succeeded, 1)
-	assert.Equal(t, State.Should.Failed, 1)
-	assert.Equal(t, State.Assertion.Failed, 1)
-	assert.Equal(t, State.Assertion.Succeeded, 1)
+	assert.Equal(t, l.GlobalVars["VarFalse"], false)
+	assert.Equal(t, l.State.Must.Failed, 1)
+	assert.Equal(t, l.State.Must.Succeeded, 3)
+	assert.Equal(t, l.State.Should.Succeeded, 1)
+	assert.Equal(t, l.State.Should.Failed, 1)
+	assert.Equal(t, l.State.Assertion.Failed, 1)
+	assert.Equal(t, l.State.Assertion.Succeeded, 1)
 }
 
 func TestParser_Assert(t *testing.T) {
-	Reset()
 
-	lex := Parse(`
+	l := Parse(`
 SET {{ Var50 }} 50
 ASSERT {{ Var50 }} > 100 
 ASSERT {{ Var50 }} < 100 
@@ -192,24 +188,22 @@ MUST {{ Var50 }} > 100
 MUST {{ Var50 }} < 100 
 `)
 
-	Run(lex)
+	Run(l)
 
-	assert.Equal(t, State.Assertion.Failed, 1)
-	assert.Equal(t, State.Assertion.Succeeded, 2)
+	assert.Equal(t, l.State.Assertion.Failed, 1)
+	assert.Equal(t, l.State.Assertion.Succeeded, 2)
 
-	assert.Equal(t, State.Should.Failed, 1)
-	assert.Equal(t, State.Should.Succeeded, 1)
+	assert.Equal(t, l.State.Should.Failed, 1)
+	assert.Equal(t, l.State.Should.Succeeded, 1)
 
-	assert.Equal(t, State.Must.Failed, 1)
-	assert.Equal(t, State.Must.Succeeded, 1)
+	assert.Equal(t, l.State.Must.Failed, 1)
+	assert.Equal(t, l.State.Must.Succeeded, 1)
 
 }
 
 func TestParser_QuotedString(t *testing.T) {
 
-	Reset()
-
-	lex := Parse(`
+	l := Parse(`
 SET {{ SingleQuoted50 }} '50'
 SET {{ DoubleQuoted50 }} "50"
 SET {{ SingleContainsDouble }}  '"this is a string "" with double quotes"'
@@ -219,21 +213,21 @@ SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes qu
 SET {{ DoubleContainsDouble }}  "\"this is a string \"\" with double includes quotes\""
 ` + " SET {{ BackTicks }} `\"\"this is' a back tick yeah\"\"` ")
 
-	Run(lex)
+	Run(l)
 
-	assert.Equal(t, GlobalVars["SingleQuoted50"], "50")
-	assert.Equal(t, GlobalVars["DoubleQuoted50"], "50")
-	assert.Equal(t, GlobalVars["SingleContainsDouble"], `"this is a string "" with double quotes"`)
-	assert.Equal(t, GlobalVars["DoubleContainsSingle"], `'this is a string '' with single quotes'`)
-	assert.Equal(t, GlobalVars["SingleContainsSingle"], `'this is a string '' with single includes quotes'`)
-	assert.Equal(t, GlobalVars["DoubleContainsDouble"], `"this is a string "" with double includes quotes"`)
-	assert.Equal(t, GlobalVars["BackTicks"], `""this is' a back tick yeah""`)
+	assert.Equal(t, l.GlobalVars["SingleQuoted50"], "50")
+	assert.Equal(t, l.GlobalVars["DoubleQuoted50"], "50")
+	assert.Equal(t, l.GlobalVars["SingleContainsDouble"], `"this is a string "" with double quotes"`)
+	assert.Equal(t, l.GlobalVars["DoubleContainsSingle"], `'this is a string '' with single quotes'`)
+	assert.Equal(t, l.GlobalVars["SingleContainsSingle"], `'this is a string '' with single includes quotes'`)
+	assert.Equal(t, l.GlobalVars["DoubleContainsDouble"], `"this is a string "" with double includes quotes"`)
+	assert.Equal(t, l.GlobalVars["BackTicks"], `""this is' a back tick yeah""`)
 
 }
 
 func TestParser_Arithmetic(t *testing.T) {
-	Reset()
-	lex := Parse(`
+
+	l := Parse(`
 SET  Var1  1
 SET {{ Var2 }} '2' # it should support both
 SET {{ Var3 }} 3
@@ -258,29 +252,29 @@ SET {{ ResultFloat15 }} {{ Var10 }} * 1.5
 SET $ResultFloat10 {{ ResultFloat15 }} / 1.5
 `)
 
-	Run(lex)
+	Run(l)
 
-	assert.Equal(t, GlobalVars["Var1"], int64(1))
-	assert.Equal(t, GlobalVars["Var2"], "2")
-	assert.Equal(t, GlobalVars["Var3"], int64(3))
-	assert.Equal(t, GlobalVars["Var4"], int64(4))
-	assert.Equal(t, GlobalVars["Var5"], "5")
-	assert.Equal(t, GlobalVars["Var6"], int64(6))
-	assert.Equal(t, GlobalVars["Var7"], int64(7))
-	assert.Equal(t, GlobalVars["Var8"], "8")
-	assert.Equal(t, GlobalVars["Var9"], int64(9))
-	assert.Equal(t, GlobalVars["Var10"], int64(10))
+	assert.Equal(t, l.GlobalVars["Var1"], int64(1))
+	assert.Equal(t, l.GlobalVars["Var2"], "2")
+	assert.Equal(t, l.GlobalVars["Var3"], int64(3))
+	assert.Equal(t, l.GlobalVars["Var4"], int64(4))
+	assert.Equal(t, l.GlobalVars["Var5"], "5")
+	assert.Equal(t, l.GlobalVars["Var6"], int64(6))
+	assert.Equal(t, l.GlobalVars["Var7"], int64(7))
+	assert.Equal(t, l.GlobalVars["Var8"], "8")
+	assert.Equal(t, l.GlobalVars["Var9"], int64(9))
+	assert.Equal(t, l.GlobalVars["Var10"], int64(10))
 
-	assert.Equal(t, GlobalVars["Result10"], int64(10))
-	assert.Equal(t, GlobalVars["Result15"], int64(15))
-	assert.Equal(t, GlobalVars["Result5"], int64(5))
-	assert.Equal(t, GlobalVars["Result6Strings"], int64(6))
-	assert.Equal(t, GlobalVars["Result5Strings"], int64(5))
-	assert.Equal(t, GlobalVars["Result501Strings"], int64(501))
-	assert.Equal(t, GlobalVars["Result550Strings"], int64(550))
-	assert.Equal(t, GlobalVars["Result262Strings"], int64(262))
-	assert.Equal(t, GlobalVars["ResultFloat15"], float64(15))
-	assert.Equal(t, GlobalVars["ResultFloat10"], float64(10))
+	assert.Equal(t, l.GlobalVars["Result10"], int64(10))
+	assert.Equal(t, l.GlobalVars["Result15"], int64(15))
+	assert.Equal(t, l.GlobalVars["Result5"], int64(5))
+	assert.Equal(t, l.GlobalVars["Result6Strings"], int64(6))
+	assert.Equal(t, l.GlobalVars["Result5Strings"], int64(5))
+	assert.Equal(t, l.GlobalVars["Result501Strings"], int64(501))
+	assert.Equal(t, l.GlobalVars["Result550Strings"], int64(550))
+	assert.Equal(t, l.GlobalVars["Result262Strings"], int64(262))
+	assert.Equal(t, l.GlobalVars["ResultFloat15"], float64(15))
+	assert.Equal(t, l.GlobalVars["ResultFloat10"], float64(10))
 
 }
 
@@ -318,9 +312,7 @@ Using .*w vs .*?w on xxsomethingnew@1234wxx
 */
 func TestParser_Regex(t *testing.T) {
 
-	Reset()
-
-	lex := Parse(`
+	l := Parse(`
 SET {{ Cat }} "cat"
 SET Regex1 {{ Cat }} MATCHES "cat"
 SET {{ Regex2 }} "ca+t" MATCHES "caaaaaaaaaaaat"
@@ -347,39 +339,37 @@ SET {{ Regex16 }} "^cat$" MATCHES "cat" # ^cat$ will match only and only this st
 SET {{ Regex16a }} "^cat$" MATCHES "cata" # ^cat$ will match only and only this string i.e. cat
 `)
 
-	Run(lex)
+	Run(l)
 
-	assert.Equal(t, GlobalVars["Regex1"], true)
-	assert.Equal(t, GlobalVars["Regex2"], true)
-	assert.Equal(t, GlobalVars["Regex2a"], false)
-	assert.Equal(t, GlobalVars["Regex3"], true)
-	assert.Equal(t, GlobalVars["Regex3a"], true)
-	assert.Equal(t, GlobalVars["Regex4a"], true)
-	assert.Equal(t, GlobalVars["Regex4b"], false)
-	assert.Equal(t, GlobalVars["Regex4c"], true)
-	assert.Equal(t, GlobalVars["Regex5"], true)
-	assert.Equal(t, GlobalVars["Regex6"], true)
-	assert.Equal(t, GlobalVars["Regex7"], true)
-	assert.Equal(t, GlobalVars["Regex8"], true)
-	assert.Equal(t, GlobalVars["Regex9"], true)
-	assert.Equal(t, GlobalVars["Regex10"], true)
-	assert.Equal(t, GlobalVars["Regex11"], true)
-	assert.Equal(t, GlobalVars["Regex12"], true)
-	assert.Equal(t, GlobalVars["Regex13"], true)
-	assert.Equal(t, GlobalVars["Regex14"], true)
-	assert.Equal(t, GlobalVars["Regex14a"], false)
-	assert.Equal(t, GlobalVars["Regex15"], true)
-	assert.Equal(t, GlobalVars["Regex15a"], false)
-	assert.Equal(t, GlobalVars["Regex16"], true)
-	assert.Equal(t, GlobalVars["Regex16a"], false)
+	assert.Equal(t, l.GlobalVars["Regex1"], true)
+	assert.Equal(t, l.GlobalVars["Regex2"], true)
+	assert.Equal(t, l.GlobalVars["Regex2a"], false)
+	assert.Equal(t, l.GlobalVars["Regex3"], true)
+	assert.Equal(t, l.GlobalVars["Regex3a"], true)
+	assert.Equal(t, l.GlobalVars["Regex4a"], true)
+	assert.Equal(t, l.GlobalVars["Regex4b"], false)
+	assert.Equal(t, l.GlobalVars["Regex4c"], true)
+	assert.Equal(t, l.GlobalVars["Regex5"], true)
+	assert.Equal(t, l.GlobalVars["Regex6"], true)
+	assert.Equal(t, l.GlobalVars["Regex7"], true)
+	assert.Equal(t, l.GlobalVars["Regex8"], true)
+	assert.Equal(t, l.GlobalVars["Regex9"], true)
+	assert.Equal(t, l.GlobalVars["Regex10"], true)
+	assert.Equal(t, l.GlobalVars["Regex11"], true)
+	assert.Equal(t, l.GlobalVars["Regex12"], true)
+	assert.Equal(t, l.GlobalVars["Regex13"], true)
+	assert.Equal(t, l.GlobalVars["Regex14"], true)
+	assert.Equal(t, l.GlobalVars["Regex14a"], false)
+	assert.Equal(t, l.GlobalVars["Regex15"], true)
+	assert.Equal(t, l.GlobalVars["Regex15a"], false)
+	assert.Equal(t, l.GlobalVars["Regex16"], true)
+	assert.Equal(t, l.GlobalVars["Regex16a"], false)
 
 }
 
 func TestParser_TypeCheck(t *testing.T) {
 
-	Reset()
-
-	lex := Parse(`
+	l := Parse(`
 SET {{ String }} "cat"
 MUST {{ String }} is string
 SET {{ Boolean }} String is string
@@ -390,25 +380,20 @@ MUST {{ Integer }} is int ## known issue: https://golang.org/pkg/encoding/json/#
 MUST {{ Integer }} is integer ## known issue: https://golang.org/pkg/encoding/json/#Unmarshal
 `)
 
-	Run(lex)
-
-	assert.Equal(t, State.Must.Succeeded, 5)
+	Run(l)
+	assert.Equal(t, l.State.Must.Succeeded, 5)
 }
 
 func TestParser_Arrays(t *testing.T) {
-	//t.SkipNow()
-	Reset()
 
-	lex := Parse(`
+	l := Parse(`
 SET {{ String }} "onestring"
 SET {{ Array }} ["cat",1,"2",1.0,{{ String }},[1,2,3,4]]
 `)
 
-	//	assert.Equal(t, lex.All(), 5)
+	Run(l)
 
-	Run(lex)
-
-	assert.Equal(t, len(GlobalVars["Array"].([]interface{})), 6)
-	assert.Equal(t, GlobalVars["Array"].([]interface{})[4], "onestring")                                               //5th element of array should $String which is "onestring"
-	assert.DeepEqual(t, GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)}) //5th element of array should $String which is "onestring"
+	assert.Equal(t, len(l.GlobalVars["Array"].([]interface{})), 6)
+	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring")                                               //5th element of array should $String which is "onestring"
+	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)}) //5th element of array should $String which is "onestring"
 }

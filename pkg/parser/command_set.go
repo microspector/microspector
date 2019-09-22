@@ -10,11 +10,11 @@ type SetCommand struct {
 	Value interface{}
 }
 
-func (hc *SetCommand) Run() interface{} {
+func (hc *SetCommand) Run(l *lex) interface{} {
 	if strings.Contains(hc.Name, ".") {
 		panic(fmt.Errorf("nested variables are not supported yet"))
 	}
 
-	GlobalVars[hc.Name] = hc.Value
+	l.GlobalVars[hc.Name] = hc.Value
 	return hc.Value
 }

@@ -9,7 +9,7 @@ type SleepCommand struct {
 	Millisecond int64
 }
 
-func (sc *SleepCommand) Run() interface{} {
+func (sc *SleepCommand) Run(l *lex) interface{} {
 	time.Sleep(time.Duration(sc.Millisecond) * time.Millisecond)
 	return nil
 

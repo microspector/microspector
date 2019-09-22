@@ -72,14 +72,14 @@ func main() {
 		}
 		lex := parser.Parse(string(bytes))
 		if *vv {
-			fmt.Printf("%+v\n", lex)
+			//fmt.Printf("%+v\n", lex)
 		}
 		parser.Run(lex)
-		parser.PrintStats()
+
 		if *vv {
-			fmt.Printf("%+v\n", parser.GlobalVars)
+			fmt.Printf("%+v\n", lex.State)
+			fmt.Printf("%+v\n", lex.GlobalVars)
 		}
-		parser.Reset()
 
 	}
 	//fmt.Printf("%+v\n", parser.GlobalVars)
