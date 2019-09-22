@@ -1,11 +1,8 @@
 package parser
 
 import (
-	"bytes"
 	"fmt"
 	"github.com/microspector/microspector/pkg/lookup"
-	"github.com/microspector/microspector/pkg/templating"
-	"html/template"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -18,23 +15,6 @@ var (
 	Build   = "unknown"
 	Verbose = false
 )
-
-//compiles strings using golang template engine and returns the result as string
-func executeTemplate(text string, state map[string]interface{}) (string, error) {
-	t := template.New("microspector").Funcs(templating.Functions)
-	_, err := t.Parse(text)
-
-	if err != nil {
-		return "", nil
-	}
-
-	var tpl bytes.Buffer
-	if err := t.Execute(&tpl, state); err != nil {
-		return "", err
-	}
-
-	return tpl.String(), nil
-}
 
 //query basically ancodes objects and then tries to find values from objects by their path like variable.sub.value
 func query(fieldPath string, thevars map[string]interface{}) interface{} {
@@ -163,7 +143,7 @@ func runop(left, operator, right interface{}) bool {
 		return left != right
 	case "CONTAINS", "CONTAIN":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
-	case "STARTSWITH","STARTWITH":
+	case "STARTSWITH", "STARTWITH":
 		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "LT", "GT", ">", "<":
 

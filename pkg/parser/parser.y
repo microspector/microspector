@@ -4,7 +4,7 @@ package parser
 import (
     "strings"
     "fmt"
-
+    "github.com/microspector/microspector/pkg/templating"
 )
 %}
 
@@ -374,7 +374,7 @@ any_value	:
 		{
 			//string_or_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = executeTemplate( $1.(string) , yylex.(*lex).GlobalVars)
+				$$,_ = templating.ExecuteTemplate( $1.(string) , yylex.(*lex).GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -386,7 +386,7 @@ any_value	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = executeTemplate( $1.value.(string) , yylex.(*lex).GlobalVars)
+					    $$,_ = templating.ExecuteTemplate( $1.value.(string) , yylex.(*lex).GlobalVars)
 				     }else{
 					$$ = $1.value
 				     }
@@ -537,7 +537,7 @@ string_var	:
 		{
 			//string_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = executeTemplate( $1.(string) ,yylex.(*lex). GlobalVars)
+				$$,_ = templating.ExecuteTemplate( $1.(string) ,yylex.(*lex). GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -549,7 +549,7 @@ string_var	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = executeTemplate( $1.value.(string) ,yylex.(*lex). GlobalVars)
+					    $$,_ = templating.ExecuteTemplate( $1.value.(string) ,yylex.(*lex). GlobalVars)
 				     }else{
 					$$ = $1.value.(string)
 				     }

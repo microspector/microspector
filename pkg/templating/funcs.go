@@ -1,6 +1,7 @@
 package templating
 
 import (
+	"bytes"
 	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
@@ -9,6 +10,23 @@ import (
 	"strconv"
 	"strings"
 )
+
+//compiles strings using golang template engine and returns the result as string
+func ExecuteTemplate(text string, state map[string]interface{}) (string, error) {
+	t := template.New("microspector").Funcs(Functions)
+	_, err := t.Parse(text)
+
+	if err != nil {
+		return "", nil
+	}
+
+	var tpl bytes.Buffer
+	if err := t.Execute(&tpl, state); err != nil {
+		return "", err
+	}
+
+	return tpl.String(), nil
+}
 
 var Functions = template.FuncMap{
 	"openssl_rand": OpenSslRand,
