@@ -189,7 +189,7 @@ func multiply(b, a interface{}) (interface{}, error) {
 		case reflect.Float32, reflect.Float64:
 			return av.Float() * bv.Float(), nil
 		case reflect.String:
-			c, _e := strconv.ParseFloat(bv.String(),  64)
+			c, _e := strconv.ParseFloat(bv.String(), 64)
 			return av.Float() * c, _e
 		default:
 			log.Fatal(fmt.Errorf("multiply: unknown type for %q (%T)", bv, b))

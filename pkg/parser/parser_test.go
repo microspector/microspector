@@ -136,6 +136,8 @@ func TestParser_End(t *testing.T) {
 SET {{ Var50 }} 49
 END WHEN {{ Var50 }} > 100 #this line won't end the execution
 SET {{ Var50 }} 50
+SET varNegative  -1 
+SET negativeResult varNegative * Var50
 end
 SET {{ Var50 }} 100
 SET {{ NilVar }} "this should not be assigned"
@@ -145,6 +147,8 @@ SET {{ NilVar }} "this should not be assigned"
 
 	assert.Equal(t, lex.GlobalVars["Var50"], int64(50))
 	assert.Equal(t, lex.GlobalVars["NilVar"], nil)
+	assert.Equal(t, lex.GlobalVars["varNegative"], int64(-1))
+	assert.Equal(t, lex.GlobalVars["negativeResult"], int64(-50))
 }
 
 func TestParser_Must(t *testing.T) {
