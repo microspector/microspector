@@ -3,8 +3,8 @@ package parser
 import (
 	"bytes"
 	"fmt"
-	"github.com/tufanbarisyildirim/microspector/pkg/lookup"
-	"github.com/tufanbarisyildirim/microspector/pkg/templating"
+	"github.com/microspector/microspector/pkg/lookup"
+	"github.com/microspector/microspector/pkg/templating"
 	"html/template"
 	"reflect"
 	"regexp"

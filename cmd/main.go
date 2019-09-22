@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/tufanbarisyildirim/microspector/pkg/parser"
+	"github.com/microspector/microspector/pkg/parser"
 	"io/ioutil"
 	"log"
 	"os"

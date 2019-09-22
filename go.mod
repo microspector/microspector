@@ -1,4 +1,4 @@
-module github.com/tufanbarisyildirim/microspector
+module github.com/microspector/microspector
 
 go 1.13
 
