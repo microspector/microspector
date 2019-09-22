@@ -10,7 +10,9 @@ type lex struct {
 
 func (l *lex) All() []Token {
 	tokens := make([]Token, 0)
+
 	for {
+
 		v := <-l.tokens
 		if v.Type == EOF || v.Type == -1 {
 			break

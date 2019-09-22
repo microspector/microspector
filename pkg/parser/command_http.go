@@ -51,7 +51,7 @@ func NewFromResponse(response *http.Response) HttpResult {
 	}
 
 	for k, v := range response.Header {
-		result.Headers[toVariableName(k)] = v[0]
+		result.Headers[ToVariableName(k)] = v[0]
 	}
 
 	_ = json.Unmarshal(content, &result.Json)

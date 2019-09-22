@@ -175,8 +175,8 @@ ASSERT $MyVar contain "micro"
 	assert.Equal(t, l.State.Must.Succeeded, 3)
 	assert.Equal(t, l.State.Should.Succeeded, 1)
 	assert.Equal(t, l.State.Should.Failed, 1)
-	assert.Equal(t, l.State.Assertion.Failed, 1)
-	assert.Equal(t, l.State.Assertion.Succeeded, 1)
+	assert.Equal(t, l.State.Assert.Failed, 1)
+	assert.Equal(t, l.State.Assert.Succeeded, 1)
 }
 
 func TestParser_Assert(t *testing.T) {
@@ -194,8 +194,8 @@ MUST {{ Var50 }} < 100
 
 	Run(l)
 
-	assert.Equal(t, l.State.Assertion.Failed, 1)
-	assert.Equal(t, l.State.Assertion.Succeeded, 2)
+	assert.Equal(t, l.State.Assert.Failed, 1)
+	assert.Equal(t, l.State.Assert.Succeeded, 2)
 
 	assert.Equal(t, l.State.Should.Failed, 1)
 	assert.Equal(t, l.State.Should.Succeeded, 1)

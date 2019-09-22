@@ -3,28 +3,30 @@ package parser
 import "fmt"
 
 type Stats struct {
-	Assertion Stat
-	Must      Stat
-	Should    Stat
+	Assert Stat
+	Must   Stat
+	Should Stat
 }
 
 func NewStats() Stats {
 	return Stats{
-		Assertion: NewStat(),
-		Must:      NewStat(),
-		Should:    NewStat(),
+		Assert: NewStat(),
+		Must:   NewStat(),
+		Should: NewStat(),
 	}
 }
 
 type Stat struct {
 	Failed    int
 	Succeeded int
+	Messages  []string
 }
 
 func NewStat() Stat {
 	return Stat{
 		Failed:    0,
 		Succeeded: 0,
+		Messages:  make([]string, 0),
 	}
 }
 

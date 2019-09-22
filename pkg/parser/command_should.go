@@ -1,8 +1,10 @@
 package parser
 
 type ShouldCommand struct {
+	Command
+	Failed bool
 }
 
-func (hc *ShouldCommand) Run(l *lex) interface{} {
+func (sc *ShouldCommand) Run(l *lex) interface{} {
 	return "we got a SHOULD Command here"
 }

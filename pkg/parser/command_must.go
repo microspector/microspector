@@ -1,6 +1,7 @@
 package parser
 
 type MustCommand struct {
+	Failed bool
 }
 
 func (hc *MustCommand) Run(l *lex) interface{} {

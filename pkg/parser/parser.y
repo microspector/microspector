@@ -233,39 +233,72 @@ end_command		:
 			}
 
 assert_command		:
+			assert_command string_var
+			{
+				if $1.(*AssertCommand).Failed{
+				   yylex.(*lex).State.Assert.Messages =  append(yylex.(*lex).State.Assert.Messages,$2)
+				}
+
+				$$ = $1
+			}
+                        |
 			ASSERT boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Assertion.Failed++
+					yylex.(*lex).State.Assert.Failed++
 				}else{
-					yylex.(*lex).State.Assertion.Succeeded++
+					yylex.(*lex).State.Assert.Succeeded++
 				}
-				 $$ = &AssertCommand{}
+				 $$ = &AssertCommand{
+				 	Failed: !$2,
+				 }
 			}
 
 must_command		:
+			must_command string_var
+			{
+				if $1.(*MustCommand).Failed{
+				   yylex.(*lex).State.Must.Messages =  append(yylex.(*lex).State.Must.Messages,$2)
+				}
+
+				$$ = $1
+			}
+			|
 			MUST boolean_exp
 			{
 				if !$2 {
-						yylex.(*lex).State.Must.Failed++
-					}else{
-						yylex.(*lex).State.Must.Succeeded++
-					}
+					yylex.(*lex).State.Must.Failed++
+				}else{
+					yylex.(*lex).State.Must.Succeeded++
+				}
 
-				$$ = &MustCommand{}
+				$$ = &MustCommand{
+					Failed: !$2,
+				}
 			}
 
 
 
 should_command		:
+			should_command string_var
+			{
+				if $1.(*ShouldCommand).Failed{
+				   yylex.(*lex).State.Should.Messages =  append(yylex.(*lex).State.Should.Messages,$2)
+				}
+
+				$$ = $1
+			}
+			|
 			SHOULD boolean_exp
 			{
 				if !$2 {
-						yylex.(*lex).State.Should.Failed++
-					}else{
-						yylex.(*lex).State.Should.Succeeded++
-					}
-				$$ = &ShouldCommand{}
+					yylex.(*lex).State.Should.Failed++
+				}else{
+					yylex.(*lex).State.Should.Succeeded++
+				}
+				$$ = &ShouldCommand{
+					Failed: !$2,
+				}
 			}
 
 set_command		:
