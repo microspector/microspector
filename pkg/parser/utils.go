@@ -118,7 +118,7 @@ func IsTypeOf(obj interface{}, typeName string) bool {
 
 var zero reflect.Value
 
-func toVariableName(str string) string {
+func ToVariableName(str string) string {
 	segments := strings.Split(str, "-")
 	for key, value := range segments {
 		segments[key] = strings.Title(value)
