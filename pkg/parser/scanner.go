@@ -46,6 +46,7 @@ var keywords = map[string]int{
 	"CONTAINS":   CONTAINS,
 	"CONTAIN":    CONTAIN,
 	"STARTSWITH": STARTSWITH,
+	"STARTWITH":  STARTWITH,
 	"IS":         IS,
 	"ISNOT":      ISNOT,
 	"MATCH":      MATCH,

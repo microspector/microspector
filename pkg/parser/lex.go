@@ -34,5 +34,5 @@ func (l *lex) Lex(lval *yySymType) int {
 }
 
 func (l *lex) Error(e string) {
-	log.Fatal(e)
+	log.Println(e)
 }
