@@ -15,9 +15,10 @@ import (
 )
 
 type HttpCommand struct {
-	Method        string
-	CommandParams []HttpCommandParam //HEADER, BODY etc.
-	Url           string
+	Method          string
+	CommandParams   []HttpCommandParam //HEADER, BODY etc.
+	Url             string
+	FollowRedirects bool
 }
 
 type HttpResult struct {
@@ -76,7 +77,7 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 	for _, commandParam := range hc.CommandParams {
 		switch commandParam.ParamName {
 		case "HEADER":
-			headers := strings.Split(commandParam.ParamValue, "\n")
+			headers := strings.Split(commandParam.ParamValue.(string), "\n")
 			for _, header := range headers {
 				headerParts := strings.Split(header, ":")
 				if len(headerParts) != 2 {
@@ -91,8 +92,10 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 
 		case "BODY":
 			if req.Method == http.MethodPost || req.Method == http.MethodPut || req.Method == http.MethodPatch {
-				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue))
+				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue.(string)))
 			}
+		case "FOLLOW":
+			hc.FollowRedirects = IsTrue(commandParam.ParamValue)
 		default:
 			fmt.Println("Unknown http command param ", commandParam.ParamName)
 		}
@@ -103,17 +106,32 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 		KeepAlive: 30 * time.Second,
 	}
 
+	dialDepth := 1
+	conf := &tls.Config{
+		InsecureSkipVerify: false,
+		ServerName:         req.Host,
+	}
+
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{
-				ServerName: req.Host, // set SNI from host header
-			},
+			TLSClientConfig: conf,
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				// redirect all connections to host specified in url
-				addr = strings.Split(req.URL.Host, ":")[0] + addr[strings.LastIndex(addr, ":"):]
+				if dialDepth == 1 { // use the host in url just for firs dial, others
+					addr = strings.Split(req.URL.Host, ":")[0] + addr[strings.LastIndex(addr, ":"):]
+					dialDepth++
+				} else {
+					conf.ServerName = ""
+				}
 				return dialer.DialContext(ctx, network, addr)
 			},
+		},
+		CheckRedirect: func(req *http.Request, via []*http.Request) error {
+			if !hc.FollowRedirects {
+				return http.ErrUseLastResponse
+			}
+			return nil
 		},
 	}
 	start := makeTimestamp()
@@ -134,5 +152,5 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 
 type HttpCommandParam struct {
 	ParamName  string
-	ParamValue string
+	ParamValue interface{}
 }

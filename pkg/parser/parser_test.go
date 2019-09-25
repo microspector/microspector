@@ -21,8 +21,71 @@ func setupTest() *httptest.Server {
 
 	})
 
+	serverMux.HandleFunc("/redirect", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Location", server.URL+"/redirected")
+		w.WriteHeader(302)
+	})
+
+	serverMux.HandleFunc("/redirected", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `OK`)
+	})
+
 	return server
 }
+
+func TestParser_Http(t *testing.T) {
+
+	server := setupTest()
+	defer server.Close()
+
+	l := Parse(`
+HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
+SET {{ ContentLength }} {{ ServerResult.ContentLength }}
+set {{ RawContent }} {{ ServerResult.Content }}
+SET {{ ContentData }}  ServerResult.Json.data 
+MUST $ContentData equals "microspector.com"
+MUST ServerResult.Json.data  equals "microspector.com"
+	`)
+
+	l.GlobalVars["ServerMux"] = server.URL
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["ServerMux"], server.URL)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).ContentLength, 27)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
+	assert.Equal(t, l.GlobalVars["RawContent"], `{"data":"microspector.com"}`)
+	assert.Equal(t, l.GlobalVars["ContentData"], "microspector.com")
+	assert.Equal(t, l.State.Must.Succeeded, 2)
+
+}
+
+
+func TestParser_HttpRedirect(t *testing.T) {
+
+	server := setupTest()
+	defer server.Close()
+
+	l := Parse(`
+HTTP get "{{ .ServerMux }}/redirect" HEADER "User-Agent:(bot)microspector.com" NOFOLLOW INTO {{ ServerResult }}
+MUST ServerResult.StatusCode == 302
+HTTP get "{{ .ServerMux }}/redirect" HEADER "User-Agent:(bot)microspector.com" FOLLOW INTO {{ ServerResultNoFollow }}
+MUST ServerResultNoFollow.StatusCode == 200
+	`)
+
+	l.GlobalVars["ServerMux"] = server.URL
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["ServerMux"], server.URL)
+	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Location"], server.URL+"/redirected")
+	assert.Equal(t, l.GlobalVars["ServerResultNoFollow"].(HttpResult).Content, "OK")
+	assert.Equal(t, l.State.Must.Succeeded, 2)
+
+}
+
 func TestParser_Set(t *testing.T) {
 
 	lex := Parse(`
@@ -78,56 +141,6 @@ SET {{ Hash256 }} "{{ hash_sha256 .HashMd5 }}"
 	assert.Equal(t, lex.GlobalVars["HashMd5"].(string), "c4ca4238a0b923820dcc509a6f75849b")
 	assert.Equal(t, len(lex.GlobalVars["Hash256"].(string)), 64)
 	assert.Equal(t, lex.GlobalVars["Hash256"].(string), "08428467285068b426356b9b0d0ae1e80378d9137d5e559e5f8377dbd6dde29f")
-}
-
-func TestParser_Http(t *testing.T) {
-
-	server := setupTest()
-	defer server.Close()
-
-	/**
-	content of https://microspector.com/test.json :
-	{
-	"array": [
-	1,
-	2,
-	3
-	],
-	"boolean": true,
-	"null": null,
-	"number": 123,
-	"float": 123.1,
-	"object": {
-	"a": "b",
-	"c": "d",
-	"e": "f"
-	},
-	"string": "Hello World"
-	}
-	*/
-
-	l := Parse(`
-HTTP get {{ ServerMux }} HEADER "User-Agent:(bot)microspector.com" INTO {{ ServerResult }}
-SET {{ ContentLength }} {{ ServerResult.ContentLength }}
-set {{ RawContent }} {{ ServerResult.Content }}
-SET {{ ContentData }}  ServerResult.Json.data 
-MUST $ContentData equals "microspector.com"
-MUST ServerResult.Json.data  equals "microspector.com"
-	`)
-
-	l.GlobalVars["ServerMux"] = server.URL
-
-	Run(l)
-
-	assert.Equal(t, l.GlobalVars["ServerMux"], server.URL)
-	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).ContentLength, 27)
-	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).StatusCode, 200)
-	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["UserAgent"], "(bot)microspector.com")
-	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
-	assert.Equal(t, l.GlobalVars["RawContent"], `{"data":"microspector.com"}`)
-	assert.Equal(t, l.GlobalVars["ContentData"], "microspector.com")
-	assert.Equal(t, l.State.Must.Succeeded, 2)
-
 }
 
 func TestParser_End(t *testing.T) {

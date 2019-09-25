@@ -49,6 +49,8 @@ TRACE
 PATCH
 HEADER
 BODY
+FOLLOW
+NOFOLLOW
 
 //condition tokens
 %token <val>
@@ -380,9 +382,33 @@ http_command_param	:
 			BODY string_var
 			{
 				$$ = HttpCommandParam{
-						ParamName : $1.(string),
-						ParamValue : $2,
-					}
+					ParamName : $1.(string),
+					ParamValue : $2,
+				}
+			}
+			|
+			FOLLOW any_value
+			{
+				$$ = HttpCommandParam{
+					ParamName : $1.(string),
+					ParamValue : IsTrue($2),
+				}
+			}
+			|
+			FOLLOW
+			{
+				$$ = HttpCommandParam{
+					ParamName : $1.(string),
+					ParamValue : true,
+				}
+			}
+			|
+			NOFOLLOW
+			{
+				$$ = HttpCommandParam{
+					ParamName : "FOLLOW",
+					ParamValue : false,
+				}
 			}
 
 
@@ -458,6 +484,7 @@ any_value	:
 		{
 			$$ ,_ =  umin($2)
 		}
+
 
 
 

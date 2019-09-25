@@ -33,6 +33,8 @@ var keywords = map[string]int{
 	"IDENTIFIER": IDENTIFIER,
 	"KEYWORD":    KEYWORD,
 	"BODY":       BODY,
+	"FOLLOW":     FOLLOW,
+	"NOFOLLOW":   NOFOLLOW,
 	"WHEN":       WHEN,
 	"TRUE":       TRUE,
 	"FALSE":      FALSE,
