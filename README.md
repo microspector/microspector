@@ -34,15 +34,15 @@ HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"
 ```
 
 ### Variables
-Variables can be used like `VariableName`, `{{ VariableName }}` OR  `$VariableName` all supported 
-in order to combine with any other templating and some brackets to allow reserved keywords being used as variable name. 
+Variables can be used like `VariableName`, `{{ VariableName }}` OR  `$VariableName`. All supported 
+in order to combine with any other templating. Brackets are just to allow reserved keywords being used as variable name. 
 For example `set $set 1` and `set {{ set }} 1` will set a variable named `set` while `set set 1` failing because set is a command
 Variables can be accessed and set in same way. 
 Accessing supports nested variables like ` HttpResult.Json.message  ` but setting does not yet.
 
 
 ### Commands
-A Microspector script is a basic set of commands. Every command takes some params does the rest accordingly. 
+A Microspector script is a basic set of commands. Every command takes some params and does the rest accordingly. 
 
 Currently supported commands are:
 
@@ -75,7 +75,8 @@ Full Example:
 ```bash
 HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
      HEADER "User-Agent:Microspector
-     Content-type: application/json"
+     Accept: application/json
+     Content-Type: application/json"
      BODY '{ "text":"Hello World!" }'
      INTO  Result 
 ```
@@ -140,7 +141,7 @@ INCLUDE "tasks/sub-commands.msf"
 ```
 
 #### SLEEP
-Include an integer in milliseconds and blocks the execution until then
+Sleep takes an integer value in milliseconds and blocks the execution until then
 ```bash
 SLEEP 500
 ```
