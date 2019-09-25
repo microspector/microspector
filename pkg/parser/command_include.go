@@ -19,6 +19,8 @@ func (ic *IncludeCommand) Run(l *lex) interface{} {
 		os.Exit(1)
 	}
 	lex := Parse(string(bytes))
+	lex.State = l.State
+	lex.GlobalVars = l.GlobalVars
 	Run(lex)
 
 	return nil
