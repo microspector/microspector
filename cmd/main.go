@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"github.com/microspector/microspector/pkg/parser"
 	"io/ioutil"
-	"log"
 	"os"
-	"path"
+	"path/filepath"
 )
 
 var (
@@ -21,7 +20,6 @@ func main() {
 	parser.Build = Build
 
 	var file, folder string
-	var err error
 
 	var fi = flag.String("file", "", "task file path")
 	var fo = flag.String("folder", "", "tasks folder path")
@@ -42,29 +40,30 @@ func main() {
 		flag.PrintDefaults()
 	}
 
-	files := make([]os.FileInfo, 0)
+	var files = make([]string, 0)
 
 	if folder != "" {
-		files, err = ioutil.ReadDir(folder)
+		err := filepath.Walk(folder, func(path string, info os.FileInfo, err error) error {
+			if !info.IsDir() {
+				files = append(files, path)
+			}
+			return nil
+		})
+
 		if err != nil {
-			log.Fatal(err)
+			panic(err)
+		}
+
+		for _, file := range files {
+			fmt.Println(file)
 		}
 	} else if file != "" {
-		files = make([]os.FileInfo, 1)
-		f, err := os.Stat(file)
-		if err != nil {
-			log.Fatal(err)
-		}
-		files[0] = f
+		files = append(files, file)
 	}
 
 	for _, f := range files {
 
-		if f.IsDir() {
-			continue
-		}
-
-		bytes, err := ioutil.ReadFile(path.Join(folder, f.Name()))
+		bytes, err := ioutil.ReadFile(f)
 
 		if err != nil {
 			fmt.Println(fmt.Errorf("error reading file: %s", err))
@@ -80,6 +79,5 @@ func main() {
 			fmt.Printf("%+v\n", lex.State)
 			fmt.Printf("%+v\n", lex.GlobalVars)
 		}
-
 	}
 }
