@@ -104,14 +104,15 @@ type HttpResult struct {
 Assert is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.  
 
 ```bash
-ASSERT  result.Json.boolean  EQUALS true
+ASSERT  result.Json.boolean equals true
+ASSERT  result.Json.boolean #both works cuz assertion does a thruty check
 ```
 
 #### MUST
 Must is an assertion command, takes an expression and does a thruty check to mark it is failed or succeeded. 
 
 ```bash
-MUST  result.StatusCode  EQUALS 200
+MUST  result.StatusCode == 200
 ```
 
 #### SHOULD
@@ -131,7 +132,8 @@ DEBUG  result.Content
 #### END
 End takes optional boolean expression. It just skips if thruty fails. When its used without parameter or the given expression passes thruty check it ends the execution.
 ```bash
-END WHEN  result.Json.boolean  EQUALS false
+END WHEN result.Json.boolean equals false
+END result.Json.boolean equals false
 ```
 
 #### INCLUDE
