@@ -5,7 +5,7 @@ dist: yacc
 	./dist.sh
 
 run: yacc
-	go run ./cmd --folder="tasks" --verbose
+	go run ./cmd --file="./tasks/main.msf"
 
 test: yacc
 	go test ${PWD}/pkg/parser
