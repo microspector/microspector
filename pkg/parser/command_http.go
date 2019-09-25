@@ -141,6 +141,10 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 	}
 	elapsed := makeTimestamp() - start
 
+	if r.TLS != nil {
+		fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
+	}
+
 	resp := NewFromResponse(r)
 	resp.Took = elapsed
 	if reqErr != nil {
