@@ -43,6 +43,7 @@ var keywords = map[string]int{
 	"SET":        SET,
 	"EQUALS":     EQUALS,
 	"EQUAL":      EQUAL,
+	"NOT":        NOT,
 	"NOTEQUALS":  NOTEQUALS,
 	"NOTEQUAL":   NOTEQUAL,
 	"CONTAINS":   CONTAINS,

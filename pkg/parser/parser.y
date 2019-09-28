@@ -73,6 +73,7 @@ MATCHES
 MATCH
 IS
 ISNOT
+NOT
 
 %token <val>
 INTO
@@ -525,6 +526,14 @@ operator	:
 		| MATCHES
 		| IS
 		| ISNOT
+		| NOT operator
+		{
+		  $$ = "NOT"+$2.(string)
+		}
+		| '!' operator
+		{
+		  $$ = "NOT"+$2.(string)
+		}
 
 
 boolean_exp	:

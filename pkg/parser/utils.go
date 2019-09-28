@@ -127,20 +127,29 @@ func ToVariableName(str string) string {
 	return strings.Join(segments, "")
 }
 
-func runop(left, operator, right interface{}) bool {
-	switch strings.ToUpper(operator.(string)) {
+func runop(left, operator, right interface{}) (eq bool) {
+
+	op := strings.TrimPrefix(strings.ToUpper(operator.(string)), "NOT")
+	not := op != operator
+
+	eq = runop_positive(left, op, right)
+
+	if not {
+		return !eq
+	}
+
+	return eq
+}
+
+func runop_positive(left interface{}, operator string, right interface{}) (eq bool) {
+
+	switch operator {
 	case "EQUALS", "==", "EQUAL":
 		if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			return l == r
 		}
 		return left == right
-	case "NOTEQUALS", "!=", "NOTEQUAL":
-		if oneIsInt(left, right) {
-			l, r := convertToInt(left, right)
-			return l != r
-		}
-		return left != right
 	case "CONTAINS", "CONTAIN":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "STARTSWITH", "STARTWITH":
@@ -197,8 +206,6 @@ func runop(left, operator, right interface{}) bool {
 		return match
 	case "IS":
 		return IsTypeOf(left, right.(string))
-	case "ISNOT":
-		return !IsTypeOf(left, right.(string))
 
 	}
 
