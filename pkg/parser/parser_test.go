@@ -62,7 +62,6 @@ MUST ServerResult.Json.data  equals "microspector.com"
 
 }
 
-
 func TestParser_HttpRedirect(t *testing.T) {
 
 	server := setupTest()
@@ -411,6 +410,32 @@ SET {{ Array }} ["cat",1,"2",1.0,{{ String }},[1,2,3,4]]
 	Run(l)
 
 	assert.Equal(t, len(l.GlobalVars["Array"].([]interface{})), 6)
-	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring")                                               //5th element of array should $String which is "onestring"
-	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)}) //5th element of array should $String which is "onestring"
+	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring") //5th element of array should be $String which is "onestring"
+	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)})
+}
+
+func TestParser_NotOperator(t *testing.T) {
+
+	l := Parse(`
+SET {{ Bool }} true
+SET $Microspector "Microspector"
+MUST {{ Bool }} not equals false
+MUST {{ Bool }} equals true
+MUST $Microspector CONTAIN "Microspector"
+MUST $Microspector NOT contain "mcrospector"
+MUST $Microspector NOT contains "mcrospector"
+MUST NOT $Microspector contains "mcrospector"
+SHOULD NOT $Microspector contains "mcrospector"
+Set $age 30
+must not $age < 10
+must age not < 10
+must age > 30
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["Bool"], true)
+	assert.Equal(t, l.State.Must.Succeeded, 8)
+	assert.Equal(t, l.State.Must.Failed, 1)
+	assert.Equal(t, l.State.Should.Succeeded, 1)
 }

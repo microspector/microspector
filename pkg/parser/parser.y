@@ -560,6 +560,11 @@ boolean_exp	:
 		}
 		|
 		expr_opr
+		|
+		NOT boolean_exp
+		{
+		  $$ = !$2
+		}
 
 true_false	:
 		TRUE
