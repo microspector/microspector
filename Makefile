@@ -8,6 +8,7 @@ run: yacc
 	go run ./cmd --file="./tasks/main.msf"
 
 test: yacc
+	gofmt -w -s ${PWD}
 	go test ${PWD}/pkg/parser
 
 trainyacc:
