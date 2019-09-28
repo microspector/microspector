@@ -95,35 +95,33 @@ func (s *Scanner) getNextToken() Token {
 reToken:
 	ch := s.Peek()
 
-	if isSpace(ch) {
+	switch {
+	case isSpace(ch):
 		s.skipWhitespace()
 		goto reToken
-	}
-
-	// skip comments.
-	if ch == '#' {
+	case ch == '#':
 		s.readUntilWith(isEndOfLine)
 		goto reToken
-	}
-
-	if isOperator(ch) {
+	case isOperator(ch):
 		return s.scanOperator()
-	} else if isDigit(ch) {
+	case isDigit(ch):
 		return s.scanDigit()
-	} else if isLetter(ch) {
+	case isLetter(ch):
 		return s.scanKeyword()
-	} else if isQuote(ch) {
+	case isQuote(ch):
 		return s.scanQuotedString(ch)
-	} else if ch == eof {
+	case ch == eof:
 		return Token{
 			Type: EOF,
 			Val:  string(s.read()),
 		}
 	}
+
 	return Token{
 		Type: int(ch),
 		Val:  string(s.read()),
 	}
+
 }
 
 func (s *Scanner) Peek() rune {
