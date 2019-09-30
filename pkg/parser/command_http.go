@@ -28,7 +28,12 @@ type HttpResult struct {
 	Headers       map[string]string
 	StatusCode    int
 	ContentLength int
+	Certificate   Certificate
 	Error         string
+}
+
+type Certificate struct {
+	NotAfter int64
 }
 
 func NewFromResponse(response *http.Response) HttpResult {
@@ -53,6 +58,12 @@ func NewFromResponse(response *http.Response) HttpResult {
 
 	for k, v := range response.Header {
 		result.Headers[ToVariableName(k)] = v[0]
+	}
+
+	if response.TLS != nil && len(response.TLS.PeerCertificates) > 0 {
+		result.Certificate = Certificate{
+			NotAfter: response.TLS.PeerCertificates[0].NotAfter.Unix(),
+		}
 	}
 
 	_ = json.Unmarshal(content, &result.Json)
