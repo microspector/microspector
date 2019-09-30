@@ -445,3 +445,19 @@ must age > 30
 	assert.Equal(t, l.State.Must.Failed, 1)
 	assert.Equal(t, l.State.Should.Succeeded, 1)
 }
+
+func TestParser_Funcs(t *testing.T) {
+
+	l := Parse(`
+set length20 len("tufan baris yildirim")
+set length64 len(openssl_rand(32,"hex"))
+must len(openssl_rand(32,"hex")) == 64
+must 64 == len(openssl_rand(32,"hex"))
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["length20"], 20)
+	assert.Equal(t, l.GlobalVars["length64"], 64)
+	assert.Equal(t, l.State.Must.Succeeded, 2)
+}
