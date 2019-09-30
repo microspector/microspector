@@ -34,9 +34,15 @@ var Functions = template.FuncMap{
 	"now": func() time.Time {
 		return time.Now()
 	},
-	"rand": func(min, max int) int {
+	"timestamp": func() int64 {
+		return time.Now().Unix()
+	},
+	"unix": func(time time.Time) int64 {
+		return time.Unix()
+	},
+	"rand": func(min, max int64) int {
 		rand.Seed(time.Now().UnixNano())
-		return rand.Intn(max-min) + min
+		return rand.Intn(int(max-min)) + int(min)
 	},
 	"openssl_rand": OpenSslRand,
 	"str_len":      func(str string) int { return len(str) },
@@ -50,9 +56,9 @@ var Functions = template.FuncMap{
 	},
 }
 
-func OpenSslRand(len int, enc string) string {
+func OpenSslRand(len int64, enc string) string {
 	bytes := make([]byte, len)
-	bytes, err := exec.Command("openssl", "rand", "-"+enc, strconv.Itoa(len)).CombinedOutput()
+	bytes, err := exec.Command("openssl", "rand", "-"+enc, strconv.Itoa(int(len))).CombinedOutput()
 	if err != nil {
 		fmt.Println(err.Error())
 	}

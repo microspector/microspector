@@ -86,7 +86,7 @@ TYPE
 
 %type <variable> variable
 %type <val> http_method operator
-%type <val> any_value
+%type <val> any_value func_call
 %type <vals> multi_variable array comma_separated_values
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
@@ -499,6 +499,11 @@ any_value	:
 		{
 			$$ ,_ =  umin($2)
 		}
+		|
+		func_call
+		{
+			$$ = $1
+		}
 
 
 
@@ -675,6 +680,17 @@ expr	:
 	|    any_value
 	;
 
+func_call	:
+		IDENTIFIER '('  ')'
+		{
+			//call $1
+			$$ = funcCall($1.(string),nil)
+		}
+		|
+		IDENTIFIER '(' comma_separated_values ')'
+		{
+			$$ = funcCall($1.(string),$3)
+		}
 
 array	:
 	'['']'

@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"github.com/microspector/microspector/pkg/lookup"
+	"github.com/microspector/microspector/pkg/templating"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -144,19 +145,23 @@ func runop(left, operator, right interface{}) (eq bool) {
 func runop_positive(left interface{}, operator string, right interface{}) (eq bool) {
 
 	switch operator {
-	case "EQUALS", "==", "EQUAL":
-		if oneIsInt(left, right) {
-			l, r := convertToInt(left, right)
-			return l == r
-		}
-		return left == right
 	case "CONTAINS", "CONTAIN":
 		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "STARTSWITH", "STARTWITH":
 		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+	case "EQUALS", "==", "EQUAL":
+		if oneIsInt(left, right) {
+			l, r := convertToInt(left, right)
+			return l == r
+		} else if bothAreTime(left, right) {
+			return left.(time.Time).Unix() == right.(time.Time).Unix()
+		}
+		return left == right
 	case "LT", "GT", ">", "<":
 
-		if oneIsInt(left, right) {
+		if bothAreTime(left, right) {
+			return left.(time.Time).Unix() < right.(time.Time).Unix()
+		} else if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			if operator == "GT" || operator == ">" {
 				return l > r
@@ -179,7 +184,13 @@ func runop_positive(left interface{}, operator string, right interface{}) (eq bo
 
 		}
 	case "LE", "GE", "<=", ">=":
-		if oneIsInt(left, right) {
+		if bothAreTime(left, right) {
+			if operator == "GE" || operator == ">=" {
+				return left.(time.Time).Unix() >= right.(time.Time).Unix()
+			} else {
+				return left.(time.Time).Unix() <= right.(time.Time).Unix()
+			}
+		} else if oneIsInt(left, right) {
 			l, r := convertToInt(left, right)
 			if operator == "LE" || operator == "<=" {
 				return l <= r
@@ -233,6 +244,8 @@ func floatVal(obj interface{}) float64 {
 		return float64(obj.(float32))
 	case float64:
 		return obj.(float64)
+	case time.Time:
+		return float64(obj.(time.Time).Unix())
 	default:
 		f, _err := strconv.ParseFloat(fmt.Sprintf("%s", obj), 64)
 		if _err == nil {
@@ -254,6 +267,8 @@ func intVal(obj interface{}) int64 {
 		return int64(obj.(float32))
 	case float64:
 		return int64(obj.(float64))
+	case time.Time:
+		return obj.(time.Time).Unix()
 	default:
 		f, _err := strconv.Atoi(fmt.Sprintf("%s", obj))
 		if _err == nil {
@@ -289,4 +304,36 @@ func oneIsFloat(left, right interface{}) bool {
 	}
 
 	return false
+}
+
+func bothAreTime(left, right interface{}) bool {
+
+	leftTime := false
+	rightTime := false
+
+	switch left.(type) {
+	case time.Time:
+		leftTime = true
+	}
+
+	switch right.(type) {
+	case time.Time:
+		rightTime = true
+	}
+
+	return leftTime && rightTime
+}
+
+func funcCall(funcName string, args []interface{}) interface{} {
+	if x, ok := templating.Functions[funcName]; ok {
+		vals := make([]reflect.Value, len(args))
+
+		for index, arg := range args {
+			vals[index] = reflect.ValueOf(arg)
+		}
+
+		return reflect.ValueOf(x).Call(vals)[0].Interface()
+
+	}
+	return nil
 }
