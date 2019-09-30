@@ -2,6 +2,7 @@ PWD := $(shell pwd)
 export GO111MODULE=on
 
 dist: yacc
+	make fmt
 	./dist.sh
 
 run: yacc
@@ -12,11 +13,9 @@ test: yacc
 
 trainyacc:
 	goyacc -xegen ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
-	make fmt
 
 yacc:
 	goyacc -xe ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
-	make fmt
 
 fmt:
 	find . -name "*.go" | xargs gofmt -w -s

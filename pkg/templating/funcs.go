@@ -6,9 +6,11 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"html/template"
+	"math/rand"
 	"os/exec"
 	"strconv"
 	"strings"
+	"time"
 )
 
 //compiles strings using golang template engine and returns the result as string
@@ -29,6 +31,13 @@ func ExecuteTemplate(text string, state map[string]interface{}) (string, error) 
 }
 
 var Functions = template.FuncMap{
+	"now": func() time.Time {
+		return time.Now()
+	},
+	"rand": func(min, max int) int {
+		rand.Seed(time.Now().UnixNano())
+		return rand.Intn(max-min) + min
+	},
 	"openssl_rand": OpenSslRand,
 	"str_len":      func(str string) int { return len(str) },
 	"hash_md5": func(val interface{}) string {

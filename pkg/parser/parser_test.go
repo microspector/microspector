@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 )
 
 func setupTest() *httptest.Server {
@@ -27,6 +28,11 @@ func setupTest() *httptest.Server {
 	})
 
 	serverMux.HandleFunc("/redirected", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, `OK`)
+	})
+
+	serverMux.HandleFunc("/sleep", func(w http.ResponseWriter, r *http.Request) {
+		time.Sleep(100 * time.Second)
 		fmt.Fprint(w, `OK`)
 	})
 
