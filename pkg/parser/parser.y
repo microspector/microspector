@@ -35,6 +35,7 @@ END
 ASSERT
 INCLUDE
 SLEEP
+ASYNC
 
 //http command tokens
 %token <val>
@@ -174,6 +175,19 @@ command_with_condition_opt	:
 					$1.Run( yylex.(*lex))
 					//run command without condition
 
+				}
+				|
+				ASYNC command
+				{
+					go $2.Run( yylex.(*lex) )
+				}
+				|
+				ASYNC command WHEN boolean_exp
+				{
+					//run the command only if boolean_exp is true
+					if $4 {
+					  go $2.Run( yylex.(*lex) )
+					}
 				}
 
 
@@ -563,7 +577,12 @@ boolean_exp	:
 		|
 		NOT boolean_exp
 		{
-		  $$ = !$2
+		  	$$ = !$2
+		}
+		|
+		'!' boolean_exp
+		{
+			$$ = !$2
 		}
 
 true_false	:

@@ -62,6 +62,7 @@ var keywords = map[string]int{
 	"ASSERT":     ASSERT,
 	"END":        END,
 	"NULL":       NULL,
+	"ASYNC":      ASYNC,
 }
 
 func NewScanner(r io.Reader) *Scanner {
