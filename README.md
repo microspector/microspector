@@ -4,7 +4,7 @@ Micro Service Inspector
 Microspector is a scripting language designed to test microservices and RESTful APIs in a sexy way.
 
 ```
-$ microspector --help
+$ ./microspector --help
 
 Usage of ./microspector:
   -file string
@@ -87,6 +87,19 @@ HTTP GET "https://microspector.com/test.json" INTO  result
 ```
 this command basically tries to fetch the url and put an &HttpResult into result variable
 an HttpResult type has a few handy property that can be used for future commands like;
+HTTP command also has `follow` and `nofollow` keywords to follow redirects or return the first response. 
+
+```bash
+HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
+     HEADER "User-Agent:Microspector
+     Accept: application/json
+     Content-Type: application/json"
+     BODY '{ "text":"Hello World!" }'
+     FOLLOW # or NOFOLLOW to stop following redirections
+     INTO  Result 
+```
+
+
 
 ```go
 type HttpResult struct {
@@ -148,7 +161,7 @@ Sleep takes an integer value in milliseconds and blocks the execution until then
 SLEEP 500
 ```
 
-#### Async Commands
+##### Async Commands
 Any command can be run in background using `ASYNC` keyword like;
 ```bash
 ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
@@ -171,7 +184,7 @@ timestamp()
 unix( time )
 
 ```
-We are not considering allowing function defining yet since it is not a programming language but we will extend helpler functions or allowing plugins to extend functions
+We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
 
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
