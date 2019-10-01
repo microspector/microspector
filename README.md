@@ -174,7 +174,7 @@ with `async`, commands does not allow `INTO` they just work and no return for th
 
 
 #### Functions
-Microspector supports [functions](pkg/templating/funcs.go) calls but not defining them yet, It has some builtin helpler functions like;
+Microspector supports [functions](pkg/templating/funcs.go) calls but not defining them yet, It has some builtin helper functions like;
 ```bash
 
 len()
@@ -187,6 +187,7 @@ hash_md5(any)
 hash_sha256(any)
 
 ```
+These functions are also template functions, we will make other go template builtin functions and some more reachable in this context.
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
 
 # Contributing
