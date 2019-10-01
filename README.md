@@ -55,6 +55,7 @@ Currently supported commands are:
 7. [END](#end)
 8. [INCLUDE](#include)
 9. [SLEEP](#sleep)
+10. [CMD](#cmd)
 
 
 #### SET
@@ -162,6 +163,13 @@ INCLUDE "tasks/sub-commands.msf"
 Sleep takes an integer value in milliseconds and blocks the execution until then
 ```bash
 SLEEP 500
+```
+
+#### CMD
+CMD takes first argument as executable path and others as param and simply runs it in os/exec
+```bash
+CMD 'echo' 'microspector' into output
+MUST output equals 'microspector'
 ```
 
 ##### Async Commands

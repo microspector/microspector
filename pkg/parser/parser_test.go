@@ -469,6 +469,8 @@ set length20 len("tufan baris yildirim")
 set echo "echo"
 cmd echo "{{ .length20 }}" into x
 cmd echo $length20 into x2
+cmd 'echo' 'microspector' into output
+must output equals 'microspector'
 `)
 
 	Run(l)
@@ -476,4 +478,5 @@ cmd echo $length20 into x2
 	assert.Equal(t, l.GlobalVars["length20"], 20)
 	assert.Equal(t, l.GlobalVars["x"], "20")
 	assert.Equal(t, l.GlobalVars["x2"], "20")
+	assert.Equal(t, l.State.Must.Succeeded, 1)
 }
