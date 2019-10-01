@@ -202,9 +202,7 @@ set hash_md5(rand_hex) # b487c7f25df1575cdf73fa3a213c4026
 These functions are also template functions, we will make other go template builtin functions and some more reachable in this context.
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
 
-# Contributing
-Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
-just fork, do your changes and send pull requests. Just make sure all tests pass using `make test` command before sending a pull request.
+# [Contributing](CONTRIBUTING.md)
 
 ## TODO
 - [x] ~~Support Including files~~
