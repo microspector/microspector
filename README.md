@@ -109,6 +109,9 @@ type HttpResult struct {
 	Headers       map[string]string
 	StatusCode    int
 	ContentLength int
+	Certificate   Certificate {
+		NotAfter int64 // cert expire date in unix format
+	}
 	Error         string
 }
 ```
@@ -164,11 +167,7 @@ SLEEP 500
 ##### Async Commands
 Any command can be run in background using `ASYNC` keyword like;
 ```bash
-ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
-     HEADER "User-Agent:Microspector
-     Accept: application/json
-     Content-Type: application/json"
-     BODY '{ "text":"Hello World!" }'
+ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"  HEADER "User-Agent:Microspector\nAccept: application/json\nContent-Type: application/json" BODY '{ "text":"Hello World!" }'
 ```
 with `async`, commands does not allow `INTO` they just work and no return for them, async commands are good for making callbacks in background
 
@@ -186,6 +185,11 @@ unix( time )
 hash_md5(any)
 hash_sha256(any)
 
+Example:
+
+set rand_hex openssl_rand(32,"hex") # 87d2f76b2a38b9ee6b8c05875804c6d0cef5eb17b9d9f8c5bab3083be74e5fa8
+set hash_md5(rand_hex) # b487c7f25df1575cdf73fa3a213c4026
+
 ```
 These functions are also template functions, we will make other go template builtin functions and some more reachable in this context.
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
@@ -200,6 +204,7 @@ just fork, do your changes and send pull requests. Just make sure all tests pass
 - [x] ~~Support `IS` operator to check type of a var in json~~
 - [x] ~~Support arrays~~
 - [ ] Support `IN` operator to  check elements in arrays
+- [ ] Support date-time operations and duration units
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in script
 - [ ] Support setting nested variables
