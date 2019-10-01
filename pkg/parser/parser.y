@@ -35,6 +35,7 @@ END
 ASSERT
 INCLUDE
 SLEEP
+CMD
 ASYNC
 
 //http command tokens
@@ -87,7 +88,7 @@ TYPE
 %type <variable> variable
 %type <val> http_method operator
 %type <val> any_value func_call
-%type <vals> multi_variable array comma_separated_values
+%type <vals> multi_variable array comma_separated_values multi_any_value
 %type <http_command_params> http_command_params
 %type <http_command_param> http_command_param
 %type <boolean> boolean_exp expr_opr true_false
@@ -113,6 +114,7 @@ TYPE
 	should_command
 	include_command
 	sleep_command
+	cmd_command
 
 %union{
 	val interface{}
@@ -201,6 +203,7 @@ command			:
 			|should_command
 			|include_command
 			|sleep_command
+			|cmd_command
 
 sleep_command		:
 			SLEEP any_value
@@ -224,6 +227,21 @@ debug_command		:
 			{
 				$$ = &DebugCommand{
 					Values : $2,
+				}
+			}
+
+cmd_command		:
+			CMD any_value
+			{
+				$$ = &CmdCommand{
+					Params :[]interface{}{$2},
+				}
+			}
+			|
+			CMD multi_any_value
+			{
+				$$ = &CmdCommand{
+					Params : $2,
 				}
 			}
 
@@ -442,6 +460,17 @@ multi_variable	:
 		{
 			//multi value
 			$$ = append($$,$2)
+		}
+
+multi_any_value :
+		any_value
+		{
+		   $$ = append($$,$1)
+		}
+		|
+		multi_any_value any_value
+		{
+		   $$ = append($$,$2)
 		}
 
 any_value	:

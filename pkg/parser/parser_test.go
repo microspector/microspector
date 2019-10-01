@@ -461,3 +461,19 @@ must 64 == len(openssl_rand(32,"hex"))
 	assert.Equal(t, l.GlobalVars["length64"], 64)
 	assert.Equal(t, l.State.Must.Succeeded, 2)
 }
+
+func TestParser_Cmd(t *testing.T) {
+
+	l := Parse(`
+set length20 len("tufan baris yildirim")
+set echo "echo"
+cmd echo "{{ .length20 }}" into x
+cmd echo $length20 into x2
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.GlobalVars["length20"], 20)
+	assert.Equal(t, l.GlobalVars["x"], "20")
+	assert.Equal(t, l.GlobalVars["x2"], "20")
+}
