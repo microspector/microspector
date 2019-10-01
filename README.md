@@ -148,6 +148,17 @@ Sleep takes an integer value in milliseconds and blocks the execution until then
 SLEEP 500
 ```
 
+### Async Commands
+Any command can be run in background using `ASYNC` keyword like;
+```bash
+ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
+     HEADER "User-Agent:Microspector
+     Accept: application/json
+     Content-Type: application/json"
+     BODY '{ "text":"Hello World!" }'
+```
+with `async`, commands does not allow `INTO` they just work and no return for them, async commands are good for making callbacks in background
+
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
 just fork, do your changes and send pull requests. Just make sure all tests pass using `make test` command before sending a pull request.
