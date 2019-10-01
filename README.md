@@ -174,14 +174,17 @@ with `async`, commands does not allow `INTO` they just work and no return for th
 
 
 #### Functions
-Microspector supports functions calls but not defining them yet, It has some builtin helpler functions like;
+Microspector supports [functions](pkg/templating/funcs.go) calls but not defining them yet, It has some builtin helpler functions like;
 ```bash
 
 len()
-openssl_rand(len int,hash string)
+openssl_rand(len int,string "hex|base64")
+rand(min, max int)
 now()
 timestamp()
 unix( time )
+hash_md5(any)
+hash_sha256(any)
 
 ```
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
