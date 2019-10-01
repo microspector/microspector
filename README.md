@@ -148,7 +148,7 @@ Sleep takes an integer value in milliseconds and blocks the execution until then
 SLEEP 500
 ```
 
-### Async Commands
+#### Async Commands
 Any command can be run in background using `ASYNC` keyword like;
 ```bash
 ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
@@ -158,6 +158,20 @@ ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"
      BODY '{ "text":"Hello World!" }'
 ```
 with `async`, commands does not allow `INTO` they just work and no return for them, async commands are good for making callbacks in background
+
+
+#### Functions
+Microspector supports functions calls but not defining them yet, It has some builtin helpler functions like;
+```bash
+
+len()
+openssl_rand(len int,hash string)
+now()
+timestamp()
+unix( time )
+
+```
+We are not considering allowing function defining yet since it is not a programming language but we will extend helpler functions or allowing plugins to extend functions
 
 # Contributing
 Any contributions are more than welcome. Create issues as proposal if you have any suggestions. Or even better,
