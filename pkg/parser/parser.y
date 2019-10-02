@@ -76,6 +76,7 @@ MATCH
 IS
 ISNOT
 NOT
+IN
 
 %token <val>
 INTO
@@ -574,6 +575,7 @@ operator	:
 		| MATCHES
 		| IS
 		| ISNOT
+		| IN
 		| NOT operator
 		{
 		  $$ = "NOT"+$2.(string)

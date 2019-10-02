@@ -217,6 +217,19 @@ func runop_positive(left interface{}, operator string, right interface{}) (eq bo
 		return match
 	case "IS":
 		return IsTypeOf(left, right.(string))
+	case "IN":
+		switch reflect.TypeOf(right).Kind() {
+		case reflect.Array, reflect.Slice:
+			r := reflect.ValueOf(right)
+			for i := 0; i < r.Len(); i++ {
+				if left == r.Index(i).Interface() {
+					return true
+				}
+			}
+
+		default:
+			return false //TODO: or throw an error?
+		}
 
 	}
 

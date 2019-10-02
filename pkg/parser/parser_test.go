@@ -480,3 +480,22 @@ must output equals 'microspector'
 	assert.Equal(t, l.GlobalVars["x2"], "20")
 	assert.Equal(t, l.State.Must.Succeeded, 1)
 }
+
+func TestParser_In(t *testing.T) {
+
+	l := Parse(`
+SET {{ String }} "onestring"
+SET {{ Array }} ["cat",1,"2",1.0,{{ String }},[1,2,3,4]]
+MUST "onestring" IN {{ Array }}
+MUST "onestring2" IN {{ Array }}
+MUST NOT "onestring2" IN {{ Array }}
+`)
+
+	Run(l)
+
+	assert.Equal(t, len(l.GlobalVars["Array"].([]interface{})), 6)
+	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring") //5th element of array should be $String which is "onestring"
+	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)})
+	assert.Equal(t, l.State.Must.Succeeded, 2)
+	assert.Equal(t, l.State.Must.Failed, 1)
+}
