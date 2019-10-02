@@ -209,7 +209,7 @@ We are not considering allowing function defining yet since it is not a programm
 - [x] ~~Support Sleep~~
 - [x] ~~Support `IS` operator to check type of a var in json~~
 - [x] ~~Support arrays~~
-- [ ] Support `IN` operator to  check elements in arrays
+- [x] ~~Support `IN` operator to  check elements in arrays~~
 - [ ] Support date-time operations and duration units
 - [ ] Print a better summary of the execution
 - [ ] Make stats reachable in script
