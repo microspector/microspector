@@ -146,7 +146,13 @@ func runop_positive(left interface{}, operator string, right interface{}) (eq bo
 
 	switch operator {
 	case "CONTAINS", "CONTAIN":
-		return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+		switch reflect.TypeOf(left).Kind() { //if left is an array, search right in left :thumbs-up:
+		case reflect.Array, reflect.Slice:
+			return runop_positive(right, "IN", left)
+		default:
+			return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
+		}
+
 	case "STARTSWITH", "STARTWITH":
 		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "EQUALS", "==", "EQUAL":

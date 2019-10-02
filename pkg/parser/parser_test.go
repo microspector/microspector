@@ -492,7 +492,9 @@ SET {{ String }} "onestring"
 SET {{ Array }} ["cat",1,"2",1.0,{{ String }},[1,2,3,4]]
 MUST "onestring" IN {{ Array }}
 MUST "onestring2" IN {{ Array }}
+MUST {{ Array }} CONTAIN "onestring"
 MUST NOT "onestring2" IN {{ Array }}
+MUST NOT {{ Array }} CONTAIN  "onestring2"
 `)
 
 	Run(l)
@@ -500,6 +502,6 @@ MUST NOT "onestring2" IN {{ Array }}
 	assert.Equal(t, len(l.GlobalVars["Array"].([]interface{})), 6)
 	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring") //5th element of array should be $String which is "onestring"
 	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)})
-	assert.Equal(t, l.State.Must.Succeeded, 2)
+	assert.Equal(t, l.State.Must.Succeeded, 4)
 	assert.Equal(t, l.State.Must.Failed, 1)
 }
