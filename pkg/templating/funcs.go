@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"math/rand"
 	"os/exec"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -46,8 +47,11 @@ var Functions = template.FuncMap{
 	},
 	"openssl_rand": OpenSslRand,
 	"str_len":      func(str string) int { return len(str) },
-	"len":          func(str string) int { return len(str) },
-	"trim":         func(str string) string { return strings.TrimSpace(str) },
+	"len": func(obj interface{}) int {
+		r := reflect.ValueOf(obj)
+		return r.Len()
+	},
+	"trim": func(str string) string { return strings.TrimSpace(str) },
 	"hash_md5": func(val interface{}) string {
 		data := []byte(fmt.Sprintf("%s", val))
 		return fmt.Sprintf("%x", md5.Sum(data))

@@ -453,13 +453,17 @@ set length20 len("tufan baris yildirim")
 set length64 len(openssl_rand(32,"hex"))
 must len(openssl_rand(32,"hex")) == 64
 must 64 == len(openssl_rand(32,"hex"))
+set arr [1,2,3,4,5,6,"seven","eight",9,"10"]
+set arrlen len(arr) 
+must arrlen == 10
 `)
 
 	Run(l)
 
 	assert.Equal(t, l.GlobalVars["length20"], 20)
 	assert.Equal(t, l.GlobalVars["length64"], 64)
-	assert.Equal(t, l.State.Must.Succeeded, 2)
+	assert.Equal(t, l.State.Must.Succeeded, 3)
+	assert.Equal(t, l.GlobalVars["arrlen"], 10)
 }
 
 func TestParser_Cmd(t *testing.T) {
