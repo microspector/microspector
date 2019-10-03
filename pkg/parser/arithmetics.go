@@ -339,3 +339,20 @@ func mod(b, a interface{}) (interface{}, error) {
 		return nil, fmt.Errorf("mod: unknown type for %q (%T)", av, a)
 	}
 }
+
+func percent(a interface{}) float64 {
+	av := reflect.ValueOf(a)
+	switch av.Kind() {
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
+		return float64(av.Int()) / 100
+	case reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return float64(av.Uint()) / 100
+	case reflect.Float32, reflect.Float64:
+		return av.Float() / 100
+	case reflect.String:
+		ca, _ := strconv.ParseFloat(av.String(), 10)
+		return ca / 100
+	default:
+		return 0
+	}
+}

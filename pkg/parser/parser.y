@@ -4,6 +4,7 @@ package parser
 import (
     "strings"
     "fmt"
+    "strconv"
     "github.com/microspector/microspector/pkg/templating"
 )
 %}
@@ -528,6 +529,17 @@ any_value	:
 		'-' any_value
 		{
 			$$ ,_ =  umin($2)
+		}
+		|
+		'%' any_value
+		{
+			$$  = percent($2)
+		}
+		|
+		'.' INTEGER
+		{
+			ca, _ := strconv.ParseFloat(fmt.Sprintf("0.%d",$2), 10)
+                        $$ = ca
 		}
 		|
 		func_call

@@ -272,6 +272,8 @@ SET {{ Result550Strings }} {{ Var10 }} * {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{
 SET {{ Result262Strings }} {{ Var10 }} / {{ Var5 }} * (5 + 1) + {{ Var10 }} * {{ Var5 }} * 5
 SET {{ ResultFloat15 }} {{ Var10 }} * 1.5
 SET $ResultFloat10 {{ ResultFloat15 }} / 1.5
+set fiftyPercentOf50 50 * %50
+set fiftyPercentOf25 25 * .5
 `)
 
 	Run(l)
@@ -297,6 +299,8 @@ SET $ResultFloat10 {{ ResultFloat15 }} / 1.5
 	assert.Equal(t, l.GlobalVars["Result262Strings"], int64(262))
 	assert.Equal(t, l.GlobalVars["ResultFloat15"], float64(15))
 	assert.Equal(t, l.GlobalVars["ResultFloat10"], float64(10))
+	assert.Equal(t, l.GlobalVars["fiftyPercentOf50"], float64(50 * 50 / 100))
+	assert.Equal(t, l.GlobalVars["fiftyPercentOf25"], 25 * .5)
 
 }
 
