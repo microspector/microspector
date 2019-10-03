@@ -282,9 +282,9 @@ assert_command		:
 			ASSERT boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Assert.Failed++
+					yylex.(*lex).State.Assert.Fail++
 				}else{
-					yylex.(*lex).State.Assert.Succeeded++
+					yylex.(*lex).State.Assert.Success++
 				}
 				 $$ = &AssertCommand{
 				 	Failed: !$2,
@@ -304,9 +304,9 @@ must_command		:
 			MUST boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Must.Failed++
+					yylex.(*lex).State.Must.Fail++
 				}else{
-					yylex.(*lex).State.Must.Succeeded++
+					yylex.(*lex).State.Must.Success++
 				}
 
 				$$ = &MustCommand{
@@ -329,9 +329,9 @@ should_command		:
 			SHOULD boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Should.Failed++
+					yylex.(*lex).State.Should.Fail++
 				}else{
-					yylex.(*lex).State.Should.Succeeded++
+					yylex.(*lex).State.Should.Success++
 				}
 				$$ = &ShouldCommand{
 					Failed: !$2,
@@ -755,6 +755,8 @@ func Parse(text string) *lex {
 	 	State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
 	}
+
+	l.GlobalVars["State"] = &l.State
 
 	if Verbose {
 		yyDebug = 3

@@ -1158,9 +1158,9 @@ yynewstate:
 	case 28:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Assert.Failed++
+				yylex.(*lex).State.Assert.Fail++
 			} else {
-				yylex.(*lex).State.Assert.Succeeded++
+				yylex.(*lex).State.Assert.Success++
 			}
 			yyVAL.cmd = &AssertCommand{
 				Failed: !yyS[yypt-0].boolean,
@@ -1177,9 +1177,9 @@ yynewstate:
 	case 30:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Must.Failed++
+				yylex.(*lex).State.Must.Fail++
 			} else {
-				yylex.(*lex).State.Must.Succeeded++
+				yylex.(*lex).State.Must.Success++
 			}
 
 			yyVAL.cmd = &MustCommand{
@@ -1197,9 +1197,9 @@ yynewstate:
 	case 32:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Should.Failed++
+				yylex.(*lex).State.Should.Fail++
 			} else {
-				yylex.(*lex).State.Should.Succeeded++
+				yylex.(*lex).State.Should.Success++
 			}
 			yyVAL.cmd = &ShouldCommand{
 				Failed: !yyS[yypt-0].boolean,
@@ -1539,6 +1539,8 @@ func Parse(text string) *lex {
 		State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
 	}
+
+	l.GlobalVars["State"] = &l.State
 
 	if Verbose {
 		yyDebug = 3

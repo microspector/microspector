@@ -64,7 +64,7 @@ MUST ServerResult.Json.data  equals "microspector.com"
 	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Microspector"], "Service Up")
 	assert.Equal(t, l.GlobalVars["RawContent"], `{"data":"microspector.com"}`)
 	assert.Equal(t, l.GlobalVars["ContentData"], "microspector.com")
-	assert.Equal(t, l.State.Must.Succeeded, 2)
+	assert.Equal(t, l.State.Must.Success, 2)
 
 }
 
@@ -87,7 +87,7 @@ MUST ServerResultNoFollow.StatusCode == 200
 	assert.Equal(t, l.GlobalVars["ServerMux"], server.URL)
 	assert.Equal(t, l.GlobalVars["ServerResult"].(HttpResult).Headers["Location"], server.URL+"/redirected")
 	assert.Equal(t, l.GlobalVars["ServerResultNoFollow"].(HttpResult).Content, "OK")
-	assert.Equal(t, l.State.Must.Succeeded, 2)
+	assert.Equal(t, l.State.Must.Success, 2)
 
 }
 
@@ -189,12 +189,12 @@ ASSERT $MyVar contain "micro"
 	Run(l)
 	//TODO: do some more assertion, like, must fail and success counts
 	assert.Equal(t, l.GlobalVars["VarFalse"], false)
-	assert.Equal(t, l.State.Must.Failed, 1)
-	assert.Equal(t, l.State.Must.Succeeded, 3)
-	assert.Equal(t, l.State.Should.Succeeded, 1)
-	assert.Equal(t, l.State.Should.Failed, 1)
-	assert.Equal(t, l.State.Assert.Failed, 1)
-	assert.Equal(t, l.State.Assert.Succeeded, 1)
+	assert.Equal(t, l.State.Must.Fail, 1)
+	assert.Equal(t, l.State.Must.Success, 3)
+	assert.Equal(t, l.State.Should.Success, 1)
+	assert.Equal(t, l.State.Should.Fail, 1)
+	assert.Equal(t, l.State.Assert.Fail, 1)
+	assert.Equal(t, l.State.Assert.Success, 1)
 }
 
 func TestParser_Assert(t *testing.T) {
@@ -212,14 +212,14 @@ MUST {{ Var50 }} < 100
 
 	Run(l)
 
-	assert.Equal(t, l.State.Assert.Failed, 1)
-	assert.Equal(t, l.State.Assert.Succeeded, 2)
+	assert.Equal(t, l.State.Assert.Fail, 1)
+	assert.Equal(t, l.State.Assert.Success, 2)
 
-	assert.Equal(t, l.State.Should.Failed, 1)
-	assert.Equal(t, l.State.Should.Succeeded, 1)
+	assert.Equal(t, l.State.Should.Fail, 1)
+	assert.Equal(t, l.State.Should.Success, 1)
 
-	assert.Equal(t, l.State.Must.Failed, 1)
-	assert.Equal(t, l.State.Must.Succeeded, 1)
+	assert.Equal(t, l.State.Must.Fail, 1)
+	assert.Equal(t, l.State.Must.Success, 1)
 
 }
 
@@ -403,7 +403,7 @@ MUST {{ Integer }} is integer ## known issue: https://golang.org/pkg/encoding/js
 `)
 
 	Run(l)
-	assert.Equal(t, l.State.Must.Succeeded, 5)
+	assert.Equal(t, l.State.Must.Success, 5)
 }
 
 func TestParser_Arrays(t *testing.T) {
@@ -441,9 +441,9 @@ must age > 30
 	Run(l)
 
 	assert.Equal(t, l.GlobalVars["Bool"], true)
-	assert.Equal(t, l.State.Must.Succeeded, 8)
-	assert.Equal(t, l.State.Must.Failed, 1)
-	assert.Equal(t, l.State.Should.Succeeded, 1)
+	assert.Equal(t, l.State.Must.Success, 8)
+	assert.Equal(t, l.State.Must.Fail, 1)
+	assert.Equal(t, l.State.Should.Success, 1)
 }
 
 func TestParser_Funcs(t *testing.T) {
@@ -462,7 +462,7 @@ must arrlen == 10
 
 	assert.Equal(t, l.GlobalVars["length20"], 20)
 	assert.Equal(t, l.GlobalVars["length64"], 64)
-	assert.Equal(t, l.State.Must.Succeeded, 3)
+	assert.Equal(t, l.State.Must.Success, 3)
 	assert.Equal(t, l.GlobalVars["arrlen"], 10)
 }
 
@@ -482,7 +482,7 @@ must output equals 'microspector'
 	assert.Equal(t, l.GlobalVars["length20"], 20)
 	assert.Equal(t, l.GlobalVars["x"], "20")
 	assert.Equal(t, l.GlobalVars["x2"], "20")
-	assert.Equal(t, l.State.Must.Succeeded, 1)
+	assert.Equal(t, l.State.Must.Success, 1)
 }
 
 func TestParser_In(t *testing.T) {
@@ -502,6 +502,26 @@ MUST NOT {{ Array }} CONTAIN  "onestring2"
 	assert.Equal(t, len(l.GlobalVars["Array"].([]interface{})), 6)
 	assert.Equal(t, l.GlobalVars["Array"].([]interface{})[4], "onestring") //5th element of array should be $String which is "onestring"
 	assert.DeepEqual(t, l.GlobalVars["Array"].([]interface{})[5], []interface{}{int64(1), int64(2), int64(3), int64(4)})
-	assert.Equal(t, l.State.Must.Succeeded, 4)
-	assert.Equal(t, l.State.Must.Failed, 1)
+	assert.Equal(t, l.State.Must.Success, 4)
+	assert.Equal(t, l.State.Must.Fail, 1)
+}
+
+func TestParser_StateInContext(t *testing.T) {
+
+	l := Parse(`
+set x true
+must x equals true
+should x equals true
+must not x equals false
+set must_success State.Must.Success
+set is_state_reachable State.Must.Success == 2
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.State.Must.Success, 2)
+	assert.Equal(t, l.State.Should.Success, 1)
+	assert.Equal(t, l.GlobalVars["must_success"], 2)
+	assert.Equal(t, l.GlobalVars["is_state_reachable"], true)
+
 }

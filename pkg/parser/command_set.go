@@ -15,6 +15,10 @@ func (hc *SetCommand) Run(l *lex) interface{} {
 		panic(fmt.Errorf("nested variables are not supported yet"))
 	}
 
+	if hc.Name == "State" {
+		panic(fmt.Errorf("state is a reserved variable for current state of the execution context"))
+	}
+
 	l.GlobalVars[hc.Name] = hc.Value
 	return hc.Value
 }

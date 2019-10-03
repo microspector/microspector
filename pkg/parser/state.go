@@ -17,16 +17,16 @@ func NewStats() Stats {
 }
 
 type Stat struct {
-	Failed    int
-	Succeeded int
-	Messages  []string
+	Fail     int
+	Success  int
+	Messages []string
 }
 
 func NewStat() Stat {
 	return Stat{
-		Failed:    0,
-		Succeeded: 0,
-		Messages:  make([]string, 0),
+		Fail:     0,
+		Success:  0,
+		Messages: make([]string, 0),
 	}
 }
 
