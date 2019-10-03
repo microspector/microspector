@@ -16,7 +16,7 @@ func (hc *SetCommand) Run(l *lex) interface{} {
 	}
 
 	if hc.Name == "State" {
-		panic(fmt.Errorf("state is a reserved variable for current state of the execution context"))
+		panic(fmt.Errorf(".State is a reserved variable for current state of the execution context"))
 	}
 
 	l.GlobalVars[hc.Name] = hc.Value

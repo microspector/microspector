@@ -119,9 +119,9 @@ type HttpResult struct {
 
 #### ASSERT
 Assert is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.  
-
+Assertion commands also get a string at the end of the command to save it as messages in the assertion category to collect failure messages at the end
 ```bash
-ASSERT  result.Json.boolean equals true
+ASSERT  result.Json.boolean equals true "boolean field in json body is not true"
 ASSERT  result.Json.boolean #both works cuz assertion does a truthy check
 ```
 
@@ -129,14 +129,14 @@ ASSERT  result.Json.boolean #both works cuz assertion does a truthy check
 Must is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded. 
 
 ```bash
-MUST  result.StatusCode == 200
+MUST  result.StatusCode == 200 "it did not return 200, returned {{ .result.StatusCode }}"
 ```
 
 #### SHOULD
 Should is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded  
 
 ```bash
-SHOULD  result.Took  < 900 
+SHOULD  result.Took  < 900  "loading microspector is too slow"
 ```
 
 #### DEBUG
@@ -169,7 +169,7 @@ SLEEP 500
 CMD takes first argument as executable path and others as param and simply runs it in os/exec
 ```bash
 CMD 'echo' 'microspector' into output
-MUST output equals 'microspector'
+MUST output equals 'microspector' "output does not equal microspector"
 ```
 
 ##### Async Commands
@@ -202,6 +202,30 @@ set hash_md5(rand_hex) # b487c7f25df1575cdf73fa3a213c4026
 These functions are also template functions, we will make other go template builtin functions and some more reachable in this context.
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
 
+
+#### Reaching stats at runtime
+At the end of the execution, microspector provides some stats about assertions called `State`
+```go
+type Stats struct {
+	Assert Stat
+	Must   Stat
+	Should Stat
+}
+
+type Stat struct {
+	Fail     int
+	Success  int
+	Messages []string
+}
+```
+where you have failed count for must,should and assert commands and the messages. Now, they are reachable at runtime too like;
+```bash
+set x false
+must x equals true
+set MustFailedCount State.Must.Failed
+```
+it is restricted to set a variable called `State` in favor context state.
+
 # [Contributing](CONTRIBUTING.md)
 
 ## TODO
@@ -213,7 +237,7 @@ We are not considering allowing function defining yet since it is not a programm
 - [ ] Support JWT
 - [ ] Support date-time operations and duration units
 - [ ] Print a better summary of the execution
-- [ ] Make stats reachable in script
+- [x] ~~Make stats(State) reachable in script~~
 - [ ] Support setting nested variables
 
 ## Known issues
