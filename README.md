@@ -88,7 +88,7 @@ HTTP GET "https://microspector.com/test.json" INTO  result
 ```
 this command basically tries to fetch the url and put an &HttpResult into result variable
 an HttpResult type has a few handy property that can be used for future commands like;
-HTTP command also has `follow` and `nofollow` keywords to follow redirects or return the first response. 
+HTTP command also has `nofollow` keyword return the first response instead of following redirection and `insecure` to skip ssl verifications
 
 ```bash
 HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
@@ -96,7 +96,8 @@ HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"
      Accept: application/json
      Content-Type: application/json"
      BODY '{ "text":"Hello World!" }'
-     FOLLOW # or NOFOLLOW to stop following redirections
+     NOFOLLOW # or FOLLOW to follow redirection
+     INSECURE # ignore ssl errors for this call
      INTO  Result 
 ```
 
@@ -192,6 +193,7 @@ timestamp()
 unix( time )
 hash_md5(any)
 hash_sha256(any)
+url_encode(string)
 
 Example:
 
