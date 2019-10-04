@@ -5,10 +5,10 @@ dist: yacc
 	make fmt
 	./dist.sh
 
-run: yacc
+run:
 	go run ./cmd --file="./tasks/main.msf"
 
-test: yacc
+test:
 	go test ${PWD}/pkg/parser
 
 trainyacc:
