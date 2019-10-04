@@ -54,6 +54,8 @@ HEADER
 BODY
 FOLLOW
 NOFOLLOW
+SECURE
+INSECURE
 
 //condition tokens
 %token <val>
@@ -443,6 +445,22 @@ http_command_param	:
 				$$ = HttpCommandParam{
 					ParamName : "FOLLOW",
 					ParamValue : false,
+				}
+			}
+			|
+			INSECURE
+			{
+				$$ = HttpCommandParam{
+					ParamName : "SECURE",
+					ParamValue : false,
+				}
+			}
+			|
+			SECURE
+			{
+				$$ = HttpCommandParam{
+					ParamName : "SECURE",
+					ParamValue : true,
 				}
 			}
 

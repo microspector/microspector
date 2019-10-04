@@ -12,7 +12,7 @@ import (
 func setupTest() *httptest.Server {
 
 	serverMux := http.NewServeMux()
-	server := httptest.NewServer(serverMux)
+	server := httptest.NewTLSServer(serverMux)
 
 	serverMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Microspector", "Service Up")
@@ -299,8 +299,8 @@ set fiftyPercentOf25 25 * .5
 	assert.Equal(t, l.GlobalVars["Result262Strings"], int64(262))
 	assert.Equal(t, l.GlobalVars["ResultFloat15"], float64(15))
 	assert.Equal(t, l.GlobalVars["ResultFloat10"], float64(10))
-	assert.Equal(t, l.GlobalVars["fiftyPercentOf50"], float64(50 * 50 / 100))
-	assert.Equal(t, l.GlobalVars["fiftyPercentOf25"], 25 * .5)
+	assert.Equal(t, l.GlobalVars["fiftyPercentOf50"], float64(50*50/100))
+	assert.Equal(t, l.GlobalVars["fiftyPercentOf25"], 25*.5)
 
 }
 

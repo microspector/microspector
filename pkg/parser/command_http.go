@@ -19,6 +19,7 @@ type HttpCommand struct {
 	CommandParams   []HttpCommandParam //HEADER, BODY etc.
 	Url             string
 	FollowRedirects bool
+	VerifySSL       bool
 }
 
 type HttpResult struct {
@@ -107,6 +108,8 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 			}
 		case "FOLLOW":
 			hc.FollowRedirects = IsTrue(commandParam.ParamValue)
+		case "SECURE":
+			hc.VerifySSL = IsTrue(commandParam.ParamValue)
 		default:
 			fmt.Println("Unknown http command param ", commandParam.ParamName)
 		}
@@ -119,7 +122,7 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 
 	dialDepth := 1
 	conf := &tls.Config{
-		InsecureSkipVerify: false,
+		InsecureSkipVerify: !hc.VerifySSL,
 		ServerName:         req.Host,
 	}
 

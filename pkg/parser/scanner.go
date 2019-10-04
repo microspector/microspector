@@ -65,6 +65,8 @@ var keywords = map[string]int{
 	"ASYNC":      ASYNC,
 	"CMD":        CMD,
 	"IN":         IN,
+	"INSECURE":   INSECURE,
+	"SECURE":     SECURE,
 }
 
 func NewScanner(r io.Reader) *Scanner {
