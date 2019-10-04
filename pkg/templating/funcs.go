@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html/template"
 	"math/rand"
+	"net/url"
 	"os/exec"
 	"reflect"
 	"strconv"
@@ -59,6 +60,9 @@ var Functions = template.FuncMap{
 	"hash_sha256": func(val interface{}) string {
 		data := []byte(fmt.Sprintf("%s", val))
 		return fmt.Sprintf("%x", sha256.Sum256(data))
+	},
+	"url_encode": func(val interface{}) string {
+		return url.QueryEscape(fmt.Sprintf("%s", val))
 	},
 }
 
