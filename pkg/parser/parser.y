@@ -142,6 +142,7 @@ TYPE
 
 any_command		:
 			/*empty*/
+			| command_with_condition_opt
 			| any_command command_with_condition_opt
 
 
