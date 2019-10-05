@@ -175,7 +175,7 @@ MUST output equals 'microspector' "output does not equal microspector"
 ```
 
 #### ECHO
-Echo takes first parameter which must be a string or can be converted to a string as format and other as parameters it supports go style formatting
+Echo takes first parameter which must be a string or can be converted to a string as format and other as parameters. echo supports go style formatting
 ```bash
 set name "microspector"
 set since 2019
