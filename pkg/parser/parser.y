@@ -39,6 +39,7 @@ INCLUDE
 SLEEP
 CMD
 ASYNC
+ECHO
 
 //http command tokens
 %token <val>
@@ -120,6 +121,7 @@ TYPE
 	include_command
 	sleep_command
 	cmd_command
+	echo_command
 
 %union{
 	val interface{}
@@ -216,6 +218,7 @@ command			:
 			|include_command
 			|sleep_command
 			|cmd_command
+			|echo_command
 
 sleep_command		:
 			SLEEP any_value
@@ -469,6 +472,22 @@ http_command_param	:
 				$$ = HttpCommandParam{
 					ParamName : "SECURE",
 					ParamValue : true,
+				}
+			}
+echo_command		:
+			ECHO string_var
+			{
+				$$ = &EchoCommand{
+					String : $2,
+					Values: nil,
+				}
+			}
+			|
+			ECHO string_var multi_any_value
+			{
+				$$ = &EchoCommand{
+					String : $2,
+					Values: $3,
 				}
 			}
 
