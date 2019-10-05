@@ -11,6 +11,7 @@ type SetCommand struct {
 }
 
 func (hc *SetCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
 	if strings.Contains(hc.Name, ".") {
 		panic(fmt.Errorf("nested variables are not supported yet"))
 	}

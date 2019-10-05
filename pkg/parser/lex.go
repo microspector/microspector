@@ -1,11 +1,15 @@
 package parser
 
-import "log"
+import (
+	"log"
+	"sync"
+)
 
 type lex struct {
 	tokens     chan Token
 	GlobalVars map[string]interface{}
 	State      Stats
+	wg         *sync.WaitGroup
 }
 
 func (l *lex) All() []Token {

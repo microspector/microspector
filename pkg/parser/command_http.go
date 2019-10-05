@@ -73,6 +73,8 @@ func NewFromResponse(response *http.Response) HttpResult {
 }
 
 func (hc *HttpCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
+
 	_, urlError := url.Parse(hc.Url)
 
 	if urlError != nil {

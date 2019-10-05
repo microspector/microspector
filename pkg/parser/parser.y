@@ -4,6 +4,7 @@ package parser
 import (
     "strings"
     "fmt"
+    "sync"
     "strconv"
     "github.com/microspector/microspector/pkg/templating"
 )
@@ -155,6 +156,7 @@ command_with_condition_opt	:
 					}
 
 					if $5 {
+					   yylex.(*lex).wg.Add(1)
 					   yylex.(*lex).GlobalVars[$3.name] = $1.Run(yylex.(*lex))
 					}
 				}
@@ -165,6 +167,7 @@ command_with_condition_opt	:
 					if strings.Contains($3.name,".") {
 					   yylex.Error("nested variables are not supported yet")
 					}
+					yylex.(*lex).wg.Add(1)
 					yylex.(*lex).GlobalVars[$3.name] = $1.Run( yylex.(*lex) )
 				}
 				|
@@ -172,6 +175,7 @@ command_with_condition_opt	:
 				{
 					//run the command only if boolean_exp is true
 					if $3 {
+					  yylex.(*lex).wg.Add(1)
 					  $1.Run( yylex.(*lex))
 					}
 				}
@@ -179,6 +183,7 @@ command_with_condition_opt	:
 				command
 				{
 					//just run the command
+					yylex.(*lex).wg.Add(1)
 					$1.Run( yylex.(*lex))
 					//run command without condition
 
@@ -186,6 +191,7 @@ command_with_condition_opt	:
 				|
 				ASYNC command
 				{
+					yylex.(*lex).wg.Add(1)
 					go $2.Run( yylex.(*lex) )
 				}
 				|
@@ -193,6 +199,7 @@ command_with_condition_opt	:
 				{
 					//run the command only if boolean_exp is true
 					if $4 {
+					  yylex.(*lex).wg.Add(1)
 					  go $2.Run( yylex.(*lex) )
 					}
 				}
@@ -785,6 +792,7 @@ func Parse(text string) *lex {
 	 	tokens : make(chan Token),
 	 	State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
+		wg: &sync.WaitGroup{},
 	}
 
 	l.GlobalVars["State"] = &l.State
@@ -806,4 +814,5 @@ func Parse(text string) *lex {
 
 func Run(l *lex){
 	yyParse(l)
+	l.wg.Wait()
 }

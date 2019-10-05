@@ -10,6 +10,7 @@ type SleepCommand struct {
 }
 
 func (sc *SleepCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
 	time.Sleep(time.Duration(sc.Millisecond) * time.Millisecond)
 	return nil
 

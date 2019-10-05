@@ -7,6 +7,7 @@ type DebugCommand struct {
 }
 
 func (hc *DebugCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
 	for _, y := range hc.Values {
 		fmt.Printf("%+v ", y)
 	}

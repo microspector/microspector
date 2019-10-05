@@ -11,6 +11,7 @@ type CmdCommand struct {
 }
 
 func (cc *CmdCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
 
 	var params []string
 

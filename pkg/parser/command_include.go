@@ -11,6 +11,7 @@ type IncludeCommand struct {
 }
 
 func (ic *IncludeCommand) Run(l *lex) interface{} {
+	defer l.wg.Done()
 
 	bytes, err := ioutil.ReadFile(ic.File)
 
