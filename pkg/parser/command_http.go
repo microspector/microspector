@@ -150,13 +150,13 @@ func (hc *HttpCommand) Run(l *lex) interface{} {
 	}
 	start := makeTimestamp()
 	r, reqErr := client.Do(req)
-	if reqErr == nil {
-		defer r.Body.Close()
-	}
 	elapsed := makeTimestamp() - start
 
-	if r.TLS != nil {
-		fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
+	if reqErr == nil {
+		defer r.Body.Close()
+		if r != nil && r.TLS != nil {
+			fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
+		}
 	}
 
 	resp := NewFromResponse(r)
