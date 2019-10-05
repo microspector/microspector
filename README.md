@@ -56,6 +56,7 @@ Currently supported commands are:
 8. [INCLUDE](#include)
 9. [SLEEP](#sleep)
 10. [CMD](#cmd)
+11. [ECHO](#echo)
 
 
 #### SET
@@ -171,6 +172,14 @@ CMD takes first argument as executable path and others as param and simply runs 
 ```bash
 CMD 'echo' 'microspector' into output
 MUST output equals 'microspector' "output does not equal microspector"
+```
+
+#### ECHO
+Echo takes first parameter which must be a string or can be converted to a string as format and other as parameters it supports go style formatting
+```bash
+set name "microspector"
+set since 2019
+echo "name is %s it works since %d" name since
 ```
 
 ##### Async Commands
