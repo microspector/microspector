@@ -474,9 +474,9 @@ func TestParser_Cmd(t *testing.T) {
 
 	l := Parse(`
 set length20 len("tufan baris yildirim")
-set echo "echo"
-cmd echo "{{ .length20 }}" into x
-cmd echo $length20 into x2
+set $echo "echo"
+cmd $echo "{{ .length20 }}" into x
+cmd $echo $length20 into x2
 cmd 'echo' 'microspector' into output
 must output equals 'microspector'
 `)
