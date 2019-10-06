@@ -47,12 +47,16 @@ var Functions = template.FuncMap{
 		return rand.Intn(int(max-min)) + int(min)
 	},
 	"openssl_rand": OpenSslRand,
-	"str_len":      func(str string) int { return len(str) },
+	"str_len": func(str string) int {
+		return len(str)
+	},
 	"len": func(obj interface{}) int {
 		r := reflect.ValueOf(obj)
 		return r.Len()
 	},
-	"trim": func(str string) string { return strings.TrimSpace(str) },
+	"trim": func(str string) string {
+		return strings.TrimSpace(str)
+	},
 	"hash_md5": func(val interface{}) string {
 		data := []byte(fmt.Sprintf("%s", val))
 		return fmt.Sprintf("%x", md5.Sum(data))
@@ -64,13 +68,16 @@ var Functions = template.FuncMap{
 	"url_encode": func(val interface{}) string {
 		return url.QueryEscape(fmt.Sprintf("%s", val))
 	},
+	"format": func(format string, params ...interface{}) string {
+		return fmt.Sprintf(format, params...)
+	},
 }
 
 func OpenSslRand(len int64, enc string) string {
-	bytes := make([]byte, len)
-	bytes, err := exec.Command("openssl", "rand", "-"+enc, strconv.Itoa(int(len))).CombinedOutput()
+	bytesBuf := make([]byte, len)
+	bytesBuf, err := exec.Command("openssl", "rand", "-"+enc, strconv.Itoa(int(len))).CombinedOutput()
 	if err != nil {
 		fmt.Println(err.Error())
 	}
-	return strings.TrimSpace(string(bytes))
+	return strings.TrimSpace(string(bytesBuf))
 }
