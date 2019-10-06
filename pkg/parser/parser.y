@@ -91,7 +91,7 @@ IDENTIFIER
 TYPE
 
 
-%type <variable> variable
+%type <Variable> variable
 %type <val> http_method operator
 %type <val> any_value func_call
 %type <vals> multi_variable array comma_separated_values multi_any_value
@@ -131,7 +131,7 @@ TYPE
 	boolean bool
 	bytes []byte
 	cmd Command
-	variable struct{
+	Variable struct{
 		name string
 		value interface{}
 	}

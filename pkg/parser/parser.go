@@ -21,7 +21,7 @@ type yySymType struct {
 	boolean  bool
 	bytes    []byte
 	cmd      Command
-	variable struct {
+	Variable struct {
 		name  string
 		value interface{}
 	}
@@ -1102,23 +1102,23 @@ yynewstate:
 	case 4:
 		{
 			//run command put result into variable WHEN boolean_exp is true
-			if strings.Contains(yyS[yypt-2].variable.name, ".") {
+			if strings.Contains(yyS[yypt-2].Variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
 
 			if yyS[yypt-0].boolean {
 				yylex.(*Lexer).wg.Add(1)
-				yylex.(*Lexer).GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run(yylex.(*Lexer))
+				yylex.(*Lexer).GlobalVars[yyS[yypt-2].Variable.name] = yyS[yypt-4].cmd.Run(yylex.(*Lexer))
 			}
 		}
 	case 5:
 		{
 			//command INTO variable
-			if strings.Contains(yyS[yypt-0].variable.name, ".") {
+			if strings.Contains(yyS[yypt-0].Variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
 			yylex.(*Lexer).wg.Add(1)
-			yylex.(*Lexer).GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run(yylex.(*Lexer))
+			yylex.(*Lexer).GlobalVars[yyS[yypt-0].Variable.name] = yyS[yypt-2].cmd.Run(yylex.(*Lexer))
 		}
 	case 6:
 		{
@@ -1260,7 +1260,7 @@ yynewstate:
 	case 35:
 		{
 			yyVAL.cmd = &SetCommand{
-				Name:  yyS[yypt-1].variable.name,
+				Name:  yyS[yypt-1].Variable.name,
 				Value: yyS[yypt-0].vals,
 			}
 		}
@@ -1268,7 +1268,7 @@ yynewstate:
 		{
 			//GlobalVars[$2.name] = $3
 			yyVAL.cmd = &SetCommand{
-				Name:  yyS[yypt-1].variable.name,
+				Name:  yyS[yypt-1].Variable.name,
 				Value: yyS[yypt-0].val,
 			}
 		}
@@ -1276,7 +1276,7 @@ yynewstate:
 		{
 			//GlobalVars[$2.name] = $3
 			yyVAL.cmd = &SetCommand{
-				Name:  yyS[yypt-1].variable.name,
+				Name:  yyS[yypt-1].Variable.name,
 				Value: yyS[yypt-0].boolean,
 			}
 		}
@@ -1379,12 +1379,12 @@ yynewstate:
 	case 60:
 		{
 			//getting a single value from multi_value exp
-			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].variable)
+			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].Variable)
 		}
 	case 61:
 		{
 			//multi value
-			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].variable)
+			yyVAL.vals = append(yyVAL.vals, yyS[yypt-0].Variable)
 		}
 	case 62:
 		{
@@ -1406,15 +1406,15 @@ yynewstate:
 	case 65:
 		{
 			//any_value : variable
-			switch yyS[yypt-0].variable.value.(type) {
+			switch yyS[yypt-0].Variable.value.(type) {
 			case string:
-				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*Lexer).GlobalVars)
+				if isTemplate(yyS[yypt-0].Variable.value.(string)) {
+					yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].Variable.value.(string), yylex.(*Lexer).GlobalVars)
 				} else {
-					yyVAL.val = yyS[yypt-0].variable.value
+					yyVAL.val = yyS[yypt-0].Variable.value
 				}
 			default:
-				yyVAL.val = yyS[yypt-0].variable.value
+				yyVAL.val = yyS[yypt-0].Variable.value
 			}
 
 		}
@@ -1456,18 +1456,18 @@ yynewstate:
 	case 75:
 		{
 			//getting variable
-			yyVAL.variable.name = yyS[yypt-2].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-2].val.(string), yylex.(*Lexer).GlobalVars)
+			yyVAL.Variable.name = yyS[yypt-2].val.(string)
+			yyVAL.Variable.value = query(yyS[yypt-2].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 76:
 		{
-			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
+			yyVAL.Variable.name = yyS[yypt-0].val.(string)
+			yyVAL.Variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 77:
 		{
-			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
+			yyVAL.Variable.name = yyS[yypt-0].val.(string)
+			yyVAL.Variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 95:
 		{
@@ -1551,15 +1551,15 @@ yynewstate:
 	case 113:
 		{
 			//string_var : variable
-			switch yyS[yypt-0].variable.value.(type) {
+			switch yyS[yypt-0].Variable.value.(type) {
 			case string:
-				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*Lexer).GlobalVars)
+				if isTemplate(yyS[yypt-0].Variable.value.(string)) {
+					yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].Variable.value.(string), yylex.(*Lexer).GlobalVars)
 				} else {
-					yyVAL.str = yyS[yypt-0].variable.value.(string)
+					yyVAL.str = yyS[yypt-0].Variable.value.(string)
 				}
 			default:
-				yyVAL.str = fmt.Sprintf("%s", yyS[yypt-0].variable.value)
+				yyVAL.str = fmt.Sprintf("%s", yyS[yypt-0].Variable.value)
 			}
 
 		}
