@@ -10,7 +10,7 @@ type CmdCommand struct {
 	Params []interface{}
 }
 
-func (cc *CmdCommand) Run(l *lex) interface{} {
+func (cc *CmdCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
 	var params []string

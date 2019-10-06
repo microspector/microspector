@@ -10,7 +10,7 @@ type SetCommand struct {
 	Value interface{}
 }
 
-func (hc *SetCommand) Run(l *lex) interface{} {
+func (hc *SetCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 	if strings.Contains(hc.Name, ".") {
 		panic(fmt.Errorf("nested variables are not supported yet"))

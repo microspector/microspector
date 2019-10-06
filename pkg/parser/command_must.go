@@ -4,7 +4,7 @@ type MustCommand struct {
 	Failed bool
 }
 
-func (hc *MustCommand) Run(l *lex) interface{} {
+func (hc *MustCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 	return "we got a MUST Command here"
 }

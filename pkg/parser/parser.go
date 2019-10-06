@@ -1107,8 +1107,8 @@ yynewstate:
 			}
 
 			if yyS[yypt-0].boolean {
-				yylex.(*lex).wg.Add(1)
-				yylex.(*lex).GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run(yylex.(*lex))
+				yylex.(*Lexer).wg.Add(1)
+				yylex.(*Lexer).GlobalVars[yyS[yypt-2].variable.name] = yyS[yypt-4].cmd.Run(yylex.(*Lexer))
 			}
 		}
 	case 5:
@@ -1117,36 +1117,36 @@ yynewstate:
 			if strings.Contains(yyS[yypt-0].variable.name, ".") {
 				yylex.Error("nested variables are not supported yet")
 			}
-			yylex.(*lex).wg.Add(1)
-			yylex.(*lex).GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run(yylex.(*lex))
+			yylex.(*Lexer).wg.Add(1)
+			yylex.(*Lexer).GlobalVars[yyS[yypt-0].variable.name] = yyS[yypt-2].cmd.Run(yylex.(*Lexer))
 		}
 	case 6:
 		{
 			//run the command only if boolean_exp is true
 			if yyS[yypt-0].boolean {
-				yylex.(*lex).wg.Add(1)
-				yyS[yypt-2].cmd.Run(yylex.(*lex))
+				yylex.(*Lexer).wg.Add(1)
+				yyS[yypt-2].cmd.Run(yylex.(*Lexer))
 			}
 		}
 	case 7:
 		{
 			//just run the command
-			yylex.(*lex).wg.Add(1)
-			yyS[yypt-0].cmd.Run(yylex.(*lex))
+			yylex.(*Lexer).wg.Add(1)
+			yyS[yypt-0].cmd.Run(yylex.(*Lexer))
 			//run command without condition
 
 		}
 	case 8:
 		{
-			yylex.(*lex).wg.Add(1)
-			go yyS[yypt-0].cmd.Run(yylex.(*lex))
+			yylex.(*Lexer).wg.Add(1)
+			go yyS[yypt-0].cmd.Run(yylex.(*Lexer))
 		}
 	case 9:
 		{
 			//run the command only if boolean_exp is true
 			if yyS[yypt-0].boolean {
-				yylex.(*lex).wg.Add(1)
-				go yyS[yypt-2].cmd.Run(yylex.(*lex))
+				yylex.(*Lexer).wg.Add(1)
+				go yyS[yypt-2].cmd.Run(yylex.(*Lexer))
 			}
 		}
 	case 21:
@@ -1202,7 +1202,7 @@ yynewstate:
 	case 29:
 		{
 			if yyS[yypt-1].cmd.(*AssertCommand).Failed {
-				yylex.(*lex).State.Assert.Messages = append(yylex.(*lex).State.Assert.Messages, yyS[yypt-0].str)
+				yylex.(*Lexer).State.Assert.Messages = append(yylex.(*Lexer).State.Assert.Messages, yyS[yypt-0].str)
 			}
 
 			yyVAL.cmd = yyS[yypt-1].cmd
@@ -1210,9 +1210,9 @@ yynewstate:
 	case 30:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Assert.Fail++
+				yylex.(*Lexer).State.Assert.Fail++
 			} else {
-				yylex.(*lex).State.Assert.Success++
+				yylex.(*Lexer).State.Assert.Success++
 			}
 			yyVAL.cmd = &AssertCommand{
 				Failed: !yyS[yypt-0].boolean,
@@ -1221,7 +1221,7 @@ yynewstate:
 	case 31:
 		{
 			if yyS[yypt-1].cmd.(*MustCommand).Failed {
-				yylex.(*lex).State.Must.Messages = append(yylex.(*lex).State.Must.Messages, yyS[yypt-0].str)
+				yylex.(*Lexer).State.Must.Messages = append(yylex.(*Lexer).State.Must.Messages, yyS[yypt-0].str)
 			}
 
 			yyVAL.cmd = yyS[yypt-1].cmd
@@ -1229,9 +1229,9 @@ yynewstate:
 	case 32:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Must.Fail++
+				yylex.(*Lexer).State.Must.Fail++
 			} else {
-				yylex.(*lex).State.Must.Success++
+				yylex.(*Lexer).State.Must.Success++
 			}
 
 			yyVAL.cmd = &MustCommand{
@@ -1241,7 +1241,7 @@ yynewstate:
 	case 33:
 		{
 			if yyS[yypt-1].cmd.(*ShouldCommand).Failed {
-				yylex.(*lex).State.Should.Messages = append(yylex.(*lex).State.Should.Messages, yyS[yypt-0].str)
+				yylex.(*Lexer).State.Should.Messages = append(yylex.(*Lexer).State.Should.Messages, yyS[yypt-0].str)
 			}
 
 			yyVAL.cmd = yyS[yypt-1].cmd
@@ -1249,9 +1249,9 @@ yynewstate:
 	case 34:
 		{
 			if !yyS[yypt-0].boolean {
-				yylex.(*lex).State.Should.Fail++
+				yylex.(*Lexer).State.Should.Fail++
 			} else {
-				yylex.(*lex).State.Should.Success++
+				yylex.(*Lexer).State.Should.Success++
 			}
 			yyVAL.cmd = &ShouldCommand{
 				Failed: !yyS[yypt-0].boolean,
@@ -1398,7 +1398,7 @@ yynewstate:
 		{
 			//string_or_var : STRING
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
+				yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 			} else {
 				yyVAL.val = yyS[yypt-0].val.(string)
 			}
@@ -1409,7 +1409,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*lex).GlobalVars)
+					yyVAL.val, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*Lexer).GlobalVars)
 				} else {
 					yyVAL.val = yyS[yypt-0].variable.value
 				}
@@ -1457,17 +1457,17 @@ yynewstate:
 		{
 			//getting variable
 			yyVAL.variable.name = yyS[yypt-2].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-2].val.(string), yylex.(*lex).GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-2].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 76:
 		{
 			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 77:
 		{
 			yyVAL.variable.name = yyS[yypt-0].val.(string)
-			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
+			yyVAL.variable.value = query(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 		}
 	case 95:
 		{
@@ -1543,7 +1543,7 @@ yynewstate:
 		{
 			//string_var : STRING
 			if isTemplate(yyS[yypt-0].val.(string)) {
-				yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].val.(string), yylex.(*lex).GlobalVars)
+				yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].val.(string), yylex.(*Lexer).GlobalVars)
 			} else {
 				yyVAL.str = yyS[yypt-0].val.(string)
 			}
@@ -1554,7 +1554,7 @@ yynewstate:
 			switch yyS[yypt-0].variable.value.(type) {
 			case string:
 				if isTemplate(yyS[yypt-0].variable.value.(string)) {
-					yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*lex).GlobalVars)
+					yyVAL.str, _ = templating.ExecuteTemplate(yyS[yypt-0].variable.value.(string), yylex.(*Lexer).GlobalVars)
 				} else {
 					yyVAL.str = yyS[yypt-0].variable.value.(string)
 				}
@@ -1621,9 +1621,9 @@ yynewstate:
 	goto yystack /* stack new state and value */
 }
 
-func Parse(text string) *lex {
+func Parse(text string) *Lexer {
 
-	l := &lex{
+	l := &Lexer{
 		tokens:     make(chan Token),
 		State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
@@ -1646,7 +1646,7 @@ func Parse(text string) *lex {
 	return l
 }
 
-func Run(l *lex) {
+func Run(l *Lexer) {
 	yyParse(l)
 	l.wg.Wait()
 }

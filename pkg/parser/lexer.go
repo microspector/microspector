@@ -5,14 +5,14 @@ import (
 	"sync"
 )
 
-type lex struct {
+type Lexer struct {
 	tokens     chan Token
 	GlobalVars map[string]interface{}
 	State      Stats
 	wg         *sync.WaitGroup
 }
 
-func (l *lex) All() []Token {
+func (l *Lexer) All() []Token {
 	tokens := make([]Token, 0)
 
 	for {
@@ -28,7 +28,7 @@ func (l *lex) All() []Token {
 	return tokens
 }
 
-func (l *lex) Lex(lval *yySymType) int {
+func (l *Lexer) Lex(lval *yySymType) int {
 	v := <-l.tokens
 	if v.Type == EOF || v.Type == -1 {
 		return 0
@@ -37,6 +37,6 @@ func (l *lex) Lex(lval *yySymType) int {
 	return v.Type
 }
 
-func (l *lex) Error(e string) {
+func (l *Lexer) Error(e string) {
 	log.Println(e)
 }

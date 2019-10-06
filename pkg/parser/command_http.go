@@ -72,7 +72,7 @@ func NewFromResponse(response *http.Response) HttpResult {
 	return result
 }
 
-func (hc *HttpCommand) Run(l *lex) interface{} {
+func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
 	_, urlError := url.Parse(hc.Url)

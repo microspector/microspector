@@ -158,8 +158,8 @@ command_with_condition_opt	:
 					}
 
 					if $5 {
-					   yylex.(*lex).wg.Add(1)
-					   yylex.(*lex).GlobalVars[$3.name] = $1.Run(yylex.(*lex))
+					   yylex.(*Lexer).wg.Add(1)
+					   yylex.(*Lexer).GlobalVars[$3.name] = $1.Run(yylex.(*Lexer))
 					}
 				}
 				|
@@ -169,40 +169,40 @@ command_with_condition_opt	:
 					if strings.Contains($3.name,".") {
 					   yylex.Error("nested variables are not supported yet")
 					}
-					yylex.(*lex).wg.Add(1)
-					yylex.(*lex).GlobalVars[$3.name] = $1.Run( yylex.(*lex) )
+					yylex.(*Lexer).wg.Add(1)
+					yylex.(*Lexer).GlobalVars[$3.name] = $1.Run( yylex.(*Lexer) )
 				}
 				|
 				command WHEN boolean_exp
 				{
 					//run the command only if boolean_exp is true
 					if $3 {
-					  yylex.(*lex).wg.Add(1)
-					  $1.Run( yylex.(*lex))
+					  yylex.(*Lexer).wg.Add(1)
+					  $1.Run( yylex.(*Lexer))
 					}
 				}
 				|
 				command
 				{
 					//just run the command
-					yylex.(*lex).wg.Add(1)
-					$1.Run( yylex.(*lex))
+					yylex.(*Lexer).wg.Add(1)
+					$1.Run( yylex.(*Lexer))
 					//run command without condition
 
 				}
 				|
 				ASYNC command
 				{
-					yylex.(*lex).wg.Add(1)
-					go $2.Run( yylex.(*lex) )
+					yylex.(*Lexer).wg.Add(1)
+					go $2.Run( yylex.(*Lexer) )
 				}
 				|
 				ASYNC command WHEN boolean_exp
 				{
 					//run the command only if boolean_exp is true
 					if $4 {
-					  yylex.(*lex).wg.Add(1)
-					  go $2.Run( yylex.(*lex) )
+					  yylex.(*Lexer).wg.Add(1)
+					  go $2.Run( yylex.(*Lexer) )
 					}
 				}
 
@@ -287,7 +287,7 @@ assert_command		:
 			assert_command string_var
 			{
 				if $1.(*AssertCommand).Failed{
-				   yylex.(*lex).State.Assert.Messages =  append(yylex.(*lex).State.Assert.Messages,$2)
+				   yylex.(*Lexer).State.Assert.Messages =  append(yylex.(*Lexer).State.Assert.Messages,$2)
 				}
 
 				$$ = $1
@@ -296,9 +296,9 @@ assert_command		:
 			ASSERT boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Assert.Fail++
+					yylex.(*Lexer).State.Assert.Fail++
 				}else{
-					yylex.(*lex).State.Assert.Success++
+					yylex.(*Lexer).State.Assert.Success++
 				}
 				 $$ = &AssertCommand{
 				 	Failed: !$2,
@@ -309,7 +309,7 @@ must_command		:
 			must_command string_var
 			{
 				if $1.(*MustCommand).Failed{
-				   yylex.(*lex).State.Must.Messages =  append(yylex.(*lex).State.Must.Messages,$2)
+				   yylex.(*Lexer).State.Must.Messages =  append(yylex.(*Lexer).State.Must.Messages,$2)
 				}
 
 				$$ = $1
@@ -318,9 +318,9 @@ must_command		:
 			MUST boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Must.Fail++
+					yylex.(*Lexer).State.Must.Fail++
 				}else{
-					yylex.(*lex).State.Must.Success++
+					yylex.(*Lexer).State.Must.Success++
 				}
 
 				$$ = &MustCommand{
@@ -334,7 +334,7 @@ should_command		:
 			should_command string_var
 			{
 				if $1.(*ShouldCommand).Failed{
-				   yylex.(*lex).State.Should.Messages =  append(yylex.(*lex).State.Should.Messages,$2)
+				   yylex.(*Lexer).State.Should.Messages =  append(yylex.(*Lexer).State.Should.Messages,$2)
 				}
 
 				$$ = $1
@@ -343,9 +343,9 @@ should_command		:
 			SHOULD boolean_exp
 			{
 				if !$2 {
-					yylex.(*lex).State.Should.Fail++
+					yylex.(*Lexer).State.Should.Fail++
 				}else{
-					yylex.(*lex).State.Should.Success++
+					yylex.(*Lexer).State.Should.Success++
 				}
 				$$ = &ShouldCommand{
 					Failed: !$2,
@@ -525,7 +525,7 @@ any_value	:
 		{
 			//string_or_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = templating.ExecuteTemplate( $1.(string) , yylex.(*lex).GlobalVars)
+				$$,_ = templating.ExecuteTemplate( $1.(string) , yylex.(*Lexer).GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -537,7 +537,7 @@ any_value	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = templating.ExecuteTemplate( $1.value.(string) , yylex.(*lex).GlobalVars)
+					    $$,_ = templating.ExecuteTemplate( $1.value.(string) , yylex.(*Lexer).GlobalVars)
 				     }else{
 					$$ = $1.value
 				     }
@@ -600,19 +600,19 @@ variable	:
 		{
 			//getting variable
 			$$.name = $3.(string)
-			$$.value = query($3.(string),yylex.(*lex).GlobalVars)
+			$$.value = query($3.(string),yylex.(*Lexer).GlobalVars)
 		}
 		|
 		'$' IDENTIFIER
 		{
 			$$.name = $2.(string)
-                	$$.value = query($2.(string),yylex.(*lex).GlobalVars)
+                	$$.value = query($2.(string),yylex.(*Lexer).GlobalVars)
 		}
 		|
 		IDENTIFIER
 		{
 			$$.name = $1.(string)
-                        $$.value = query($1.(string),yylex.(*lex).GlobalVars)
+                        $$.value = query($1.(string),yylex.(*Lexer).GlobalVars)
 		}
 
 operator	:
@@ -730,7 +730,7 @@ string_var	:
 		{
 			//string_var : STRING
 			if isTemplate($1.(string)) {
-				$$,_ = templating.ExecuteTemplate( $1.(string) ,yylex.(*lex). GlobalVars)
+				$$,_ = templating.ExecuteTemplate( $1.(string) ,yylex.(*Lexer).GlobalVars)
 			 }else{
 				$$ = $1.(string)
 			}
@@ -742,7 +742,7 @@ string_var	:
 			 switch  $1.value.(type) {
 			     case string :
 				     if isTemplate($1.value.(string)) {
-					    $$,_ = templating.ExecuteTemplate( $1.value.(string) ,yylex.(*lex). GlobalVars)
+					    $$,_ = templating.ExecuteTemplate( $1.value.(string) ,yylex.(*Lexer).GlobalVars)
 				     }else{
 					$$ = $1.value.(string)
 				     }
@@ -805,9 +805,9 @@ comma_separated_values	:
 
 %%
 
-func Parse(text string) *lex {
+func Parse(text string) *Lexer {
 
-	l := &lex{
+	l := &Lexer{
 	 	tokens : make(chan Token),
 	 	State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
@@ -831,7 +831,7 @@ func Parse(text string) *lex {
 }
 
 
-func Run(l *lex){
+func Run(l *Lexer){
 	yyParse(l)
 	l.wg.Wait()
 }

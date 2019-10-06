@@ -7,7 +7,7 @@ type EchoCommand struct {
 	Values []interface{}
 }
 
-func (ec *EchoCommand) Run(l *lex) interface{} {
+func (ec *EchoCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 	fmt.Printf(ec.String, ec.Values...)
 	return nil
