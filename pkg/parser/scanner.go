@@ -67,7 +67,7 @@ var keywords = map[string]int{
 	"IN":         IN,
 	"INSECURE":   INSECURE,
 	"SECURE":     SECURE,
-	"ECHO":     ECHO,
+	"ECHO":       ECHO,
 }
 
 func NewScanner(r io.Reader) *Scanner {
@@ -427,10 +427,6 @@ func isDigit(ch rune) bool {
 
 func isLetter(ch rune) bool {
 	return ch == '_' || unicode.IsLetter(ch)
-}
-
-func isAlphaNumeric(ch rune) bool {
-	return ch == '_' || unicode.IsLetter(ch) || unicode.IsDigit(ch)
 }
 
 func isIdentifierChar(ch rune) bool {
