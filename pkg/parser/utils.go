@@ -133,7 +133,7 @@ func runop(left, operator, right interface{}) (eq bool) {
 	op := strings.TrimPrefix(strings.ToUpper(operator.(string)), "NOT")
 	not := op != operator
 
-	eq = runop_positive(left, op, right)
+	eq = runOpPositive(left, op, right)
 
 	if not {
 		return !eq
@@ -142,17 +142,16 @@ func runop(left, operator, right interface{}) (eq bool) {
 	return eq
 }
 
-func runop_positive(left interface{}, operator string, right interface{}) (eq bool) {
+func runOpPositive(left interface{}, operator string, right interface{}) (eq bool) {
 
 	switch operator {
 	case "CONTAINS", "CONTAIN":
 		switch reflect.TypeOf(left).Kind() { //if left is an array, search right in left :thumbs-up:
 		case reflect.Array, reflect.Slice:
-			return runop_positive(right, "IN", left)
+			return runOpPositive(right, "IN", left)
 		default:
 			return strings.Contains(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 		}
-
 	case "STARTSWITH", "STARTWITH":
 		return strings.HasPrefix(fmt.Sprintf("%s", left), fmt.Sprintf("%s", right))
 	case "EQUALS", "==", "EQUAL":
@@ -236,6 +235,10 @@ func runop_positive(left interface{}, operator string, right interface{}) (eq bo
 		default:
 			return false //TODO: or throw an error?
 		}
+	case "AND":
+		return IsTrue(left) && IsTrue(right)
+	case "OR":
+		return IsTrue(left) || IsTrue(right)
 
 	}
 

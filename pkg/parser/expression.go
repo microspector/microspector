@@ -1,5 +1,5 @@
 package parser
 
 type Expression interface {
-	Evaluate() interface{}
+	Evaluate(lexer *Lexer) interface{}
 }

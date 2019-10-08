@@ -8,6 +8,7 @@ import (
 type SetCommand struct {
 	Name  string
 	Value interface{}
+	When  *Expression
 }
 
 func (hc *SetCommand) Run(l *Lexer) interface{} {
@@ -22,4 +23,8 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 
 	l.GlobalVars[hc.Name] = hc.Value
 	return hc.Value
+}
+
+func (hc *SetCommand) SetWhen(expr *Expression) {
+	hc.When = expr
 }
