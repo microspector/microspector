@@ -3,7 +3,7 @@ package parser
 type ShouldCommand struct {
 	Command
 	Failed bool
-	When   *Expression
+	When   Expression
 }
 
 func (sc *ShouldCommand) Run(l *Lexer) interface{} {
@@ -11,6 +11,6 @@ func (sc *ShouldCommand) Run(l *Lexer) interface{} {
 	return "we got a SHOULD Command here"
 }
 
-func (sc *ShouldCommand) SetWhen(expr *Expression) {
+func (sc *ShouldCommand) SetWhen(expr Expression) {
 	sc.When = expr
 }

@@ -2,7 +2,7 @@ package parser
 
 type MustCommand struct {
 	Failed bool
-	When   *Expression
+	When   Expression
 }
 
 func (mc *MustCommand) Run(l *Lexer) interface{} {
@@ -10,6 +10,6 @@ func (mc *MustCommand) Run(l *Lexer) interface{} {
 	return "we got a MUST Command here"
 }
 
-func (mc *MustCommand) SetWhen(expr *Expression) {
+func (mc *MustCommand) SetWhen(expr Expression) {
 	mc.When = expr
 }

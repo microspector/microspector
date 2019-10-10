@@ -7,7 +7,7 @@ import (
 //A command to block the current thread
 type SleepCommand struct {
 	Millisecond int64
-	When        *Expression
+	When        Expression
 }
 
 func (sc *SleepCommand) Run(l *Lexer) interface{} {
@@ -17,6 +17,6 @@ func (sc *SleepCommand) Run(l *Lexer) interface{} {
 
 }
 
-func (sc *SleepCommand) SetWhen(expr *Expression) {
+func (sc *SleepCommand) SetWhen(expr Expression) {
 	sc.When = expr
 }

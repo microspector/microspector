@@ -8,7 +8,7 @@ import (
 
 type CmdCommand struct {
 	Params []interface{}
-	When   *Expression
+	When   Expression
 }
 
 func (cc *CmdCommand) Run(l *Lexer) interface{} {
@@ -37,6 +37,6 @@ func (cc *CmdCommand) Run(l *Lexer) interface{} {
 	return strings.TrimSpace(string(out))
 }
 
-func (cc *CmdCommand) SetWhen(expr *Expression) {
+func (cc *CmdCommand) SetWhen(expr Expression) {
 	cc.When = expr
 }

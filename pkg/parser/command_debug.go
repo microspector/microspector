@@ -7,7 +7,7 @@ import (
 
 type DebugCommand struct {
 	Values interface{}
-	When   *Expression
+	When   Expression
 }
 
 func (dc *DebugCommand) Run(l *Lexer) interface{} {
@@ -25,6 +25,6 @@ func (dc *DebugCommand) Run(l *Lexer) interface{} {
 	return nil
 }
 
-func (dc *DebugCommand) SetWhen(expr *Expression) {
+func (dc *DebugCommand) SetWhen(expr Expression) {
 	dc.When = expr
 }

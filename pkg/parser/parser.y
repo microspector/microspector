@@ -120,8 +120,8 @@ TYPE
 	command_cond
 
 %union{
-	expression *Expression
-	expressions *ExprArray
+	expression Expression
+	expressions ExprArray
 	val interface{}
 	vals []interface{}
 	str ExprString
@@ -129,7 +129,7 @@ TYPE
 	boolean ExprBool
 	bytes []byte
 	cmd Command
-	variable *ExprVariable
+	variable ExprVariable
 	http_command_params []HttpCommandParam
 	http_command_param  HttpCommandParam
 }
@@ -168,14 +168,14 @@ command_cond			: command WHEN expr
 
 					 $1.SetWhen($3)
 					 //TODO: check if it compatible with SetInto
-					 $1.(*HttpCommand).SetInto($5)
+					 $1.(*HttpCommand).SetInto($5.Name)
 					 $$ = $1
 				}
 				|
 				command INTO variable
 				{
 					 //TODO: check if it compatible with SetInto
-					 $1.(*HttpCommand).SetInto($3)
+					 $1.(*HttpCommand).SetInto($3.Name)
 					 $$ = $1
 				}
 				|
@@ -211,7 +211,7 @@ http_command			:
 				{
 					$$ = &HttpCommand{
 					        Method       :   $2.(string),
-                                        	Url          :   *$3,
+                                        	Url          :   $3,
 
 					}
 				}
@@ -220,7 +220,7 @@ http_command			:
 				{
 					$$ = &HttpCommand{
 					 Method       :   $2.(string),
-                                         Url          :   *$3,
+                                         Url          :   $3,
                                          CommandParams: $4,
 					}
 				}
@@ -249,7 +249,7 @@ http_command_param		:
 					//addin header
 					$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : *$2,
+						ParamValue : $2,
 					}
 				}
 				|
@@ -257,7 +257,7 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : *$2,
+						ParamValue : $2,
 					}
 				}
 				|
@@ -325,11 +325,11 @@ array				:
 
 comma_separated_expressions	: expr
 				{
-				 	$$.Values = append($$.Values,$1.(*Expression))
+				 	$$.Values = append($$.Values,$1)
 				}
 				| comma_separated_expressions ',' expr
 				{
-					$$.Values = append($$.Values,$3.(*Expression))
+					$$.Values = append($$.Values,$3)
 				}
 
 
@@ -356,13 +356,16 @@ expr		:
 		INTEGER
 		{
 			$$ = &ExprInteger{
-				Val : $1.(int64),
+				Val: $1.(int64),
 			}
 		}
 		|
 		variable
 		{
-			$$ = $1
+
+			$$ =  &ExprVariable{
+				Name: $1.Name,
+			}
 		}
 		|
 		TRUE
@@ -382,29 +385,29 @@ expr		:
 		expr operator expr
 		{
 			$$ = &ExprPredicate{
-				Left: $1.(Expression),
+				Left: $1,
 				Operator: $2.(string),
-				Right: $3.(Expression),
+				Right: $3,
 			}
 		}
 
 variable	: '{''{'  IDENTIFIER '}''}'
 		{
-			$$ = &ExprVariable{
+			$$ = ExprVariable{
 				Name: $3.(string),
 			}
 		}
 		|
 		'$' IDENTIFIER
 		{
-			$$ = &ExprVariable{
+			$$ = ExprVariable{
 				Name: $2.(string),
 			}
 		}
 		|
 		IDENTIFIER
 		{
-			$$ = &ExprVariable{
+			$$ = ExprVariable{
 				Name: $1.(string),
 			}
 		}

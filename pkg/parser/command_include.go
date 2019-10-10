@@ -8,7 +8,7 @@ import (
 
 type IncludeCommand struct {
 	File string
-	When *Expression
+	When Expression
 }
 
 func (ic *IncludeCommand) Run(l *Lexer) interface{} {
@@ -29,6 +29,6 @@ func (ic *IncludeCommand) Run(l *Lexer) interface{} {
 
 }
 
-func (ic *IncludeCommand) SetWhen(expr *Expression) {
+func (ic *IncludeCommand) SetWhen(expr Expression) {
 	ic.When = expr
 }

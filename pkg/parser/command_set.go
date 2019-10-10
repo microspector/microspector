@@ -2,13 +2,14 @@ package parser
 
 import (
 	"fmt"
+	"reflect"
 	"strings"
 )
 
 type SetCommand struct {
 	Name  string
 	Value interface{}
-	When  *Expression
+	When  Expression
 }
 
 func (hc *SetCommand) Run(l *Lexer) interface{} {
@@ -21,10 +22,23 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 		panic(fmt.Errorf(".State is a reserved variable for current state of the execution context"))
 	}
 
-	l.GlobalVars[hc.Name] = hc.Value
+	var i interface{}
+
+	for {
+
+		t := reflect.TypeOf(hc.Value)
+		if t.Implements(reflect.TypeOf((*Expression)(nil)).Elem()) {
+			i = hc.Value.(Expression).Evaluate(l)
+		} else {
+			i = hc.Value
+			break
+
+		}
+	}
+	l.GlobalVars[hc.Name] = i
 	return hc.Value
 }
 
-func (hc *SetCommand) SetWhen(expr *Expression) {
+func (hc *SetCommand) SetWhen(expr Expression) {
 	hc.When = expr
 }

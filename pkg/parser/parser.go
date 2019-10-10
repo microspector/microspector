@@ -11,8 +11,8 @@ import (
 
 type yySymType struct {
 	yys                 int
-	expression          *Expression
-	expressions         *ExprArray
+	expression          Expression
+	expressions         ExprArray
 	val                 interface{}
 	vals                []interface{}
 	str                 ExprString
@@ -20,7 +20,7 @@ type yySymType struct {
 	boolean             ExprBool
 	bytes               []byte
 	cmd                 Command
-	variable            *ExprVariable
+	variable            ExprVariable
 	http_command_params []HttpCommandParam
 	http_command_param  HttpCommandParam
 }
@@ -781,13 +781,13 @@ yynewstate:
 
 			yyS[yypt-4].cmd.SetWhen(yyS[yypt-2].expression)
 			//TODO: check if it compatible with SetInto
-			yyS[yypt-4].cmd.(*HttpCommand).SetInto(yyS[yypt-0].variable)
+			yyS[yypt-4].cmd.(*HttpCommand).SetInto(yyS[yypt-0].variable.Name)
 			yyVAL.cmd = yyS[yypt-4].cmd
 		}
 	case 7:
 		{
 			//TODO: check if it compatible with SetInto
-			yyS[yypt-2].cmd.(*HttpCommand).SetInto(yyS[yypt-0].variable)
+			yyS[yypt-2].cmd.(*HttpCommand).SetInto(yyS[yypt-0].variable.Name)
 			yyVAL.cmd = yyS[yypt-2].cmd
 		}
 	case 8:
@@ -805,14 +805,14 @@ yynewstate:
 		{
 			yyVAL.cmd = &HttpCommand{
 				Method: yyS[yypt-1].val.(string),
-				Url:    *yyS[yypt-0].expression,
+				Url:    yyS[yypt-0].expression,
 			}
 		}
 	case 22:
 		{
 			yyVAL.cmd = &HttpCommand{
 				Method:        yyS[yypt-2].val.(string),
-				Url:           *yyS[yypt-1].expression,
+				Url:           yyS[yypt-1].expression,
 				CommandParams: yyS[yypt-0].http_command_params,
 			}
 		}
@@ -836,14 +836,14 @@ yynewstate:
 			//addin header
 			yyVAL.http_command_param = HttpCommandParam{
 				ParamName:  yyS[yypt-1].val.(string),
-				ParamValue: *yyS[yypt-0].expression,
+				ParamValue: yyS[yypt-0].expression,
 			}
 		}
 	case 26:
 		{
 			yyVAL.http_command_param = HttpCommandParam{
 				ParamName:  yyS[yypt-1].val.(string),
-				ParamValue: *yyS[yypt-0].expression,
+				ParamValue: yyS[yypt-0].expression,
 			}
 		}
 	case 27:
@@ -922,11 +922,11 @@ yynewstate:
 		}
 	case 48:
 		{
-			yyVAL.expressions.Values = append(yyVAL.expressions.Values, yyS[yypt-0].expression.(*Expression))
+			yyVAL.expressions.Values = append(yyVAL.expressions.Values, yyS[yypt-0].expression)
 		}
 	case 49:
 		{
-			yyVAL.expressions.Values = append(yyVAL.expressions.Values, yyS[yypt-0].expression.(*Expression))
+			yyVAL.expressions.Values = append(yyVAL.expressions.Values, yyS[yypt-0].expression)
 		}
 	case 50:
 		{
@@ -952,7 +952,10 @@ yynewstate:
 		}
 	case 54:
 		{
-			yyVAL.expression = yyS[yypt-0].variable
+
+			yyVAL.expression = &ExprVariable{
+				Name: yyS[yypt-0].variable.Name,
+			}
 		}
 	case 55:
 		{
@@ -969,26 +972,26 @@ yynewstate:
 	case 57:
 		{
 			yyVAL.expression = &ExprPredicate{
-				Left:     yyS[yypt-2].expression.(Expression),
+				Left:     yyS[yypt-2].expression,
 				Operator: yyS[yypt-1].val.(string),
-				Right:    yyS[yypt-0].expression.(Expression),
+				Right:    yyS[yypt-0].expression,
 			}
 		}
 	case 58:
 		{
-			yyVAL.variable = &ExprVariable{
+			yyVAL.variable = ExprVariable{
 				Name: yyS[yypt-2].val.(string),
 			}
 		}
 	case 59:
 		{
-			yyVAL.variable = &ExprVariable{
+			yyVAL.variable = ExprVariable{
 				Name: yyS[yypt-0].val.(string),
 			}
 		}
 	case 60:
 		{
-			yyVAL.variable = &ExprVariable{
+			yyVAL.variable = ExprVariable{
 				Name: yyS[yypt-0].val.(string),
 			}
 		}

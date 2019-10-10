@@ -2,7 +2,7 @@ package parser
 
 type AssertCommand struct {
 	Failed bool
-	When   *Expression
+	When   Expression
 }
 
 func (ac *AssertCommand) Run(l *Lexer) interface{} {
@@ -10,6 +10,6 @@ func (ac *AssertCommand) Run(l *Lexer) interface{} {
 	return "we got an ASSERT Command here"
 }
 
-func (ac *AssertCommand) SetWhen(expr *Expression) {
+func (ac *AssertCommand) SetWhen(expr Expression) {
 	ac.When = expr
 }

@@ -5,7 +5,7 @@ import "fmt"
 type EchoCommand struct {
 	String string
 	Values []interface{}
-	When   *Expression
+	When   Expression
 }
 
 func (ec *EchoCommand) Run(l *Lexer) interface{} {
@@ -14,6 +14,6 @@ func (ec *EchoCommand) Run(l *Lexer) interface{} {
 	return nil
 }
 
-func (ec *EchoCommand) SetWhen(expr *Expression) {
+func (ec *EchoCommand) SetWhen(expr Expression) {
 	ec.When = expr
 }

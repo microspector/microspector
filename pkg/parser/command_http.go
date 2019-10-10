@@ -20,8 +20,8 @@ type HttpCommand struct {
 	Url             Expression
 	FollowRedirects bool
 	VerifySSL       bool
-	When            *Expression
-	Into            *ExprVariable
+	When            Expression
+	Into            string
 }
 
 type HttpResult struct {
@@ -170,15 +170,15 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 		resp.Error = reqErr.Error()
 	}
 
-	l.GlobalVars[hc.Into.Name] = resp
+	l.GlobalVars[hc.Into] = resp
 	return resp
 }
 
-func (hc *HttpCommand) SetWhen(expr *Expression) {
+func (hc *HttpCommand) SetWhen(expr Expression) {
 	hc.When = expr
 }
 
-func (hc *HttpCommand) SetInto(into *ExprVariable) {
+func (hc *HttpCommand) SetInto(into string) {
 	hc.Into = into
 }
 
