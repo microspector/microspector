@@ -1,6 +1,8 @@
 package parser
 
-import "github.com/microspector/microspector/pkg/lookup"
+import (
+	"github.com/microspector/microspector/pkg/lookup"
+)
 
 type ExprVariable struct {
 	Name string

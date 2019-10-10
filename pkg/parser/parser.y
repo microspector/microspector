@@ -93,9 +93,11 @@ TYPE
 %type <expressions> array comma_separated_expressions
 %type <http_command_param> http_command_param
 %type <http_command_params> http_command_params
+%type <val> http_method
 
 //arithmetic things
-%type <val> expr operator
+%type <expression> expr
+%type <val> operator
 %left '|'
 %left '&'
 %left '+'  '-'
@@ -118,8 +120,8 @@ TYPE
 	command_cond
 
 %union{
-	expression Expression
-	expressions ExprArray
+	expression *Expression
+	expressions *ExprArray
 	val interface{}
 	vals []interface{}
 	str ExprString
@@ -127,25 +129,19 @@ TYPE
 	boolean ExprBool
 	bytes []byte
 	cmd Command
-	variable ExprVariable
+	variable *ExprVariable
 	http_command_params []HttpCommandParam
 	http_command_param  HttpCommandParam
 }
 
-%start starter
+%start microspector
 
 %%
 
-starter				:
+microspector			:
 				/*empty*/
-				| run_comm
-				{
+				| microspector run_comm
 
-				}
-				| starter run_comm
-				{
-
-				}
 
 
 run_comm			:
@@ -164,20 +160,28 @@ run_comm			:
 command_cond			: command WHEN expr
 				{
 					$$ = $1
-					$$.SetWhen($3.(*Expression))
+					$$.SetWhen($3)
 				}
 				|
 				command WHEN expr INTO variable
 				{
+
+					 $1.SetWhen($3)
+					 //TODO: check if it compatible with SetInto
+					 $1.(*HttpCommand).SetInto($5)
 					 $$ = $1
-					 $$.SetWhen($3.(*Expression))
-					 $$.(*HttpCommand).SetInto(ExprVariable($5))
 				}
 				|
 				command INTO variable
 				{
+					 //TODO: check if it compatible with SetInto
+					 $1.(*HttpCommand).SetInto($3)
 					 $$ = $1
-					 $$.(*HttpCommand).SetInto(ExprVariable($3))
+				}
+				|
+				command
+				{
+					$$ = $1
 				}
 
 
@@ -196,18 +200,29 @@ command				:
 
 set_command			: SET variable expr
 				{
-					$$ = &SetCommand{}
+					$$ = &SetCommand{
+						Name: $2.Name,
+						Value: $3,
+					}
 				}
 
 http_command			:
 				HTTP http_method expr
 				{
-					$$ = &HttpCommand{}
+					$$ = &HttpCommand{
+					        Method       :   $2.(string),
+                                        	Url          :   *$3,
+
+					}
 				}
 				|
 				HTTP http_method expr http_command_params
 				{
-					$$ = &HttpCommand{}
+					$$ = &HttpCommand{
+					 Method       :   $2.(string),
+                                         Url          :   *$3,
+                                         CommandParams: $4,
+					}
 				}
 
 http_command_params		:
@@ -234,7 +249,7 @@ http_command_param		:
 					//addin header
 					$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : $2,
+						ParamValue : *$2,
 					}
 				}
 				|
@@ -242,7 +257,7 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : $2,
+						ParamValue : *$2,
 					}
 				}
 				|
@@ -250,7 +265,7 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : $1.(string),
-						ParamValue : true,
+						ParamValue : &ExprBool{ Val:true },
 					}
 				}
 				|
@@ -258,7 +273,7 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : "FOLLOW",
-						ParamValue : false,
+						ParamValue : &ExprBool{ Val:false },
 					}
 				}
 				|
@@ -266,7 +281,7 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : "SECURE",
-						ParamValue : false,
+						ParamValue : &ExprBool{ Val:false },
 					}
 				}
 				|
@@ -274,12 +289,17 @@ http_command_param		:
 				{
 					$$ = HttpCommandParam{
 						ParamName : "SECURE",
-						ParamValue : true,
+						ParamValue : &ExprBool{ Val:true },
 					}
 				}
 
 
-debug_command			: DEBUG expr { $$ = &DebugCommand{} }
+debug_command			: DEBUG expr
+				{
+					$$ = &DebugCommand{
+						Values:$2,
+					}
+				}
 end_command			: END expr { $$ = &EndCommand{} }
 assert_command			: ASSERT expr  { $$ = &AssertCommand{} }
 must_command			: MUST expr  { $$ = &MustCommand{} }
@@ -362,29 +382,29 @@ expr		:
 		expr operator expr
 		{
 			$$ = &ExprPredicate{
-				Left: $1,
+				Left: $1.(Expression),
 				Operator: $2.(string),
-				Right: $3,
+				Right: $3.(Expression),
 			}
 		}
 
 variable	: '{''{'  IDENTIFIER '}''}'
 		{
-			$$ = ExprVariable{
+			$$ = &ExprVariable{
 				Name: $3.(string),
 			}
 		}
 		|
 		'$' IDENTIFIER
 		{
-			$$ = ExprVariable{
+			$$ = &ExprVariable{
 				Name: $2.(string),
 			}
 		}
 		|
 		IDENTIFIER
 		{
-			$$ = ExprVariable{
+			$$ = &ExprVariable{
 				Name: $1.(string),
 			}
 		}

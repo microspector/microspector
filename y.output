@@ -1,9 +1,30 @@
 state 0 //
 
-    0 $accept: . starter
-    1 starter: .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+    0 $accept: . microspector
+    1 microspector: .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
-    $end     reduce using rule 1 (starter)
+    $end     reduce using rule 1 (microspector)
+    ASSERT   reduce using rule 1 (microspector)
+    ASYNC    reduce using rule 1 (microspector)
+    CMD      reduce using rule 1 (microspector)
+    DEBUG    reduce using rule 1 (microspector)
+    ECHO     reduce using rule 1 (microspector)
+    END      reduce using rule 1 (microspector)
+    HTTP     reduce using rule 1 (microspector)
+    INCLUDE  reduce using rule 1 (microspector)
+    MUST     reduce using rule 1 (microspector)
+    SET      reduce using rule 1 (microspector)
+    SHOULD   reduce using rule 1 (microspector)
+    SLEEP    reduce using rule 1 (microspector)
+
+    microspector  goto state 1
+
+state 1 // [$end]
+
+    0 $accept: microspector .  [$end]
+    2 microspector: microspector . run_comm
+
+    $end     accept
     ASSERT   shift, and goto state 21
     ASYNC    shift, and goto state 4
     CMD      shift, and goto state 26
@@ -31,94 +52,46 @@ state 0 //
     set_command      goto state 6
     should_command   goto state 12
     sleep_command    goto state 14
-    starter          goto state 1
 
-    conflict on ASSERT, shift, and goto state 21, reduce using rule 1
-    conflict on ASYNC, shift, and goto state 4, reduce using rule 1
-    conflict on CMD, shift, and goto state 26, reduce using rule 1
-    conflict on DEBUG, shift, and goto state 19, reduce using rule 1
-    conflict on ECHO, shift, and goto state 27, reduce using rule 1
-    conflict on END, shift, and goto state 20, reduce using rule 1
-    conflict on HTTP, shift, and goto state 18, reduce using rule 1
-    conflict on INCLUDE, shift, and goto state 24, reduce using rule 1
-    conflict on MUST, shift, and goto state 22, reduce using rule 1
-    conflict on SET, shift, and goto state 17, reduce using rule 1
-    conflict on SHOULD, shift, and goto state 23, reduce using rule 1
-    conflict on SLEEP, shift, and goto state 25, reduce using rule 1
+state 2 // ASSERT FALSE [$end]
 
-state 1 // [$end]
+    2 microspector: microspector run_comm .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
-    0 $accept: starter .  [$end]
-    3 starter: starter . run_comm
+    $end     reduce using rule 2 (microspector)
+    ASSERT   reduce using rule 2 (microspector)
+    ASYNC    reduce using rule 2 (microspector)
+    CMD      reduce using rule 2 (microspector)
+    DEBUG    reduce using rule 2 (microspector)
+    ECHO     reduce using rule 2 (microspector)
+    END      reduce using rule 2 (microspector)
+    HTTP     reduce using rule 2 (microspector)
+    INCLUDE  reduce using rule 2 (microspector)
+    MUST     reduce using rule 2 (microspector)
+    SET      reduce using rule 2 (microspector)
+    SHOULD   reduce using rule 2 (microspector)
+    SLEEP    reduce using rule 2 (microspector)
 
-    $end     accept
-    ASSERT   shift, and goto state 21
-    ASYNC    shift, and goto state 4
-    CMD      shift, and goto state 26
-    DEBUG    shift, and goto state 19
-    ECHO     shift, and goto state 27
-    END      shift, and goto state 20
-    HTTP     shift, and goto state 18
-    INCLUDE  shift, and goto state 24
-    MUST     shift, and goto state 22
-    SET      shift, and goto state 17
-    SHOULD   shift, and goto state 23
-    SLEEP    shift, and goto state 25
+state 3 // ASSERT FALSE [$end]
 
-    assert_command   goto state 10
-    cmd_command      goto state 15
-    command          goto state 5
-    command_cond     goto state 3
-    debug_command    goto state 8
-    echo_command     goto state 16
-    end_command      goto state 9
-    http_command     goto state 7
-    include_command  goto state 13
-    must_command     goto state 11
-    run_comm         goto state 105
-    set_command      goto state 6
-    should_command   goto state 12
-    sleep_command    goto state 14
+    3 run_comm: command_cond .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
-state 2 // ASSERT FALSE INTO IDENTIFIER [$end]
-
-    2 starter: run_comm .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
-
-    $end     reduce using rule 2 (starter)
-    ASSERT   reduce using rule 2 (starter)
-    ASYNC    reduce using rule 2 (starter)
-    CMD      reduce using rule 2 (starter)
-    DEBUG    reduce using rule 2 (starter)
-    ECHO     reduce using rule 2 (starter)
-    END      reduce using rule 2 (starter)
-    HTTP     reduce using rule 2 (starter)
-    INCLUDE  reduce using rule 2 (starter)
-    MUST     reduce using rule 2 (starter)
-    SET      reduce using rule 2 (starter)
-    SHOULD   reduce using rule 2 (starter)
-    SLEEP    reduce using rule 2 (starter)
-
-state 3 // ASSERT FALSE INTO IDENTIFIER [$end]
-
-    4 run_comm: command_cond .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
-
-    $end     reduce using rule 4 (run_comm)
-    ASSERT   reduce using rule 4 (run_comm)
-    ASYNC    reduce using rule 4 (run_comm)
-    CMD      reduce using rule 4 (run_comm)
-    DEBUG    reduce using rule 4 (run_comm)
-    ECHO     reduce using rule 4 (run_comm)
-    END      reduce using rule 4 (run_comm)
-    HTTP     reduce using rule 4 (run_comm)
-    INCLUDE  reduce using rule 4 (run_comm)
-    MUST     reduce using rule 4 (run_comm)
-    SET      reduce using rule 4 (run_comm)
-    SHOULD   reduce using rule 4 (run_comm)
-    SLEEP    reduce using rule 4 (run_comm)
+    $end     reduce using rule 3 (run_comm)
+    ASSERT   reduce using rule 3 (run_comm)
+    ASYNC    reduce using rule 3 (run_comm)
+    CMD      reduce using rule 3 (run_comm)
+    DEBUG    reduce using rule 3 (run_comm)
+    ECHO     reduce using rule 3 (run_comm)
+    END      reduce using rule 3 (run_comm)
+    HTTP     reduce using rule 3 (run_comm)
+    INCLUDE  reduce using rule 3 (run_comm)
+    MUST     reduce using rule 3 (run_comm)
+    SET      reduce using rule 3 (run_comm)
+    SHOULD   reduce using rule 3 (run_comm)
+    SLEEP    reduce using rule 3 (run_comm)
 
 state 4 // ASYNC
 
-    5 run_comm: ASYNC . command_cond
+    4 run_comm: ASYNC . command_cond
 
     ASSERT   shift, and goto state 21
     CMD      shift, and goto state 26
@@ -146,91 +119,248 @@ state 4 // ASYNC
     should_command   goto state 12
     sleep_command    goto state 14
 
-state 5 // ASSERT FALSE [INTO]
+state 5 // ASSERT FALSE [$end]
 
-    6 command_cond: command . WHEN expr
-    7 command_cond: command . WHEN expr INTO variable
-    8 command_cond: command . INTO variable
+    5 command_cond: command . WHEN expr
+    6 command_cond: command . WHEN expr INTO variable
+    7 command_cond: command . INTO variable
+    8 command_cond: command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
-    INTO  shift, and goto state 99
-    WHEN  shift, and goto state 98
+    $end     reduce using rule 8 (command_cond)
+    ASSERT   reduce using rule 8 (command_cond)
+    ASYNC    reduce using rule 8 (command_cond)
+    CMD      reduce using rule 8 (command_cond)
+    DEBUG    reduce using rule 8 (command_cond)
+    ECHO     reduce using rule 8 (command_cond)
+    END      reduce using rule 8 (command_cond)
+    HTTP     reduce using rule 8 (command_cond)
+    INCLUDE  reduce using rule 8 (command_cond)
+    INTO     shift, and goto state 99
+    MUST     reduce using rule 8 (command_cond)
+    SET      reduce using rule 8 (command_cond)
+    SHOULD   reduce using rule 8 (command_cond)
+    SLEEP    reduce using rule 8 (command_cond)
+    WHEN     shift, and goto state 98
 
-state 6 // SET IDENTIFIER FALSE [INTO]
+state 6 // SET IDENTIFIER FALSE [$end]
 
-    9 command: set_command .  [INTO, WHEN]
+    9 command: set_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 9 (command)
-    WHEN  reduce using rule 9 (command)
+    $end     reduce using rule 9 (command)
+    ASSERT   reduce using rule 9 (command)
+    ASYNC    reduce using rule 9 (command)
+    CMD      reduce using rule 9 (command)
+    DEBUG    reduce using rule 9 (command)
+    ECHO     reduce using rule 9 (command)
+    END      reduce using rule 9 (command)
+    HTTP     reduce using rule 9 (command)
+    INCLUDE  reduce using rule 9 (command)
+    INTO     reduce using rule 9 (command)
+    MUST     reduce using rule 9 (command)
+    SET      reduce using rule 9 (command)
+    SHOULD   reduce using rule 9 (command)
+    SLEEP    reduce using rule 9 (command)
+    WHEN     reduce using rule 9 (command)
 
-state 7 // HTTP GET FALSE [INTO]
+state 7 // HTTP GET FALSE [$end]
 
-   10 command: http_command .  [INTO, WHEN]
+   10 command: http_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 10 (command)
-    WHEN  reduce using rule 10 (command)
+    $end     reduce using rule 10 (command)
+    ASSERT   reduce using rule 10 (command)
+    ASYNC    reduce using rule 10 (command)
+    CMD      reduce using rule 10 (command)
+    DEBUG    reduce using rule 10 (command)
+    ECHO     reduce using rule 10 (command)
+    END      reduce using rule 10 (command)
+    HTTP     reduce using rule 10 (command)
+    INCLUDE  reduce using rule 10 (command)
+    INTO     reduce using rule 10 (command)
+    MUST     reduce using rule 10 (command)
+    SET      reduce using rule 10 (command)
+    SHOULD   reduce using rule 10 (command)
+    SLEEP    reduce using rule 10 (command)
+    WHEN     reduce using rule 10 (command)
 
-state 8 // DEBUG FALSE [INTO]
+state 8 // DEBUG FALSE [$end]
 
-   11 command: debug_command .  [INTO, WHEN]
+   11 command: debug_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 11 (command)
-    WHEN  reduce using rule 11 (command)
+    $end     reduce using rule 11 (command)
+    ASSERT   reduce using rule 11 (command)
+    ASYNC    reduce using rule 11 (command)
+    CMD      reduce using rule 11 (command)
+    DEBUG    reduce using rule 11 (command)
+    ECHO     reduce using rule 11 (command)
+    END      reduce using rule 11 (command)
+    HTTP     reduce using rule 11 (command)
+    INCLUDE  reduce using rule 11 (command)
+    INTO     reduce using rule 11 (command)
+    MUST     reduce using rule 11 (command)
+    SET      reduce using rule 11 (command)
+    SHOULD   reduce using rule 11 (command)
+    SLEEP    reduce using rule 11 (command)
+    WHEN     reduce using rule 11 (command)
 
-state 9 // END FALSE [INTO]
+state 9 // END FALSE [$end]
 
-   12 command: end_command .  [INTO, WHEN]
+   12 command: end_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 12 (command)
-    WHEN  reduce using rule 12 (command)
+    $end     reduce using rule 12 (command)
+    ASSERT   reduce using rule 12 (command)
+    ASYNC    reduce using rule 12 (command)
+    CMD      reduce using rule 12 (command)
+    DEBUG    reduce using rule 12 (command)
+    ECHO     reduce using rule 12 (command)
+    END      reduce using rule 12 (command)
+    HTTP     reduce using rule 12 (command)
+    INCLUDE  reduce using rule 12 (command)
+    INTO     reduce using rule 12 (command)
+    MUST     reduce using rule 12 (command)
+    SET      reduce using rule 12 (command)
+    SHOULD   reduce using rule 12 (command)
+    SLEEP    reduce using rule 12 (command)
+    WHEN     reduce using rule 12 (command)
 
-state 10 // ASSERT FALSE [INTO]
+state 10 // ASSERT FALSE [$end]
 
-   13 command: assert_command .  [INTO, WHEN]
+   13 command: assert_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 13 (command)
-    WHEN  reduce using rule 13 (command)
+    $end     reduce using rule 13 (command)
+    ASSERT   reduce using rule 13 (command)
+    ASYNC    reduce using rule 13 (command)
+    CMD      reduce using rule 13 (command)
+    DEBUG    reduce using rule 13 (command)
+    ECHO     reduce using rule 13 (command)
+    END      reduce using rule 13 (command)
+    HTTP     reduce using rule 13 (command)
+    INCLUDE  reduce using rule 13 (command)
+    INTO     reduce using rule 13 (command)
+    MUST     reduce using rule 13 (command)
+    SET      reduce using rule 13 (command)
+    SHOULD   reduce using rule 13 (command)
+    SLEEP    reduce using rule 13 (command)
+    WHEN     reduce using rule 13 (command)
 
-state 11 // MUST FALSE [INTO]
+state 11 // MUST FALSE [$end]
 
-   14 command: must_command .  [INTO, WHEN]
+   14 command: must_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 14 (command)
-    WHEN  reduce using rule 14 (command)
+    $end     reduce using rule 14 (command)
+    ASSERT   reduce using rule 14 (command)
+    ASYNC    reduce using rule 14 (command)
+    CMD      reduce using rule 14 (command)
+    DEBUG    reduce using rule 14 (command)
+    ECHO     reduce using rule 14 (command)
+    END      reduce using rule 14 (command)
+    HTTP     reduce using rule 14 (command)
+    INCLUDE  reduce using rule 14 (command)
+    INTO     reduce using rule 14 (command)
+    MUST     reduce using rule 14 (command)
+    SET      reduce using rule 14 (command)
+    SHOULD   reduce using rule 14 (command)
+    SLEEP    reduce using rule 14 (command)
+    WHEN     reduce using rule 14 (command)
 
-state 12 // SHOULD FALSE [INTO]
+state 12 // SHOULD FALSE [$end]
 
-   15 command: should_command .  [INTO, WHEN]
+   15 command: should_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 15 (command)
-    WHEN  reduce using rule 15 (command)
+    $end     reduce using rule 15 (command)
+    ASSERT   reduce using rule 15 (command)
+    ASYNC    reduce using rule 15 (command)
+    CMD      reduce using rule 15 (command)
+    DEBUG    reduce using rule 15 (command)
+    ECHO     reduce using rule 15 (command)
+    END      reduce using rule 15 (command)
+    HTTP     reduce using rule 15 (command)
+    INCLUDE  reduce using rule 15 (command)
+    INTO     reduce using rule 15 (command)
+    MUST     reduce using rule 15 (command)
+    SET      reduce using rule 15 (command)
+    SHOULD   reduce using rule 15 (command)
+    SLEEP    reduce using rule 15 (command)
+    WHEN     reduce using rule 15 (command)
 
-state 13 // INCLUDE FALSE [INTO]
+state 13 // INCLUDE FALSE [$end]
 
-   16 command: include_command .  [INTO, WHEN]
+   16 command: include_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 16 (command)
-    WHEN  reduce using rule 16 (command)
+    $end     reduce using rule 16 (command)
+    ASSERT   reduce using rule 16 (command)
+    ASYNC    reduce using rule 16 (command)
+    CMD      reduce using rule 16 (command)
+    DEBUG    reduce using rule 16 (command)
+    ECHO     reduce using rule 16 (command)
+    END      reduce using rule 16 (command)
+    HTTP     reduce using rule 16 (command)
+    INCLUDE  reduce using rule 16 (command)
+    INTO     reduce using rule 16 (command)
+    MUST     reduce using rule 16 (command)
+    SET      reduce using rule 16 (command)
+    SHOULD   reduce using rule 16 (command)
+    SLEEP    reduce using rule 16 (command)
+    WHEN     reduce using rule 16 (command)
 
-state 14 // SLEEP FALSE [INTO]
+state 14 // SLEEP FALSE [$end]
 
-   17 command: sleep_command .  [INTO, WHEN]
+   17 command: sleep_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 17 (command)
-    WHEN  reduce using rule 17 (command)
+    $end     reduce using rule 17 (command)
+    ASSERT   reduce using rule 17 (command)
+    ASYNC    reduce using rule 17 (command)
+    CMD      reduce using rule 17 (command)
+    DEBUG    reduce using rule 17 (command)
+    ECHO     reduce using rule 17 (command)
+    END      reduce using rule 17 (command)
+    HTTP     reduce using rule 17 (command)
+    INCLUDE  reduce using rule 17 (command)
+    INTO     reduce using rule 17 (command)
+    MUST     reduce using rule 17 (command)
+    SET      reduce using rule 17 (command)
+    SHOULD   reduce using rule 17 (command)
+    SLEEP    reduce using rule 17 (command)
+    WHEN     reduce using rule 17 (command)
 
-state 15 // CMD FALSE [INTO]
+state 15 // CMD FALSE [$end]
 
-   18 command: cmd_command .  [INTO, WHEN]
+   18 command: cmd_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 18 (command)
-    WHEN  reduce using rule 18 (command)
+    $end     reduce using rule 18 (command)
+    ASSERT   reduce using rule 18 (command)
+    ASYNC    reduce using rule 18 (command)
+    CMD      reduce using rule 18 (command)
+    DEBUG    reduce using rule 18 (command)
+    ECHO     reduce using rule 18 (command)
+    END      reduce using rule 18 (command)
+    HTTP     reduce using rule 18 (command)
+    INCLUDE  reduce using rule 18 (command)
+    INTO     reduce using rule 18 (command)
+    MUST     reduce using rule 18 (command)
+    SET      reduce using rule 18 (command)
+    SHOULD   reduce using rule 18 (command)
+    SLEEP    reduce using rule 18 (command)
+    WHEN     reduce using rule 18 (command)
 
-state 16 // ECHO FALSE [INTO]
+state 16 // ECHO FALSE [$end]
 
-   19 command: echo_command .  [INTO, WHEN]
+   19 command: echo_command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
 
-    INTO  reduce using rule 19 (command)
-    WHEN  reduce using rule 19 (command)
+    $end     reduce using rule 19 (command)
+    ASSERT   reduce using rule 19 (command)
+    ASYNC    reduce using rule 19 (command)
+    CMD      reduce using rule 19 (command)
+    DEBUG    reduce using rule 19 (command)
+    ECHO     reduce using rule 19 (command)
+    END      reduce using rule 19 (command)
+    HTTP     reduce using rule 19 (command)
+    INCLUDE  reduce using rule 19 (command)
+    INTO     reduce using rule 19 (command)
+    MUST     reduce using rule 19 (command)
+    SET      reduce using rule 19 (command)
+    SHOULD   reduce using rule 19 (command)
+    SLEEP    reduce using rule 19 (command)
+    WHEN     reduce using rule 19 (command)
 
 state 17 // SET
 
@@ -409,19 +539,28 @@ state 27 // ECHO
     expr      goto state 28
     variable  goto state 33
 
-state 28 // ECHO FALSE [AND]
+state 28 // ECHO FALSE [$end]
 
-   39 echo_command: ECHO expr .  [INTO, WHEN]
+   39 echo_command: ECHO expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 39 (echo_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 39 (echo_command)
+    ASYNC       reduce using rule 39 (echo_command)
+    CMD         reduce using rule 39 (echo_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 39 (echo_command)
+    ECHO        reduce using rule 39 (echo_command)
+    END         reduce using rule 39 (echo_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 39 (echo_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 39 (echo_command)
     INTO        reduce using rule 39 (echo_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -429,10 +568,14 @@ state 28 // ECHO FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 39 (echo_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 39 (echo_command)
+    SHOULD      reduce using rule 39 (echo_command)
+    SLEEP       reduce using rule 39 (echo_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -441,7 +584,7 @@ state 28 // ECHO FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 39
 
-state 29 // INCLUDE '('
+state 29 // CMD '('
 
    50 expr: '(' . expr ')'
 
@@ -458,7 +601,7 @@ state 29 // INCLUDE '('
     expr      goto state 44
     variable  goto state 33
 
-state 30 // ASSERT STRING
+state 30 // MUST STRING
 
    51 expr: STRING .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -505,7 +648,7 @@ state 30 // ASSERT STRING
     STARTWITH   reduce using rule 51 (expr)
     WHEN        reduce using rule 51 (expr)
 
-state 31 // END FLOAT
+state 31 // CMD FLOAT
 
    52 expr: FLOAT .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -552,7 +695,7 @@ state 31 // END FLOAT
     STARTWITH   reduce using rule 52 (expr)
     WHEN        reduce using rule 52 (expr)
 
-state 32 // END INTEGER
+state 32 // MUST INTEGER
 
    53 expr: INTEGER .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -599,7 +742,7 @@ state 32 // END INTEGER
     STARTWITH   reduce using rule 53 (expr)
     WHEN        reduce using rule 53 (expr)
 
-state 33 // ECHO IDENTIFIER [$end]
+state 33 // SHOULD IDENTIFIER [$end]
 
    54 expr: variable .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -646,7 +789,7 @@ state 33 // ECHO IDENTIFIER [$end]
     STARTWITH   reduce using rule 54 (expr)
     WHEN        reduce using rule 54 (expr)
 
-state 34 // ASSERT TRUE
+state 34 // SLEEP TRUE
 
    55 expr: TRUE .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -693,7 +836,7 @@ state 34 // ASSERT TRUE
     STARTWITH   reduce using rule 55 (expr)
     WHEN        reduce using rule 55 (expr)
 
-state 35 // INCLUDE FALSE
+state 35 // CMD FALSE
 
    56 expr: FALSE .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -740,19 +883,19 @@ state 35 // INCLUDE FALSE
     STARTWITH   reduce using rule 56 (expr)
     WHEN        reduce using rule 56 (expr)
 
-state 36 // INCLUDE '{'
+state 36 // SET '{'
 
    58 variable: '{' . '{' IDENTIFIER '}' '}'
 
     '{'  shift, and goto state 40
 
-state 37 // INCLUDE '$'
+state 37 // SLEEP '$'
 
    59 variable: '$' . IDENTIFIER
 
     IDENTIFIER  shift, and goto state 39
 
-state 38 // END IDENTIFIER
+state 38 // SET IDENTIFIER
 
    60 variable: IDENTIFIER .  [$end, '$', '(', ')', '{', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FALSE, FLOAT, FOLLOW, GE, GT, HEADER, HTTP, IDENTIFIER, IN, INCLUDE, INSECURE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, STRING, TRUE, WHEN]
 
@@ -808,7 +951,7 @@ state 38 // END IDENTIFIER
     TRUE        reduce using rule 60 (variable)
     WHEN        reduce using rule 60 (variable)
 
-state 39 // INCLUDE '$' IDENTIFIER
+state 39 // SLEEP '$' IDENTIFIER
 
    59 variable: '$' IDENTIFIER .  [$end, '$', '(', ')', '{', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FALSE, FLOAT, FOLLOW, GE, GT, HEADER, HTTP, IDENTIFIER, IN, INCLUDE, INSECURE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, STRING, TRUE, WHEN]
 
@@ -864,25 +1007,25 @@ state 39 // INCLUDE '$' IDENTIFIER
     TRUE        reduce using rule 59 (variable)
     WHEN        reduce using rule 59 (variable)
 
-state 40 // INCLUDE '{' '{'
+state 40 // SET '{' '{'
 
    58 variable: '{' '{' . IDENTIFIER '}' '}'
 
     IDENTIFIER  shift, and goto state 41
 
-state 41 // INCLUDE '{' '{' IDENTIFIER
+state 41 // SET '{' '{' IDENTIFIER
 
    58 variable: '{' '{' IDENTIFIER . '}' '}'
 
     '}'  shift, and goto state 42
 
-state 42 // INCLUDE '{' '{' IDENTIFIER '}'
+state 42 // SET '{' '{' IDENTIFIER '}'
 
    58 variable: '{' '{' IDENTIFIER '}' . '}'
 
     '}'  shift, and goto state 43
 
-state 43 // INCLUDE '{' '{' IDENTIFIER '}' '}'
+state 43 // SET '{' '{' IDENTIFIER '}' '}'
 
    58 variable: '{' '{' IDENTIFIER '}' '}' .  [$end, '$', '(', ')', '{', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FALSE, FLOAT, FOLLOW, GE, GT, HEADER, HTTP, IDENTIFIER, IN, INCLUDE, INSECURE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, STRING, TRUE, WHEN]
 
@@ -938,7 +1081,7 @@ state 43 // INCLUDE '{' '{' IDENTIFIER '}' '}'
     TRUE        reduce using rule 58 (variable)
     WHEN        reduce using rule 58 (variable)
 
-state 44 // INCLUDE '(' FALSE [')']
+state 44 // CMD '(' FALSE [')']
 
    50 expr: '(' expr . ')'
    57 expr: expr . operator expr
@@ -968,7 +1111,7 @@ state 44 // INCLUDE '(' FALSE [')']
 
     operator  goto state 46
 
-state 45 // INCLUDE '(' FALSE ')'
+state 45 // CMD '(' FALSE ')'
 
    50 expr: '(' expr ')' .  [$end, ')', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FOLLOW, GE, GT, HEADER, HTTP, IN, INCLUDE, INSECURE, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, WHEN]
 
@@ -1398,19 +1541,28 @@ state 68 // ECHO FALSE AND FALSE [$end]
     conflict on STARTWITH, shift, and goto state 58, reduce using rule 57
     conflict on WHEN, shift, and goto state 59, reduce using rule 57
 
-state 69 // CMD FALSE [AND]
+state 69 // CMD FALSE [$end]
 
-   38 cmd_command: CMD expr .  [INTO, WHEN]
+   38 cmd_command: CMD expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 38 (cmd_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 38 (cmd_command)
+    ASYNC       reduce using rule 38 (cmd_command)
+    CMD         reduce using rule 38 (cmd_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 38 (cmd_command)
+    ECHO        reduce using rule 38 (cmd_command)
+    END         reduce using rule 38 (cmd_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 38 (cmd_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 38 (cmd_command)
     INTO        reduce using rule 38 (cmd_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1418,10 +1570,14 @@ state 69 // CMD FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 38 (cmd_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 38 (cmd_command)
+    SHOULD      reduce using rule 38 (cmd_command)
+    SLEEP       reduce using rule 38 (cmd_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1430,19 +1586,28 @@ state 69 // CMD FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 38
 
-state 70 // SLEEP FALSE [AND]
+state 70 // SLEEP FALSE [$end]
 
-   37 sleep_command: SLEEP expr .  [INTO, WHEN]
+   37 sleep_command: SLEEP expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 37 (sleep_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 37 (sleep_command)
+    ASYNC       reduce using rule 37 (sleep_command)
+    CMD         reduce using rule 37 (sleep_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 37 (sleep_command)
+    ECHO        reduce using rule 37 (sleep_command)
+    END         reduce using rule 37 (sleep_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 37 (sleep_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 37 (sleep_command)
     INTO        reduce using rule 37 (sleep_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1450,10 +1615,14 @@ state 70 // SLEEP FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 37 (sleep_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 37 (sleep_command)
+    SHOULD      reduce using rule 37 (sleep_command)
+    SLEEP       reduce using rule 37 (sleep_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1462,19 +1631,28 @@ state 70 // SLEEP FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 37
 
-state 71 // INCLUDE FALSE [AND]
+state 71 // INCLUDE FALSE [$end]
 
-   36 include_command: INCLUDE expr .  [INTO, WHEN]
+   36 include_command: INCLUDE expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 36 (include_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 36 (include_command)
+    ASYNC       reduce using rule 36 (include_command)
+    CMD         reduce using rule 36 (include_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 36 (include_command)
+    ECHO        reduce using rule 36 (include_command)
+    END         reduce using rule 36 (include_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 36 (include_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 36 (include_command)
     INTO        reduce using rule 36 (include_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1482,10 +1660,14 @@ state 71 // INCLUDE FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 36 (include_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 36 (include_command)
+    SHOULD      reduce using rule 36 (include_command)
+    SLEEP       reduce using rule 36 (include_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1494,19 +1676,28 @@ state 71 // INCLUDE FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 36
 
-state 72 // SHOULD FALSE [AND]
+state 72 // SHOULD FALSE [$end]
 
-   35 should_command: SHOULD expr .  [INTO, WHEN]
+   35 should_command: SHOULD expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 35 (should_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 35 (should_command)
+    ASYNC       reduce using rule 35 (should_command)
+    CMD         reduce using rule 35 (should_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 35 (should_command)
+    ECHO        reduce using rule 35 (should_command)
+    END         reduce using rule 35 (should_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 35 (should_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 35 (should_command)
     INTO        reduce using rule 35 (should_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1514,10 +1705,14 @@ state 72 // SHOULD FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 35 (should_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 35 (should_command)
+    SHOULD      reduce using rule 35 (should_command)
+    SLEEP       reduce using rule 35 (should_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1526,19 +1721,28 @@ state 72 // SHOULD FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 35
 
-state 73 // MUST FALSE [AND]
+state 73 // MUST FALSE [$end]
 
-   34 must_command: MUST expr .  [INTO, WHEN]
+   34 must_command: MUST expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 34 (must_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 34 (must_command)
+    ASYNC       reduce using rule 34 (must_command)
+    CMD         reduce using rule 34 (must_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 34 (must_command)
+    ECHO        reduce using rule 34 (must_command)
+    END         reduce using rule 34 (must_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 34 (must_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 34 (must_command)
     INTO        reduce using rule 34 (must_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1546,10 +1750,14 @@ state 73 // MUST FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 34 (must_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 34 (must_command)
+    SHOULD      reduce using rule 34 (must_command)
+    SLEEP       reduce using rule 34 (must_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1558,19 +1766,28 @@ state 73 // MUST FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 34
 
-state 74 // ASSERT FALSE [AND]
+state 74 // ASSERT FALSE [$end]
 
-   33 assert_command: ASSERT expr .  [INTO, WHEN]
+   33 assert_command: ASSERT expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 33 (assert_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 33 (assert_command)
+    ASYNC       reduce using rule 33 (assert_command)
+    CMD         reduce using rule 33 (assert_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 33 (assert_command)
+    ECHO        reduce using rule 33 (assert_command)
+    END         reduce using rule 33 (assert_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 33 (assert_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 33 (assert_command)
     INTO        reduce using rule 33 (assert_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1578,10 +1795,14 @@ state 74 // ASSERT FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 33 (assert_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 33 (assert_command)
+    SHOULD      reduce using rule 33 (assert_command)
+    SLEEP       reduce using rule 33 (assert_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1590,19 +1811,28 @@ state 74 // ASSERT FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 33
 
-state 75 // END FALSE [AND]
+state 75 // END FALSE [$end]
 
-   32 end_command: END expr .  [INTO, WHEN]
+   32 end_command: END expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 32 (end_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 32 (end_command)
+    ASYNC       reduce using rule 32 (end_command)
+    CMD         reduce using rule 32 (end_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 32 (end_command)
+    ECHO        reduce using rule 32 (end_command)
+    END         reduce using rule 32 (end_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 32 (end_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 32 (end_command)
     INTO        reduce using rule 32 (end_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1610,10 +1840,14 @@ state 75 // END FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 32 (end_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 32 (end_command)
+    SHOULD      reduce using rule 32 (end_command)
+    SLEEP       reduce using rule 32 (end_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1622,19 +1856,28 @@ state 75 // END FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 32
 
-state 76 // DEBUG FALSE [AND]
+state 76 // DEBUG FALSE [$end]
 
-   31 debug_command: DEBUG expr .  [INTO, WHEN]
+   31 debug_command: DEBUG expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 31 (debug_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 31 (debug_command)
+    ASYNC       reduce using rule 31 (debug_command)
+    CMD         reduce using rule 31 (debug_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 31 (debug_command)
+    ECHO        reduce using rule 31 (debug_command)
+    END         reduce using rule 31 (debug_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 31 (debug_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 31 (debug_command)
     INTO        reduce using rule 31 (debug_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -1642,10 +1885,14 @@ state 76 // DEBUG FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 31 (debug_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 31 (debug_command)
+    SHOULD      reduce using rule 31 (debug_command)
+    SLEEP       reduce using rule 31 (debug_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1756,23 +2003,32 @@ state 83 // HTTP PATCH
     STRING      reduce using rule 45 (http_method)
     TRUE        reduce using rule 45 (http_method)
 
-state 84 // HTTP GET FALSE [AND]
+state 84 // HTTP GET FALSE [$end]
 
-   21 http_command: HTTP http_method expr .  [INTO, WHEN]
+   21 http_command: HTTP http_method expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    22 http_command: HTTP http_method expr . http_command_params
    57 expr: expr . operator expr
 
+    $end        reduce using rule 21 (http_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 21 (http_command)
+    ASYNC       reduce using rule 21 (http_command)
     BODY        shift, and goto state 88
+    CMD         reduce using rule 21 (http_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 21 (http_command)
+    ECHO        reduce using rule 21 (http_command)
+    END         reduce using rule 21 (http_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     FOLLOW      shift, and goto state 89
     GE          shift, and goto state 52
     GT          shift, and goto state 51
     HEADER      shift, and goto state 87
+    HTTP        reduce using rule 21 (http_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 21 (http_command)
     INSECURE    shift, and goto state 91
     INTO        reduce using rule 21 (http_command)
     IS          shift, and goto state 64
@@ -1781,12 +2037,16 @@ state 84 // HTTP GET FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 21 (http_command)
     NOFOLLOW    shift, and goto state 90
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
     SECURE      shift, and goto state 92
+    SET         reduce using rule 21 (http_command)
+    SHOULD      reduce using rule 21 (http_command)
+    SLEEP       reduce using rule 21 (http_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1797,33 +2057,59 @@ state 84 // HTTP GET FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 21
 
-state 85 // HTTP GET FALSE FOLLOW [BODY]
+state 85 // HTTP GET FALSE FOLLOW [$end]
 
-   22 http_command: HTTP http_method expr http_command_params .  [INTO, WHEN]
+   22 http_command: HTTP http_method expr http_command_params .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    24 http_command_params: http_command_params . http_command_param
 
+    $end      reduce using rule 22 (http_command)
+    ASSERT    reduce using rule 22 (http_command)
+    ASYNC     reduce using rule 22 (http_command)
     BODY      shift, and goto state 88
+    CMD       reduce using rule 22 (http_command)
+    DEBUG     reduce using rule 22 (http_command)
+    ECHO      reduce using rule 22 (http_command)
+    END       reduce using rule 22 (http_command)
     FOLLOW    shift, and goto state 89
     HEADER    shift, and goto state 87
+    HTTP      reduce using rule 22 (http_command)
+    INCLUDE   reduce using rule 22 (http_command)
     INSECURE  shift, and goto state 91
     INTO      reduce using rule 22 (http_command)
+    MUST      reduce using rule 22 (http_command)
     NOFOLLOW  shift, and goto state 90
     SECURE    shift, and goto state 92
+    SET       reduce using rule 22 (http_command)
+    SHOULD    reduce using rule 22 (http_command)
+    SLEEP     reduce using rule 22 (http_command)
     WHEN      reduce using rule 22 (http_command)
 
     http_command_param  goto state 95
 
-state 86 // HTTP GET FALSE FOLLOW [BODY]
+state 86 // HTTP GET FALSE FOLLOW [$end]
 
-   23 http_command_params: http_command_param .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   23 http_command_params: http_command_param .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 23 (http_command_params)
+    ASSERT    reduce using rule 23 (http_command_params)
+    ASYNC     reduce using rule 23 (http_command_params)
     BODY      reduce using rule 23 (http_command_params)
+    CMD       reduce using rule 23 (http_command_params)
+    DEBUG     reduce using rule 23 (http_command_params)
+    ECHO      reduce using rule 23 (http_command_params)
+    END       reduce using rule 23 (http_command_params)
     FOLLOW    reduce using rule 23 (http_command_params)
     HEADER    reduce using rule 23 (http_command_params)
+    HTTP      reduce using rule 23 (http_command_params)
+    INCLUDE   reduce using rule 23 (http_command_params)
     INSECURE  reduce using rule 23 (http_command_params)
     INTO      reduce using rule 23 (http_command_params)
+    MUST      reduce using rule 23 (http_command_params)
     NOFOLLOW  reduce using rule 23 (http_command_params)
     SECURE    reduce using rule 23 (http_command_params)
+    SET       reduce using rule 23 (http_command_params)
+    SHOULD    reduce using rule 23 (http_command_params)
+    SLEEP     reduce using rule 23 (http_command_params)
     WHEN      reduce using rule 23 (http_command_params)
 
 state 87 // HTTP GET FALSE HEADER
@@ -1862,72 +2148,133 @@ state 88 // HTTP GET FALSE BODY
 
 state 89 // HTTP GET FALSE FOLLOW
 
-   27 http_command_param: FOLLOW .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   27 http_command_param: FOLLOW .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 27 (http_command_param)
+    ASSERT    reduce using rule 27 (http_command_param)
+    ASYNC     reduce using rule 27 (http_command_param)
     BODY      reduce using rule 27 (http_command_param)
+    CMD       reduce using rule 27 (http_command_param)
+    DEBUG     reduce using rule 27 (http_command_param)
+    ECHO      reduce using rule 27 (http_command_param)
+    END       reduce using rule 27 (http_command_param)
     FOLLOW    reduce using rule 27 (http_command_param)
     HEADER    reduce using rule 27 (http_command_param)
+    HTTP      reduce using rule 27 (http_command_param)
+    INCLUDE   reduce using rule 27 (http_command_param)
     INSECURE  reduce using rule 27 (http_command_param)
     INTO      reduce using rule 27 (http_command_param)
+    MUST      reduce using rule 27 (http_command_param)
     NOFOLLOW  reduce using rule 27 (http_command_param)
     SECURE    reduce using rule 27 (http_command_param)
+    SET       reduce using rule 27 (http_command_param)
+    SHOULD    reduce using rule 27 (http_command_param)
+    SLEEP     reduce using rule 27 (http_command_param)
     WHEN      reduce using rule 27 (http_command_param)
 
 state 90 // HTTP GET FALSE NOFOLLOW
 
-   28 http_command_param: NOFOLLOW .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   28 http_command_param: NOFOLLOW .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 28 (http_command_param)
+    ASSERT    reduce using rule 28 (http_command_param)
+    ASYNC     reduce using rule 28 (http_command_param)
     BODY      reduce using rule 28 (http_command_param)
+    CMD       reduce using rule 28 (http_command_param)
+    DEBUG     reduce using rule 28 (http_command_param)
+    ECHO      reduce using rule 28 (http_command_param)
+    END       reduce using rule 28 (http_command_param)
     FOLLOW    reduce using rule 28 (http_command_param)
     HEADER    reduce using rule 28 (http_command_param)
+    HTTP      reduce using rule 28 (http_command_param)
+    INCLUDE   reduce using rule 28 (http_command_param)
     INSECURE  reduce using rule 28 (http_command_param)
     INTO      reduce using rule 28 (http_command_param)
+    MUST      reduce using rule 28 (http_command_param)
     NOFOLLOW  reduce using rule 28 (http_command_param)
     SECURE    reduce using rule 28 (http_command_param)
+    SET       reduce using rule 28 (http_command_param)
+    SHOULD    reduce using rule 28 (http_command_param)
+    SLEEP     reduce using rule 28 (http_command_param)
     WHEN      reduce using rule 28 (http_command_param)
 
 state 91 // HTTP GET FALSE INSECURE
 
-   29 http_command_param: INSECURE .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   29 http_command_param: INSECURE .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 29 (http_command_param)
+    ASSERT    reduce using rule 29 (http_command_param)
+    ASYNC     reduce using rule 29 (http_command_param)
     BODY      reduce using rule 29 (http_command_param)
+    CMD       reduce using rule 29 (http_command_param)
+    DEBUG     reduce using rule 29 (http_command_param)
+    ECHO      reduce using rule 29 (http_command_param)
+    END       reduce using rule 29 (http_command_param)
     FOLLOW    reduce using rule 29 (http_command_param)
     HEADER    reduce using rule 29 (http_command_param)
+    HTTP      reduce using rule 29 (http_command_param)
+    INCLUDE   reduce using rule 29 (http_command_param)
     INSECURE  reduce using rule 29 (http_command_param)
     INTO      reduce using rule 29 (http_command_param)
+    MUST      reduce using rule 29 (http_command_param)
     NOFOLLOW  reduce using rule 29 (http_command_param)
     SECURE    reduce using rule 29 (http_command_param)
+    SET       reduce using rule 29 (http_command_param)
+    SHOULD    reduce using rule 29 (http_command_param)
+    SLEEP     reduce using rule 29 (http_command_param)
     WHEN      reduce using rule 29 (http_command_param)
 
 state 92 // HTTP GET FALSE SECURE
 
-   30 http_command_param: SECURE .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   30 http_command_param: SECURE .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 30 (http_command_param)
+    ASSERT    reduce using rule 30 (http_command_param)
+    ASYNC     reduce using rule 30 (http_command_param)
     BODY      reduce using rule 30 (http_command_param)
+    CMD       reduce using rule 30 (http_command_param)
+    DEBUG     reduce using rule 30 (http_command_param)
+    ECHO      reduce using rule 30 (http_command_param)
+    END       reduce using rule 30 (http_command_param)
     FOLLOW    reduce using rule 30 (http_command_param)
     HEADER    reduce using rule 30 (http_command_param)
+    HTTP      reduce using rule 30 (http_command_param)
+    INCLUDE   reduce using rule 30 (http_command_param)
     INSECURE  reduce using rule 30 (http_command_param)
     INTO      reduce using rule 30 (http_command_param)
+    MUST      reduce using rule 30 (http_command_param)
     NOFOLLOW  reduce using rule 30 (http_command_param)
     SECURE    reduce using rule 30 (http_command_param)
+    SET       reduce using rule 30 (http_command_param)
+    SHOULD    reduce using rule 30 (http_command_param)
+    SLEEP     reduce using rule 30 (http_command_param)
     WHEN      reduce using rule 30 (http_command_param)
 
-state 93 // HTTP GET FALSE BODY FALSE [AND]
+state 93 // HTTP GET FALSE BODY FALSE [$end]
 
-   26 http_command_param: BODY expr .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   26 http_command_param: BODY expr .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 26 (http_command_param)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 26 (http_command_param)
+    ASYNC       reduce using rule 26 (http_command_param)
     BODY        reduce using rule 26 (http_command_param)
+    CMD         reduce using rule 26 (http_command_param)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 26 (http_command_param)
+    ECHO        reduce using rule 26 (http_command_param)
+    END         reduce using rule 26 (http_command_param)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     FOLLOW      reduce using rule 26 (http_command_param)
     GE          shift, and goto state 52
     GT          shift, and goto state 51
     HEADER      reduce using rule 26 (http_command_param)
+    HTTP        reduce using rule 26 (http_command_param)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 26 (http_command_param)
     INSECURE    reduce using rule 26 (http_command_param)
     INTO        reduce using rule 26 (http_command_param)
     IS          shift, and goto state 64
@@ -1936,12 +2283,16 @@ state 93 // HTTP GET FALSE BODY FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 26 (http_command_param)
     NOFOLLOW    reduce using rule 26 (http_command_param)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
     SECURE      reduce using rule 26 (http_command_param)
+    SET         reduce using rule 26 (http_command_param)
+    SHOULD      reduce using rule 26 (http_command_param)
+    SLEEP       reduce using rule 26 (http_command_param)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1950,22 +2301,31 @@ state 93 // HTTP GET FALSE BODY FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 26
 
-state 94 // HTTP GET FALSE HEADER FALSE [AND]
+state 94 // HTTP GET FALSE HEADER FALSE [$end]
 
-   25 http_command_param: HEADER expr .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   25 http_command_param: HEADER expr .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 25 (http_command_param)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 25 (http_command_param)
+    ASYNC       reduce using rule 25 (http_command_param)
     BODY        reduce using rule 25 (http_command_param)
+    CMD         reduce using rule 25 (http_command_param)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 25 (http_command_param)
+    ECHO        reduce using rule 25 (http_command_param)
+    END         reduce using rule 25 (http_command_param)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     FOLLOW      reduce using rule 25 (http_command_param)
     GE          shift, and goto state 52
     GT          shift, and goto state 51
     HEADER      reduce using rule 25 (http_command_param)
+    HTTP        reduce using rule 25 (http_command_param)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 25 (http_command_param)
     INSECURE    reduce using rule 25 (http_command_param)
     INTO        reduce using rule 25 (http_command_param)
     IS          shift, and goto state 64
@@ -1974,12 +2334,16 @@ state 94 // HTTP GET FALSE HEADER FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 25 (http_command_param)
     NOFOLLOW    reduce using rule 25 (http_command_param)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
     SECURE      reduce using rule 25 (http_command_param)
+    SET         reduce using rule 25 (http_command_param)
+    SHOULD      reduce using rule 25 (http_command_param)
+    SLEEP       reduce using rule 25 (http_command_param)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -1988,17 +2352,30 @@ state 94 // HTTP GET FALSE HEADER FALSE [AND]
 
     conflict on WHEN, shift, and goto state 59, reduce using rule 25
 
-state 95 // HTTP GET FALSE FOLLOW FOLLOW [BODY]
+state 95 // HTTP GET FALSE FOLLOW FOLLOW [$end]
 
-   24 http_command_params: http_command_params http_command_param .  [BODY, FOLLOW, HEADER, INSECURE, INTO, NOFOLLOW, SECURE, WHEN]
+   24 http_command_params: http_command_params http_command_param .  [$end, ASSERT, ASYNC, BODY, CMD, DEBUG, ECHO, END, FOLLOW, HEADER, HTTP, INCLUDE, INSECURE, INTO, MUST, NOFOLLOW, SECURE, SET, SHOULD, SLEEP, WHEN]
 
+    $end      reduce using rule 24 (http_command_params)
+    ASSERT    reduce using rule 24 (http_command_params)
+    ASYNC     reduce using rule 24 (http_command_params)
     BODY      reduce using rule 24 (http_command_params)
+    CMD       reduce using rule 24 (http_command_params)
+    DEBUG     reduce using rule 24 (http_command_params)
+    ECHO      reduce using rule 24 (http_command_params)
+    END       reduce using rule 24 (http_command_params)
     FOLLOW    reduce using rule 24 (http_command_params)
     HEADER    reduce using rule 24 (http_command_params)
+    HTTP      reduce using rule 24 (http_command_params)
+    INCLUDE   reduce using rule 24 (http_command_params)
     INSECURE  reduce using rule 24 (http_command_params)
     INTO      reduce using rule 24 (http_command_params)
+    MUST      reduce using rule 24 (http_command_params)
     NOFOLLOW  reduce using rule 24 (http_command_params)
     SECURE    reduce using rule 24 (http_command_params)
+    SET       reduce using rule 24 (http_command_params)
+    SHOULD    reduce using rule 24 (http_command_params)
+    SLEEP     reduce using rule 24 (http_command_params)
     WHEN      reduce using rule 24 (http_command_params)
 
 state 96 // SET IDENTIFIER ['$']
@@ -2018,19 +2395,28 @@ state 96 // SET IDENTIFIER ['$']
     expr      goto state 97
     variable  goto state 33
 
-state 97 // SET IDENTIFIER FALSE [AND]
+state 97 // SET IDENTIFIER FALSE [$end]
 
-   20 set_command: SET variable expr .  [INTO, WHEN]
+   20 set_command: SET variable expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, INTO, MUST, SET, SHOULD, SLEEP, WHEN]
    57 expr: expr . operator expr
 
+    $end        reduce using rule 20 (set_command)
     AND         shift, and goto state 60
+    ASSERT      reduce using rule 20 (set_command)
+    ASYNC       reduce using rule 20 (set_command)
+    CMD         reduce using rule 20 (set_command)
     CONTAIN     shift, and goto state 56
     CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 20 (set_command)
+    ECHO        reduce using rule 20 (set_command)
+    END         reduce using rule 20 (set_command)
     EQUAL       shift, and goto state 48
     EQUALS      shift, and goto state 47
     GE          shift, and goto state 52
     GT          shift, and goto state 51
+    HTTP        reduce using rule 20 (set_command)
     IN          shift, and goto state 67
+    INCLUDE     reduce using rule 20 (set_command)
     INTO        reduce using rule 20 (set_command)
     IS          shift, and goto state 64
     ISNOT       shift, and goto state 65
@@ -2038,10 +2424,14 @@ state 97 // SET IDENTIFIER FALSE [AND]
     LT          shift, and goto state 53
     MATCH       shift, and goto state 63
     MATCHES     shift, and goto state 62
+    MUST        reduce using rule 20 (set_command)
     NOT         shift, and goto state 66
     NOTEQUAL    shift, and goto state 50
     NOTEQUALS   shift, and goto state 49
     OR          shift, and goto state 61
+    SET         reduce using rule 20 (set_command)
+    SHOULD      reduce using rule 20 (set_command)
+    SLEEP       reduce using rule 20 (set_command)
     STARTSWITH  shift, and goto state 57
     STARTWITH   shift, and goto state 58
     WHEN        shift, and goto state 59
@@ -2052,8 +2442,8 @@ state 97 // SET IDENTIFIER FALSE [AND]
 
 state 98 // ASSERT FALSE WHEN
 
-    6 command_cond: command WHEN . expr
-    7 command_cond: command WHEN . expr INTO variable
+    5 command_cond: command WHEN . expr
+    6 command_cond: command WHEN . expr INTO variable
 
     '$'         shift, and goto state 37
     '('         shift, and goto state 29
@@ -2070,7 +2460,7 @@ state 98 // ASSERT FALSE WHEN
 
 state 99 // ASSERT FALSE INTO
 
-    8 command_cond: command INTO . variable
+    7 command_cond: command INTO . variable
 
     '$'         shift, and goto state 37
     '{'         shift, and goto state 36
@@ -2080,79 +2470,7 @@ state 99 // ASSERT FALSE INTO
 
 state 100 // ASSERT FALSE INTO IDENTIFIER [$end]
 
-    8 command_cond: command INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
-
-    $end     reduce using rule 8 (command_cond)
-    ASSERT   reduce using rule 8 (command_cond)
-    ASYNC    reduce using rule 8 (command_cond)
-    CMD      reduce using rule 8 (command_cond)
-    DEBUG    reduce using rule 8 (command_cond)
-    ECHO     reduce using rule 8 (command_cond)
-    END      reduce using rule 8 (command_cond)
-    HTTP     reduce using rule 8 (command_cond)
-    INCLUDE  reduce using rule 8 (command_cond)
-    MUST     reduce using rule 8 (command_cond)
-    SET      reduce using rule 8 (command_cond)
-    SHOULD   reduce using rule 8 (command_cond)
-    SLEEP    reduce using rule 8 (command_cond)
-
-state 101 // ASSERT FALSE WHEN FALSE
-
-    6 command_cond: command WHEN expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
-    7 command_cond: command WHEN expr . INTO variable
-   57 expr: expr . operator expr
-
-    $end        reduce using rule 6 (command_cond)
-    AND         shift, and goto state 60
-    ASSERT      reduce using rule 6 (command_cond)
-    ASYNC       reduce using rule 6 (command_cond)
-    CMD         reduce using rule 6 (command_cond)
-    CONTAIN     shift, and goto state 56
-    CONTAINS    shift, and goto state 55
-    DEBUG       reduce using rule 6 (command_cond)
-    ECHO        reduce using rule 6 (command_cond)
-    END         reduce using rule 6 (command_cond)
-    EQUAL       shift, and goto state 48
-    EQUALS      shift, and goto state 47
-    GE          shift, and goto state 52
-    GT          shift, and goto state 51
-    HTTP        reduce using rule 6 (command_cond)
-    IN          shift, and goto state 67
-    INCLUDE     reduce using rule 6 (command_cond)
-    INTO        shift, and goto state 102
-    IS          shift, and goto state 64
-    ISNOT       shift, and goto state 65
-    LE          shift, and goto state 54
-    LT          shift, and goto state 53
-    MATCH       shift, and goto state 63
-    MATCHES     shift, and goto state 62
-    MUST        reduce using rule 6 (command_cond)
-    NOT         shift, and goto state 66
-    NOTEQUAL    shift, and goto state 50
-    NOTEQUALS   shift, and goto state 49
-    OR          shift, and goto state 61
-    SET         reduce using rule 6 (command_cond)
-    SHOULD      reduce using rule 6 (command_cond)
-    SLEEP       reduce using rule 6 (command_cond)
-    STARTSWITH  shift, and goto state 57
-    STARTWITH   shift, and goto state 58
-    WHEN        shift, and goto state 59
-
-    operator  goto state 46
-
-state 102 // ASSERT FALSE WHEN FALSE INTO
-
-    7 command_cond: command WHEN expr INTO . variable
-
-    '$'         shift, and goto state 37
-    '{'         shift, and goto state 36
-    IDENTIFIER  shift, and goto state 38
-
-    variable  goto state 103
-
-state 103 // ASSERT FALSE WHEN FALSE INTO IDENTIFIER
-
-    7 command_cond: command WHEN expr INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+    7 command_cond: command INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
     $end     reduce using rule 7 (command_cond)
     ASSERT   reduce using rule 7 (command_cond)
@@ -2168,39 +2486,93 @@ state 103 // ASSERT FALSE WHEN FALSE INTO IDENTIFIER
     SHOULD   reduce using rule 7 (command_cond)
     SLEEP    reduce using rule 7 (command_cond)
 
-state 104 // ASYNC ASSERT FALSE INTO IDENTIFIER [$end]
+state 101 // ASSERT FALSE WHEN FALSE
 
-    5 run_comm: ASYNC command_cond .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+    5 command_cond: command WHEN expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+    6 command_cond: command WHEN expr . INTO variable
+   57 expr: expr . operator expr
 
-    $end     reduce using rule 5 (run_comm)
-    ASSERT   reduce using rule 5 (run_comm)
-    ASYNC    reduce using rule 5 (run_comm)
-    CMD      reduce using rule 5 (run_comm)
-    DEBUG    reduce using rule 5 (run_comm)
-    ECHO     reduce using rule 5 (run_comm)
-    END      reduce using rule 5 (run_comm)
-    HTTP     reduce using rule 5 (run_comm)
-    INCLUDE  reduce using rule 5 (run_comm)
-    MUST     reduce using rule 5 (run_comm)
-    SET      reduce using rule 5 (run_comm)
-    SHOULD   reduce using rule 5 (run_comm)
-    SLEEP    reduce using rule 5 (run_comm)
+    $end        reduce using rule 5 (command_cond)
+    AND         shift, and goto state 60
+    ASSERT      reduce using rule 5 (command_cond)
+    ASYNC       reduce using rule 5 (command_cond)
+    CMD         reduce using rule 5 (command_cond)
+    CONTAIN     shift, and goto state 56
+    CONTAINS    shift, and goto state 55
+    DEBUG       reduce using rule 5 (command_cond)
+    ECHO        reduce using rule 5 (command_cond)
+    END         reduce using rule 5 (command_cond)
+    EQUAL       shift, and goto state 48
+    EQUALS      shift, and goto state 47
+    GE          shift, and goto state 52
+    GT          shift, and goto state 51
+    HTTP        reduce using rule 5 (command_cond)
+    IN          shift, and goto state 67
+    INCLUDE     reduce using rule 5 (command_cond)
+    INTO        shift, and goto state 102
+    IS          shift, and goto state 64
+    ISNOT       shift, and goto state 65
+    LE          shift, and goto state 54
+    LT          shift, and goto state 53
+    MATCH       shift, and goto state 63
+    MATCHES     shift, and goto state 62
+    MUST        reduce using rule 5 (command_cond)
+    NOT         shift, and goto state 66
+    NOTEQUAL    shift, and goto state 50
+    NOTEQUALS   shift, and goto state 49
+    OR          shift, and goto state 61
+    SET         reduce using rule 5 (command_cond)
+    SHOULD      reduce using rule 5 (command_cond)
+    SLEEP       reduce using rule 5 (command_cond)
+    STARTSWITH  shift, and goto state 57
+    STARTWITH   shift, and goto state 58
+    WHEN        shift, and goto state 59
 
-state 105 // ASSERT FALSE INTO IDENTIFIER
+    operator  goto state 46
 
-    3 starter: starter run_comm .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+state 102 // ASSERT FALSE WHEN FALSE INTO
 
-    $end     reduce using rule 3 (starter)
-    ASSERT   reduce using rule 3 (starter)
-    ASYNC    reduce using rule 3 (starter)
-    CMD      reduce using rule 3 (starter)
-    DEBUG    reduce using rule 3 (starter)
-    ECHO     reduce using rule 3 (starter)
-    END      reduce using rule 3 (starter)
-    HTTP     reduce using rule 3 (starter)
-    INCLUDE  reduce using rule 3 (starter)
-    MUST     reduce using rule 3 (starter)
-    SET      reduce using rule 3 (starter)
-    SHOULD   reduce using rule 3 (starter)
-    SLEEP    reduce using rule 3 (starter)
+    6 command_cond: command WHEN expr INTO . variable
+
+    '$'         shift, and goto state 37
+    '{'         shift, and goto state 36
+    IDENTIFIER  shift, and goto state 38
+
+    variable  goto state 103
+
+state 103 // ASSERT FALSE WHEN FALSE INTO IDENTIFIER
+
+    6 command_cond: command WHEN expr INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+
+    $end     reduce using rule 6 (command_cond)
+    ASSERT   reduce using rule 6 (command_cond)
+    ASYNC    reduce using rule 6 (command_cond)
+    CMD      reduce using rule 6 (command_cond)
+    DEBUG    reduce using rule 6 (command_cond)
+    ECHO     reduce using rule 6 (command_cond)
+    END      reduce using rule 6 (command_cond)
+    HTTP     reduce using rule 6 (command_cond)
+    INCLUDE  reduce using rule 6 (command_cond)
+    MUST     reduce using rule 6 (command_cond)
+    SET      reduce using rule 6 (command_cond)
+    SHOULD   reduce using rule 6 (command_cond)
+    SLEEP    reduce using rule 6 (command_cond)
+
+state 104 // ASYNC ASSERT FALSE [$end]
+
+    4 run_comm: ASYNC command_cond .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+
+    $end     reduce using rule 4 (run_comm)
+    ASSERT   reduce using rule 4 (run_comm)
+    ASYNC    reduce using rule 4 (run_comm)
+    CMD      reduce using rule 4 (run_comm)
+    DEBUG    reduce using rule 4 (run_comm)
+    ECHO     reduce using rule 4 (run_comm)
+    END      reduce using rule 4 (run_comm)
+    HTTP     reduce using rule 4 (run_comm)
+    INCLUDE  reduce using rule 4 (run_comm)
+    MUST     reduce using rule 4 (run_comm)
+    SET      reduce using rule 4 (run_comm)
+    SHOULD   reduce using rule 4 (run_comm)
+    SLEEP    reduce using rule 4 (run_comm)
 

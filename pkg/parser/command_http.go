@@ -17,11 +17,11 @@ import (
 type HttpCommand struct {
 	Method          string
 	CommandParams   []HttpCommandParam //HEADER, BODY etc.
-	Url             string
+	Url             Expression
 	FollowRedirects bool
 	VerifySSL       bool
 	When            *Expression
-	Into            ExprVariable
+	Into            *ExprVariable
 }
 
 type HttpResult struct {
@@ -77,13 +77,14 @@ func NewFromResponse(response *http.Response) HttpResult {
 func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
-	_, urlError := url.Parse(hc.Url)
+	urlStr := hc.Url.(Expression).Evaluate(l).(string)
+	_, urlError := url.Parse(urlStr)
 
 	if urlError != nil {
 		panic(urlError)
 	}
 
-	req, reqError := http.NewRequest(hc.Method, hc.Url, nil)
+	req, reqError := http.NewRequest(hc.Method, urlStr, nil)
 	req.Header.Set("User-Agent", fmt.Sprintf("Microspector v%s(%s) (https://microspector.com/ua)", Version, Build))
 
 	if reqError != nil {
@@ -93,7 +94,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	for _, commandParam := range hc.CommandParams {
 		switch commandParam.ParamName {
 		case "HEADER":
-			headers := strings.Split(commandParam.ParamValue.(string), "\n")
+			headers := strings.Split(commandParam.ParamValue.Evaluate(l).(string), "\n")
 			for _, header := range headers {
 				headerParts := strings.Split(header, ":")
 				if len(headerParts) != 2 {
@@ -108,7 +109,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 
 		case "BODY":
 			if req.Method == http.MethodPost || req.Method == http.MethodPut || req.Method == http.MethodPatch {
-				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue.(string)))
+				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue.Evaluate(l).(string)))
 			}
 		case "FOLLOW":
 			hc.FollowRedirects = IsTrue(commandParam.ParamValue)
@@ -169,7 +170,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 		resp.Error = reqErr.Error()
 	}
 
-	l.GlobalVars[ hc.Into.Name ] = resp
+	l.GlobalVars[hc.Into.Name] = resp
 	return resp
 }
 
@@ -177,11 +178,11 @@ func (hc *HttpCommand) SetWhen(expr *Expression) {
 	hc.When = expr
 }
 
-func (hc *HttpCommand) SetInto(into ExprVariable) {
+func (hc *HttpCommand) SetInto(into *ExprVariable) {
 	hc.Into = into
 }
 
 type HttpCommandParam struct {
 	ParamName  string
-	ParamValue interface{}
+	ParamValue Expression
 }

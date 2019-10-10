@@ -8,14 +8,18 @@ dist: yacc
 run:
 	go run ./cmd --file="./tasks/main.msf"
 
+runv:
+	go run ./cmd --file="./tasks/main.msf" --verbose
+
 test:
 	go test ${PWD}/pkg/parser
 
 trainyacc:
 	goyacc -xegen ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
+	goyacc -xe ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 
 yacc:
-	goyacc -xe ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y
+	goyacc  -o ./pkg/parser/parser.go ./pkg/parser/parser.y
 
 fmt:
 	find . -name "*.go" | xargs gofmt -w -s
