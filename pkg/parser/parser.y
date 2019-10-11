@@ -369,6 +369,13 @@ expr		:
 			}
 		}
 		|
+		'-' INTEGER
+		{
+			$$ = &ExprInteger{
+				Val: - $1.(int64),
+			}
+		}
+		|
 		variable
 		{
 
