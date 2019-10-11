@@ -79,6 +79,7 @@ IS
 ISNOT
 NOT
 IN
+'+' '-' '/' '%' '*'
 
 %token <val>
 INTO
@@ -301,6 +302,7 @@ debug_command			: DEBUG expr
 					}
 				}
 end_command			: END expr { $$ = &EndCommand{} }
+				| END WHEN expr { $$ = &EndCommand{} }
 assert_command			: ASSERT expr  { $$ = &AssertCommand{} }
 must_command			: MUST expr  { $$ = &MustCommand{} }
 should_command			: SHOULD expr { $$ = &ShouldCommand{} }
@@ -360,6 +362,13 @@ expr		:
 			}
 		}
 		|
+		'%' INTEGER
+		{
+		 	$$ = &ExprInteger{
+				Val: 1 / $1.(int64),
+			}
+		}
+		|
 		variable
 		{
 
@@ -390,6 +399,13 @@ expr		:
 				Right: $3,
 			}
 		}
+		|
+		array
+		{
+			$$ =  &ExprArray{ Values: $1.Values }
+		}
+
+
 
 variable	: '{''{'  IDENTIFIER '}''}'
 		{
@@ -434,6 +450,11 @@ operator 	:
 		|ISNOT
 		|NOT
 		|IN
+		|'*'
+		|'/'
+		|'+'
+		|'-'
+		|'%'
 
 
 

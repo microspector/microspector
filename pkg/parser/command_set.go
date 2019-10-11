@@ -23,16 +23,23 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 	}
 
 	var i interface{}
+	i = hc.Value
 
 	for {
-
-		t := reflect.TypeOf(hc.Value)
-		if t.Implements(reflect.TypeOf((*Expression)(nil)).Elem()) {
-			i = hc.Value.(Expression).Evaluate(l)
+		t := reflect.TypeOf(i)
+		if t.Implements( reflect.TypeOf((*Expression)(nil)).Elem() ) {
+			i = i.(Expression).Evaluate(l)
 		} else {
-			i = hc.Value
+			switch t.Kind() {
+			case reflect.String:
+				i = i.(string)
+			case reflect.Int, reflect.Int64, reflect.Int32:
+				i = i.(int64)
+			}
 			break
-
+		}
+		if i == nil {
+			break
 		}
 	}
 	l.GlobalVars[hc.Name] = i
