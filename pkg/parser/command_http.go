@@ -98,7 +98,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 			for _, header := range headers {
 				headerParts := strings.Split(header, ":")
 				if len(headerParts) != 2 {
-					panic(fmt.Errorf("error in header format %s", commandParam.ParamValue))
+					panic(fmt.Errorf("error in header format %s", commandParam.ParamValue.Evaluate(l)))
 				} else {
 					if strings.ToLower(strings.TrimSpace(headerParts[0])) == "host" {
 						req.Host = strings.TrimSpace(headerParts[1])
@@ -112,9 +112,9 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 				req.Body = ioutil.NopCloser(strings.NewReader(commandParam.ParamValue.Evaluate(l).(string)))
 			}
 		case "FOLLOW":
-			hc.FollowRedirects = IsTrue(commandParam.ParamValue)
+			hc.FollowRedirects = IsTrue(commandParam.ParamValue.Evaluate(l))
 		case "SECURE":
-			hc.VerifySSL = IsTrue(commandParam.ParamValue)
+			hc.VerifySSL = IsTrue(commandParam.ParamValue.Evaluate(l))
 		default:
 			fmt.Println("Unknown http command param ", commandParam.ParamName)
 		}

@@ -3,6 +3,7 @@ package parser
 import "fmt"
 
 type EchoCommand struct {
+	Command
 	String string
 	Values []interface{}
 	When   Expression

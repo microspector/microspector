@@ -4,8 +4,13 @@ type ExprPredicate struct {
 	Left     Expression
 	Operator string // Token
 	Right    Expression
+	Not      bool
 }
 
 func (p *ExprPredicate) Evaluate(lexer *Lexer) interface{} {
-	return runOpPositive(p.Left.Evaluate(lexer),p.Operator,p.Right.Evaluate(lexer))
+	r := runOpPositive(p.Left.Evaluate(lexer), p.Operator, p.Right.Evaluate(lexer))
+	if p.Not {
+		return !r
+	}
+	return r
 }

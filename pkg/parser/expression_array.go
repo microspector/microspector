@@ -5,5 +5,9 @@ type ExprArray struct {
 }
 
 func (a *ExprArray) Evaluate(lexer *Lexer) interface{} {
-	return a.Values
+	array := make([]interface{}, len(a.Values))
+	for x, a := range a.Values {
+		array[x] = a.Evaluate(lexer)
+	}
+	return array
 }

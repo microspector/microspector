@@ -4,6 +4,8 @@ package parser
 import (
     "strings"
     "sync"
+    "strconv"
+    "fmt"
 )
 %}
 
@@ -97,10 +99,31 @@ TYPE
 %type <val> http_method
 
 //arithmetic things
-%type <expression> expr
-%type <val> operator
-%left '|'
-%left '&'
+%type <expression> expr func_call
+%type <val> operator operator_math
+
+%left ANR OR
+
+%left EQUALS
+      EQUAL
+      NOTEQUALS
+      NOTEQUAL
+      GT
+      GE
+      LT
+      LE
+      CONTAINS
+      CONTAIN
+      STARTSWITH
+      STARTWITH
+      WHEN
+      MATCHES
+      MATCH
+      IS
+      ISNOT
+      NOT
+      IN
+
 %left '+'  '-'
 %left '*'  '/'  '%'
 
@@ -149,7 +172,10 @@ run_comm			:
 				command_cond
 				{
 					yylex.(*Lexer).wg.Add(1)
-				    	$1.Run(yylex.(*Lexer))
+				    	r := $1.Run(yylex.(*Lexer))
+				    	if r == ErrStopExecution{
+				    		return -1
+				    	}
 				}
 				|
 				ASYNC command_cond
@@ -301,11 +327,12 @@ debug_command			: DEBUG expr
 						Values:$2,
 					}
 				}
-end_command			: END expr { $$ = &EndCommand{} }
-				| END WHEN expr { $$ = &EndCommand{} }
-assert_command			: ASSERT expr  { $$ = &AssertCommand{} }
-must_command			: MUST expr  { $$ = &MustCommand{} }
-should_command			: SHOULD expr { $$ = &ShouldCommand{} }
+end_command			: END expr { $$ = &EndCommand{ Expr:$2 } }
+				| END WHEN expr { $$ = &EndCommand{ Expr:$3 } }
+				| END { $$ = &EndCommand{}  }
+assert_command			: ASSERT expr  { $$ = &AssertCommand{ Expr:$2 } }
+must_command			: MUST expr  { $$ = &MustCommand{ Expr:$2 } }
+should_command			: SHOULD expr { $$ = &ShouldCommand{ Expr:$2 } }
 include_command			: INCLUDE expr { $$ = &IncludeCommand{} }
 sleep_command			: SLEEP expr { $$ = &SleepCommand{} }
 cmd_command			: CMD expr { $$ = &CmdCommand{} }
@@ -365,15 +392,24 @@ expr		:
 		'%' INTEGER
 		{
 		 	$$ = &ExprInteger{
-				Val: 1 / $1.(int64),
+				Val: 1 / $2.(int64),
 			}
 		}
 		|
 		'-' INTEGER
 		{
 			$$ = &ExprInteger{
-				Val: - $1.(int64),
+				Val: - $2.(int64),
 			}
+		}
+		|
+		'.' INTEGER
+		{
+			ca, _ := strconv.ParseFloat(fmt.Sprintf("0.%d",$2), 10)
+			$$ = &ExprFloat{
+				Val : ca,
+			}
+
 		}
 		|
 		variable
@@ -407,11 +443,71 @@ expr		:
 			}
 		}
 		|
+		expr operator_math expr
+		{
+			$$ = &ExprArithmetic{
+				Left: $1,
+				Operator: $2.(string),
+				Right: $3,
+			}
+		}
+
+		|
 		array
 		{
 			$$ =  &ExprArray{ Values: $1.Values }
 		}
+		|
+		func_call
+		{
+		   $$ = $1
+		}
+		|
+		TYPE
+		{
+		   $$ = &ExprType{
+		   	Name: $1.(string),
+		   }
+		}
+		|
+		expr AND expr
+		{
+			$$ = &ExprPredicate{
+				Left: $1,
+				Operator: "AND",
+				Right: $3,
+			}
+		}
+		|
+		expr OR expr
+		{
+			$$ = &ExprPredicate{
+				Left: $1,
+				Operator: "OR",
+				Right: $3,
+			}
+		}
 
+
+
+
+func_call	:
+		IDENTIFIER '('  ')'
+		{
+			//call $1
+			$$ = &ExprFunc{
+				Name:$1.(string),
+				Params : nil,
+			}
+		}
+		|
+		IDENTIFIER '(' comma_separated_expressions ')'
+		{
+			$$ = &ExprFunc{
+				Name:$1.(string),
+				Params : $3.Values,
+			}
+		}
 
 
 variable	: '{''{'  IDENTIFIER '}''}'
@@ -449,15 +545,19 @@ operator 	:
 		|STARTSWITH
 		|STARTWITH
 		|WHEN
-		|AND
-		|OR
 		|MATCHES
 		|MATCH
 		|IS
 		|ISNOT
 		|NOT
 		|IN
-		|'*'
+		| NOT operator
+		{
+			$$  = "NOT" + $2.(string)
+		}
+
+operator_math	:
+		'*'
 		|'/'
 		|'+'
 		|'-'

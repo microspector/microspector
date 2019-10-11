@@ -7,6 +7,7 @@ import (
 )
 
 type CmdCommand struct {
+	Command
 	Params []interface{}
 	When   Expression
 }

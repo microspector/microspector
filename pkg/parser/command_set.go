@@ -27,15 +27,9 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 
 	for {
 		t := reflect.TypeOf(i)
-		if t.Implements( reflect.TypeOf((*Expression)(nil)).Elem() ) {
+		if t.Implements(reflect.TypeOf((*Expression)(nil)).Elem()) {
 			i = i.(Expression).Evaluate(l)
 		} else {
-			switch t.Kind() {
-			case reflect.String:
-				i = i.(string)
-			case reflect.Int, reflect.Int64, reflect.Int32:
-				i = i.(int64)
-			}
 			break
 		}
 		if i == nil {

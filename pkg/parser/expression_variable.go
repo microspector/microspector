@@ -9,8 +9,9 @@ type ExprVariable struct {
 }
 
 func (v *ExprVariable) Evaluate(lexer *Lexer) interface{} {
-	l, err := lookup.Lookup(lexer.GlobalVars, v.Name)
-	if err != nil {
+	l, err := lookup.LookupString(lexer.GlobalVars, v.Name)
+
+	if err != nil || !l.IsValid() {
 		return nil
 	}
 	return l.Interface()
