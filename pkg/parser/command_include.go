@@ -7,7 +7,7 @@ import (
 )
 
 type IncludeCommand struct {
-	File  string
+	Expr  Expression
 	When  Expression
 	Async bool
 }
@@ -17,7 +17,7 @@ func (ic *IncludeCommand) Run(l *Lexer) interface{} {
 
 	if ic.When == nil || IsTrue(ic.When.Evaluate(l)) {
 
-		bytes, err := ioutil.ReadFile(ic.File)
+		bytes, err := ioutil.ReadFile(ic.Expr.Evaluate(l).(string))
 
 		if err != nil {
 			fmt.Println(fmt.Errorf("error including file: %s", err))

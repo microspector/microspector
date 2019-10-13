@@ -379,7 +379,6 @@ debug_command			: DEBUG multi_expressions
 					}
 				}
 end_command			: END predicate_expr { $$ = &EndCommand{ Expr:$2 } }
-				| END WHEN predicate_expr { $$ = &EndCommand{ Expr:$3 } }
 				| END { $$ = &EndCommand{}  }
 assert_command			: ASSERT predicate_expr  { $$ = &AssertCommand{ Expr:$2 } }
 				| ASSERT predicate_expr expr { $$ = &AssertCommand{ Expr:$2,Message:$3 } }
@@ -387,7 +386,7 @@ must_command			: MUST predicate_expr  { $$ = &MustCommand{ Expr:$2 } }
 				| MUST predicate_expr expr { $$ = &MustCommand{ Expr:$2,Message:$3 } }
 should_command			: SHOULD predicate_expr { $$ = &ShouldCommand{ Expr:$2 } }
 				| SHOULD predicate_expr expr { $$ = &ShouldCommand{ Expr:$2,Message:$3 } }
-include_command			: INCLUDE expr { $$ = &IncludeCommand{} }
+include_command			: INCLUDE expr { $$ = &IncludeCommand{ Expr:$2 } }
 sleep_command			: SLEEP expr { $$ = &SleepCommand{ Expr:$2 } }
 cmd_command			: CMD multi_expressions { $$ = &CmdCommand{ Params:$2 } }
 echo_command			: ECHO expr { $$ = &EchoCommand{Expr:$2} }
