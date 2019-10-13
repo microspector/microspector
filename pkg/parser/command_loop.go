@@ -15,21 +15,43 @@ func (lc *LoopCommand) Run(l *Lexer) interface{} {
 		return nil
 	}
 
-	rng := lc.In.Evaluate(l).([]interface{})
-
-	for _, val := range rng {
-		l.GlobalVars[lc.Var.Name] = val
-		for _, cm := range lc.Commands {
-			l.wg.Add(1)
-			if cm.IsAsync() {
-				go cm.Run(l)
-			} else {
-				r := cm.Run(l)
-				if r == ErrStopExecution {
-					return ErrStopExecution
+	rng := lc.In.Evaluate(l)
+	switch rng.(type) {
+	case []interface{}:
+		for _, val := range rng.([]interface{}) {
+			l.GlobalVars[lc.Var.Name] = val
+			for _, cm := range lc.Commands {
+				l.wg.Add(1)
+				if cm.IsAsync() {
+					go cm.Run(l)
+				} else {
+					r := cm.Run(l)
+					if r == ErrStopExecution {
+						return ErrStopExecution
+					}
 				}
 			}
 		}
+
+		break
+
+	case map[string]interface{}:
+		for _, val := range rng.(map[string]interface{}) {
+			l.GlobalVars[lc.Var.Name] = val
+			for _, cm := range lc.Commands {
+				l.wg.Add(1)
+				if cm.IsAsync() {
+					go cm.Run(l)
+				} else {
+					r := cm.Run(l)
+					if r == ErrStopExecution {
+						return ErrStopExecution
+					}
+				}
+			}
+		}
+
+		break
 	}
 
 	return nil

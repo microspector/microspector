@@ -228,6 +228,8 @@ func runOpPositive(left interface{}, operator string, right interface{}) (eq boo
 		return match
 	case "IS":
 		return IsTypeOf(left, right.(string))
+	case "ISNOT":
+		return !IsTypeOf(left, right.(string))
 	case "IN":
 		switch reflect.TypeOf(right).Kind() {
 		case reflect.Array, reflect.Slice:
