@@ -8,7 +8,7 @@ type ExprPredicate struct {
 }
 
 func (p *ExprPredicate) Evaluate(lexer *Lexer) interface{} {
-	r := runOpPositive(p.Left.Evaluate(lexer), p.Operator, p.Right.Evaluate(lexer))
+	r := runop(p.Left.Evaluate(lexer), p.Operator, p.Right.Evaluate(lexer))
 	if p.Not {
 		return !r
 	}

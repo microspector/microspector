@@ -6,6 +6,7 @@ import (
     "sync"
     "strconv"
     "fmt"
+    "reflect"
 )
 %}
 
@@ -93,13 +94,13 @@ TYPE
 
 
 %type <variable> variable
-%type <expressions> array comma_separated_expressions
+%type <expressions> array comma_separated_expressions multi_expressions
 %type <http_command_param> http_command_param
 %type <http_command_params> http_command_params
 %type <val> http_method
 
 //arithmetic things
-%type <expression> expr func_call
+%type <expression> expr func_call predicate_expr math_expression
 %type <val> operator operator_math
 
 %left ANR OR
@@ -184,7 +185,7 @@ run_comm			:
 					go $2.Run(yylex.(*Lexer))
 				}
 
-command_cond			: command WHEN expr
+command_cond			: command WHEN predicate_expr
 				{
 					$$ = $1
 					$$.SetWhen($3)
@@ -194,15 +195,14 @@ command_cond			: command WHEN expr
 				{
 
 					 $1.SetWhen($3)
-					 //TODO: check if it compatible with SetInto
-					 $1.(*HttpCommand).SetInto($5.Name)
+					 $1.(IntoCommand).SetInto($5.Name)
 					 $$ = $1
 				}
 				|
 				command INTO variable
 				{
 					 //TODO: check if it compatible with SetInto
-					 $1.(*HttpCommand).SetInto($3.Name)
+					 $1.(IntoCommand).SetInto($3.Name)
 					 $$ = $1
 				}
 				|
@@ -225,7 +225,16 @@ command				:
                                 |cmd_command
                                 |echo_command
 
-set_command			: SET variable expr
+set_command			:
+				SET variable expr
+				{
+					$$ = &SetCommand{
+						Name: $2.Name,
+						Value: $3,
+					}
+				}
+				|
+				SET variable predicate_expr
 				{
 					$$ = &SetCommand{
 						Name: $2.Name,
@@ -321,21 +330,21 @@ http_command_param		:
 				}
 
 
-debug_command			: DEBUG expr
+debug_command			: DEBUG multi_expressions
 				{
 					$$ = &DebugCommand{
 						Values:$2,
 					}
 				}
-end_command			: END expr { $$ = &EndCommand{ Expr:$2 } }
-				| END WHEN expr { $$ = &EndCommand{ Expr:$3 } }
+end_command			: END predicate_expr { $$ = &EndCommand{ Expr:$2 } }
+				| END WHEN predicate_expr { $$ = &EndCommand{ Expr:$3 } }
 				| END { $$ = &EndCommand{}  }
-assert_command			: ASSERT expr  { $$ = &AssertCommand{ Expr:$2 } }
-must_command			: MUST expr  { $$ = &MustCommand{ Expr:$2 } }
-should_command			: SHOULD expr { $$ = &ShouldCommand{ Expr:$2 } }
+assert_command			: ASSERT predicate_expr  { $$ = &AssertCommand{ Expr:$2 } }
+must_command			: MUST predicate_expr  { $$ = &MustCommand{ Expr:$2 } }
+should_command			: SHOULD predicate_expr { $$ = &ShouldCommand{ Expr:$2 } }
 include_command			: INCLUDE expr { $$ = &IncludeCommand{} }
 sleep_command			: SLEEP expr { $$ = &SleepCommand{} }
-cmd_command			: CMD expr { $$ = &CmdCommand{} }
+cmd_command			: CMD multi_expressions { $$ = &CmdCommand{ Params:$2 } }
 echo_command			: ECHO expr { $$ = &EchoCommand{} }
 
 http_method			: GET | POST | HEAD | OPTIONS | PUT | PATCH
@@ -361,6 +370,16 @@ comma_separated_expressions	: expr
 					$$.Values = append($$.Values,$3)
 				}
 
+multi_expressions		: expr
+				{
+					$$.Values = append($$.Values,$1)
+				}
+				| comma_separated_expressions  expr
+				{
+					$$.Values = append($$.Values,$2)
+				}
+
+
 
 expr		:
 		'(' expr ')'
@@ -375,24 +394,82 @@ expr		:
 			}
 		}
 		|
-		FLOAT
+		math_expression
+		{
+			$$ = $1
+		}
+		|
+		array
+		{
+			$$ =  &ExprArray{ Values: $1.Values }
+		}
+		|
+		func_call
+		{
+		   $$ = $1
+		}
+		|
+		TYPE
+		{
+		   $$ = &ExprType{
+		   	Name: $1.(string),
+		   }
+		}
+
+math_expression	:
+		math_expression '+' math_expression
+		{
+			$$ = &ExprArithmetic{
+				Left: $1,
+				Operator: "+",
+				Right: $3,
+			}
+		}
+		| math_expression '-' math_expression
+		{
+			$$ = &ExprArithmetic{
+				Left: $1,
+				Operator: "-",
+				Right: $3,
+			}
+		}
+		| math_expression '*' math_expression
+		{
+			$$ = &ExprArithmetic{
+				Left: $1,
+				Operator: "*",
+				Right: $3,
+			}
+		}
+		| math_expression '/' math_expression
+		{
+			$$ = &ExprArithmetic{
+				Left: $1,
+				Operator: "/",
+				Right: $3,
+			}
+		}
+		| '(' math_expression ')'
+		{
+			$$ = $2
+		}
+		| INTEGER
+		{
+			$$ = &ExprInteger{
+				Val: $1.(int64),
+			}
+		}
+		| FLOAT
 		{
 			$$ = &ExprFloat{
 				Val : $1.(float64),
 			}
 		}
 		|
-		INTEGER
-		{
-			$$ = &ExprInteger{
-				Val: $1.(int64),
-			}
-		}
-		|
 		'%' INTEGER
 		{
-		 	$$ = &ExprInteger{
-				Val: 1 / $2.(int64),
+			$$ = &ExprFloat{
+				Val: float64( $2.(int64) ) / 100,
 			}
 		}
 		|
@@ -414,10 +491,30 @@ expr		:
 		|
 		variable
 		{
-
 			$$ =  &ExprVariable{
 				Name: $1.Name,
 			}
+		}
+
+
+
+predicate_expr	:
+		variable
+		{
+			$$ = &ExprPredicate{
+				Left: &ExprVariable{
+					Name: $1.Name,
+				},
+				Operator: "equals",
+				Right: &ExprBool{
+					Val : true,
+				},
+			}
+		}
+		|
+		'(' predicate_expr ')'
+		{
+			$$ = $2
 		}
 		|
 		TRUE
@@ -443,34 +540,7 @@ expr		:
 			}
 		}
 		|
-		expr operator_math expr
-		{
-			$$ = &ExprArithmetic{
-				Left: $1,
-				Operator: $2.(string),
-				Right: $3,
-			}
-		}
-
-		|
-		array
-		{
-			$$ =  &ExprArray{ Values: $1.Values }
-		}
-		|
-		func_call
-		{
-		   $$ = $1
-		}
-		|
-		TYPE
-		{
-		   $$ = &ExprType{
-		   	Name: $1.(string),
-		   }
-		}
-		|
-		expr AND expr
+		predicate_expr AND predicate_expr
 		{
 			$$ = &ExprPredicate{
 				Left: $1,
@@ -479,7 +549,7 @@ expr		:
 			}
 		}
 		|
-		expr OR expr
+		predicate_expr OR predicate_expr
 		{
 			$$ = &ExprPredicate{
 				Left: $1,
@@ -487,6 +557,40 @@ expr		:
 				Right: $3,
 			}
 		}
+		|
+		expr operator predicate_expr{
+			$$ = &ExprPredicate{
+				Left: $1,
+				Operator:  $2.(string),
+				Right: $3,
+			}
+		}
+		|
+		predicate_expr operator expr{
+			$$ = &ExprPredicate{
+				Left: $1,
+				Operator:  $2.(string),
+				Right: $3,
+			}
+		}
+		|
+		NOT predicate_expr
+		{
+			$$ = $2
+
+			t := reflect.TypeOf($2)
+
+			if t ==  reflect.TypeOf(&ExprBool{}).Elem() {
+				$2.(*ExprBool).Val  = !($2.(*ExprBool).Val)
+			} else if t == reflect.TypeOf(&ExprPredicate{})  {
+				$2.(*ExprPredicate).Not  = !($2.(*ExprPredicate).Not)
+			}else{
+				  $$  = &ExprBool{
+					Val : !IsTrue($2),
+				 }
+			}
+		}
+
 
 
 
@@ -544,7 +648,6 @@ operator 	:
 		|CONTAIN
 		|STARTSWITH
 		|STARTWITH
-		|WHEN
 		|MATCHES
 		|MATCH
 		|IS

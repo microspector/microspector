@@ -11,9 +11,9 @@ func (ac *AssertCommand) Run(l *Lexer) interface{} {
 	r := IsTrue(ac.Expr.Evaluate(l))
 
 	if r {
-		l.State.Must.Success++
+		l.State.Assert.Success++
 	} else {
-		l.State.Must.Fail++
+		l.State.Assert.Fail++
 	}
 	return r
 }

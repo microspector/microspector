@@ -174,10 +174,10 @@ func TestParser_Must(t *testing.T) {
 	l := Parse(`
 SET {{ Var50 }} 49
 SET {{ VarTrue }} true
-SET {{ VarFalse }} true AND false
-MUST "{{ .VarFalse }}" EQUALS "false"
-MUST {{ VarFalse }} EQUALS false
-MUST {{ Var50 }} EQUALS 50
+SET {{ VarFalse }} true AND false 
+MUST "{{ .VarFalse }}" EQUALS "false" #success
+MUST {{ VarFalse }} EQUALS false #success
+MUST {{ Var50 }} EQUALS 50 #
 MUST {{ Var50 }} EQUALS 49
 SET MyVar "microspector"
 SHOULD $MyVar contain "micro"
@@ -187,7 +187,6 @@ ASSERT $MyVar contain "micro"
 `)
 
 	Run(l)
-	//TODO: do some more assertion, like, must fail and success counts
 	assert.Equal(t, l.GlobalVars["VarFalse"], false)
 	assert.Equal(t, l.State.Must.Fail, 1)
 	assert.Equal(t, l.State.Must.Success, 3)

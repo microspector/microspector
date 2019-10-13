@@ -8,24 +8,24 @@ import (
 
 type CmdCommand struct {
 	Command
-	Params []interface{}
+	Params ExprArray
 	When   Expression
+	Into   string
 }
 
 func (cc *CmdCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
-	var params []string
-
-	for _, p := range cc.Params {
-		params = append(params, fmt.Sprintf("%v", p))
+	params := make([]string, len(cc.Params.Values))
+	for x, a := range cc.Params.Values {
+		params[x] = fmt.Sprintf("%v", a.Evaluate(l))
 	}
 
 	var cm *exec.Cmd
 
-	if len(cc.Params) > 1 {
+	if len(cc.Params.Values) > 1 {
 		cm = exec.Command(params[0], params[1:]...)
-	} else if len(cc.Params) == 1 {
+	} else if len(cc.Params.Values) == 1 {
 		cm = exec.Command(params[0])
 	}
 
@@ -34,10 +34,14 @@ func (cc *CmdCommand) Run(l *Lexer) interface{} {
 	if err != nil {
 		return err
 	}
-
+	l.GlobalVars[cc.Into] = strings.TrimSpace(string(out))
 	return strings.TrimSpace(string(out))
 }
 
 func (cc *CmdCommand) SetWhen(expr Expression) {
 	cc.When = expr
+}
+
+func (cc *CmdCommand) SetInto(into string) {
+	cc.Into = into
 }

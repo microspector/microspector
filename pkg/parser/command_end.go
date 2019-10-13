@@ -14,11 +14,15 @@ type EndCommand struct {
 func (ec *EndCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
-	if ec.When == nil {
+	if ec.When == nil && ec.Expr == nil {
 		return ErrStopExecution
 	}
 
-	if IsTrue(ec.When.Evaluate(l)) {
+	if ec.Expr == nil && IsTrue(ec.When.Evaluate(l)) {
+		return ErrStopExecution
+	}
+
+	if ec.When == nil && IsTrue(ec.Expr.Evaluate(l)) {
 		return ErrStopExecution
 	}
 

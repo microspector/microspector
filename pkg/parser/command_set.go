@@ -37,7 +37,7 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 		}
 	}
 	l.GlobalVars[hc.Name] = i
-	return hc.Value
+	return i
 }
 
 func (hc *SetCommand) SetWhen(expr Expression) {

@@ -12,9 +12,9 @@ func (sc *ShouldCommand) Run(l *Lexer) interface{} {
 	r := IsTrue(sc.Expr.Evaluate(l))
 
 	if r {
-		l.State.Must.Success++
+		l.State.Should.Success++
 	} else {
-		l.State.Must.Fail++
+		l.State.Should.Fail++
 	}
 
 	return r
