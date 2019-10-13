@@ -170,17 +170,27 @@ TYPE
 
 microspector			:
 				/*empty*/
-				| microspector command_list
+				| microspector command_cond
 				{
-					for _,cm := range $2{
-						yylex.(*Lexer).wg.Add(1)
-						if cm.IsAsync() {
-						  go cm.Run(yylex.(*Lexer))
-						}else{
-							r:= cm.Run(yylex.(*Lexer))
-							if r == ErrStopExecution{
-								return -1
-							}
+					//for _,cm := range $2{
+					//	yylex.(*Lexer).wg.Add(1)
+					//	if cm.IsAsync() {
+					//	  go cm.Run(yylex.(*Lexer))
+					//	}else{
+					//		r:= cm.Run(yylex.(*Lexer))
+					//		if r == ErrStopExecution{
+					//			return -1
+					//		}
+					//	}
+					//}
+
+					yylex.(*Lexer).wg.Add(1)
+					if $2.IsAsync() {
+					  go $2.Run(yylex.(*Lexer))
+					}else{
+						r:= $2.Run(yylex.(*Lexer))
+						if r == ErrStopExecution{
+							return -1
 						}
 					}
 				}
