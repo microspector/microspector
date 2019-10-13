@@ -68,6 +68,8 @@ var keywords = map[string]int{
 	"INSECURE":   INSECURE,
 	"SECURE":     SECURE,
 	"ECHO":       ECHO,
+	"LOOP":       LOOP,
+	"ENDLOOP":    ENDLOOP,
 }
 
 func NewScanner(r io.Reader) *Scanner {

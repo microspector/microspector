@@ -6,20 +6,22 @@ import (
 )
 
 type DebugCommand struct {
-	Values interface{}
+	Values ExprArray
 	When   Expression
-	Async bool
+	Async  bool
 }
 
 func (dc *DebugCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
 	if dc.When == nil || IsTrue(dc.When.Evaluate(l)) {
-		t := reflect.TypeOf(dc.Values)
-		if t.Implements(reflect.TypeOf((*Expression)(nil)).Elem()) {
-			fmt.Printf("%+v\n", dc.Values.(Expression).Evaluate(l))
-		} else {
-			fmt.Printf("%+v\n", dc.Values)
+		for _, e := range dc.Values.Values {
+			t := reflect.TypeOf(e)
+			if t.Implements(reflect.TypeOf((*Expression)(nil)).Elem()) {
+				fmt.Printf("%+v\n", e.(Expression).Evaluate(l))
+			} else {
+				fmt.Printf("%+v\n", e)
+			}
 		}
 	}
 
@@ -37,4 +39,3 @@ func (dc *DebugCommand) SetAsync(async bool) {
 func (dc *DebugCommand) IsAsync() bool {
 	return dc.Async
 }
-

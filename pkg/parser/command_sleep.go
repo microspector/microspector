@@ -6,15 +6,15 @@ import (
 
 //A command to block the current thread
 type SleepCommand struct {
-	Millisecond int64
-	When        Expression
-	Async       bool
+	Expr  Expression
+	When  Expression
+	Async bool
 }
 
 func (sc *SleepCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 	if sc.When == nil || IsTrue(sc.When.Evaluate(l)) {
-		time.Sleep(time.Duration(sc.Millisecond) * time.Millisecond)
+		time.Sleep(time.Duration(sc.Expr.Evaluate(l).(int64)) * time.Millisecond)
 	}
 	return nil
 

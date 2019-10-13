@@ -40,6 +40,8 @@ SLEEP
 CMD
 ASYNC
 ECHO
+LOOP
+ENDLOOP
 
 //http command tokens
 %token <val>
@@ -102,6 +104,7 @@ TYPE
 //arithmetic things
 %type <expression> expr func_call predicate_expr math_expression
 %type <val> operator operator_math
+%type <cmd_list> command_list
 
 %left ANR OR
 
@@ -166,23 +169,53 @@ TYPE
 
 microspector			:
 				/*empty*/
-				| microspector run_comm
-
-
-
-run_comm			:
-				command_cond
+				| microspector command_list
 				{
-					yylex.(*Lexer).wg.Add(1)
-					if $1.IsAsync() {
-					  go $1.Run(yylex.(*Lexer))
-					}else{
-						r:= $1.Run(yylex.(*Lexer))
-						if r == ErrStopExecution{
-							return -1
+					for _,cm := range $2{
+						yylex.(*Lexer).wg.Add(1)
+						if cm.IsAsync() {
+						  go cm.Run(yylex.(*Lexer))
+						}else{
+							r:= cm.Run(yylex.(*Lexer))
+							if r == ErrStopExecution{
+								return -1
+							}
+						}
+					}
+				}
+				| microspector comm_in_loop
+
+
+comm_in_loop			:
+				LOOP variable IN variable command_list ENDLOOP
+				{
+					rng := $4.Evaluate(yylex.(*Lexer)).([]interface{})
+					for _,val := range rng{
+					yylex.(*Lexer).GlobalVars[$2.Name] = val
+						for _,cm := range $5{
+							yylex.(*Lexer).wg.Add(1)
+							if cm.IsAsync() {
+							  go cm.Run(yylex.(*Lexer))
+							}else{
+								r:= cm.Run(yylex.(*Lexer))
+								if r == ErrStopExecution{
+									return -1
+								}
+							}
 						}
 					}
 
+				}
+
+
+command_list			: command_cond
+				{
+					$$ = append($$,$1)
+				}
+				|
+				command_list command_cond
+				{
+					$$ = append($$,$2)
 				}
 
 
@@ -354,9 +387,10 @@ must_command			: MUST predicate_expr  { $$ = &MustCommand{ Expr:$2 } }
 should_command			: SHOULD predicate_expr { $$ = &ShouldCommand{ Expr:$2 } }
 				| SHOULD predicate_expr expr { $$ = &ShouldCommand{ Expr:$2,Message:$3 } }
 include_command			: INCLUDE expr { $$ = &IncludeCommand{} }
-sleep_command			: SLEEP expr { $$ = &SleepCommand{} }
+sleep_command			: SLEEP expr { $$ = &SleepCommand{ Expr:$2 } }
 cmd_command			: CMD multi_expressions { $$ = &CmdCommand{ Params:$2 } }
-echo_command			: ECHO expr { $$ = &EchoCommand{} }
+echo_command			: ECHO expr { $$ = &EchoCommand{Expr:$2} }
+				| ECHO expr multi_expressions { $$ = &EchoCommand{Expr:$2,Params:$3} }
 
 http_method			: GET | POST | HEAD | OPTIONS | PUT | PATCH
 

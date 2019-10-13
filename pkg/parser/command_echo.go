@@ -4,8 +4,8 @@ import "fmt"
 
 type EchoCommand struct {
 	Command
-	String string
-	Values []interface{}
+	Expr   Expression
+	Params ExprArray
 	When   Expression
 	Async  bool
 }
@@ -13,7 +13,13 @@ type EchoCommand struct {
 func (ec *EchoCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 	if ec.When == nil || IsTrue(ec.When.Evaluate(l)) {
-		fmt.Printf(ec.String, ec.Values...)
+
+		params := make([]interface{}, len(ec.Params.Values))
+		for x, a := range ec.Params.Values {
+			params[x] = fmt.Sprintf("%v", a.Evaluate(l))
+		}
+
+		fmt.Printf(fmt.Sprintf("%v", ec.Expr.Evaluate(l)), params...)
 	}
 	return nil
 }

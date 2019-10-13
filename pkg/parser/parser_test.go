@@ -567,3 +567,26 @@ should x equals true "x is not true should"
 	assert.Equal(t, l.State.Should.Messages[0], "x is not true should")
 }
 
+func TestParser_Loop(t *testing.T) {
+	l := Parse(`
+set array [1,2,3,4,5]
+
+loop a in array
+must a equals 6
+endloop
+
+loop a in array
+must a < 6
+endloop
+
+set b a
+
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.State.Must.Fail, 5)
+	assert.Equal(t, l.State.Must.Success, 5)
+	assert.Equal(t, l.GlobalVars["b"], int64(5))
+}
+
