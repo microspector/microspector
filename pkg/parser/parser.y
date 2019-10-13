@@ -154,6 +154,7 @@ TYPE
 	boolean ExprBool
 	bytes []byte
 	cmd Command
+	cmd_list []Command
 	variable ExprVariable
 	http_command_params []HttpCommandParam
 	http_command_param  HttpCommandParam
@@ -173,22 +174,22 @@ run_comm			:
 				command_cond
 				{
 					yylex.(*Lexer).wg.Add(1)
-				    	r := $1.Run(yylex.(*Lexer))
-				    	if r == ErrStopExecution{
-				    		return -1
-				    	}
+					if $1.IsAsync() {
+					  go $1.Run(yylex.(*Lexer))
+					}else{
+						r:= $1.Run(yylex.(*Lexer))
+						if r == ErrStopExecution{
+							return -1
+						}
+					}
+
 				}
-				|
-				ASYNC command_cond
-				{
-					yylex.(*Lexer).wg.Add(1)
-					go $2.Run(yylex.(*Lexer))
-				}
+
 
 command_cond			:
 				command WHEN predicate_expr
 				{
-					$$.SetWhen($3)
+					$1.SetWhen($3)
 					$$ = $1
 				}
 				|
@@ -210,6 +211,12 @@ command_cond			:
 				command
 				{
 					$$ = $1
+				}
+				|
+				ASYNC command_cond
+				{
+					$2.SetAsync(true)
+					$$ = $2
 				}
 
 
@@ -341,8 +348,11 @@ end_command			: END predicate_expr { $$ = &EndCommand{ Expr:$2 } }
 				| END WHEN predicate_expr { $$ = &EndCommand{ Expr:$3 } }
 				| END { $$ = &EndCommand{}  }
 assert_command			: ASSERT predicate_expr  { $$ = &AssertCommand{ Expr:$2 } }
+				| ASSERT predicate_expr expr { $$ = &AssertCommand{ Expr:$2,Message:$3 } }
 must_command			: MUST predicate_expr  { $$ = &MustCommand{ Expr:$2 } }
+				| MUST predicate_expr expr { $$ = &MustCommand{ Expr:$2,Message:$3 } }
 should_command			: SHOULD predicate_expr { $$ = &ShouldCommand{ Expr:$2 } }
+				| SHOULD predicate_expr expr { $$ = &ShouldCommand{ Expr:$2,Message:$3 } }
 include_command			: INCLUDE expr { $$ = &IncludeCommand{} }
 sleep_command			: SLEEP expr { $$ = &SleepCommand{} }
 cmd_command			: CMD multi_expressions { $$ = &CmdCommand{ Params:$2 } }

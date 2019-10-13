@@ -2,9 +2,10 @@ package parser
 
 type ShouldCommand struct {
 	Command
-	Failed bool
-	Expr   Expression
-	When   Expression
+	Expr    Expression
+	When    Expression
+	Async   bool
+	Message Expression
 }
 
 func (sc *ShouldCommand) Run(l *Lexer) interface{} {
@@ -16,6 +17,9 @@ func (sc *ShouldCommand) Run(l *Lexer) interface{} {
 		if r {
 			l.State.Should.Success++
 		} else {
+			if sc.Message != nil {
+				l.State.Should.Messages = append(l.State.Should.Messages, sc.Message.Evaluate(l).(string))
+			}
 			l.State.Should.Fail++
 		}
 	}
@@ -25,4 +29,16 @@ func (sc *ShouldCommand) Run(l *Lexer) interface{} {
 
 func (sc *ShouldCommand) SetWhen(expr Expression) {
 	sc.When = expr
+}
+
+func (sc *ShouldCommand) SetAsync(async bool) {
+	sc.Async = async
+}
+
+func (sc *ShouldCommand) IsAsync() bool {
+	return sc.Async
+}
+
+func (sc *ShouldCommand) SetAssertionMessage(expression Expression) {
+	sc.Message = expression
 }

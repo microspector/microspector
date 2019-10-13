@@ -8,6 +8,7 @@ import (
 type DebugCommand struct {
 	Values interface{}
 	When   Expression
+	Async bool
 }
 
 func (dc *DebugCommand) Run(l *Lexer) interface{} {
@@ -28,3 +29,12 @@ func (dc *DebugCommand) Run(l *Lexer) interface{} {
 func (dc *DebugCommand) SetWhen(expr Expression) {
 	dc.When = expr
 }
+
+func (dc *DebugCommand) SetAsync(async bool) {
+	dc.Async = async
+}
+
+func (dc *DebugCommand) IsAsync() bool {
+	return dc.Async
+}
+

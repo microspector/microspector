@@ -8,6 +8,7 @@ import (
 type SleepCommand struct {
 	Millisecond int64
 	When        Expression
+	Async       bool
 }
 
 func (sc *SleepCommand) Run(l *Lexer) interface{} {
@@ -19,6 +20,14 @@ func (sc *SleepCommand) Run(l *Lexer) interface{} {
 
 }
 
+func (sc *SleepCommand) SetAsync(async bool) {
+	sc.Async = async
+}
+
 func (sc *SleepCommand) SetWhen(expr Expression) {
 	sc.When = expr
+}
+
+func (sc *SleepCommand) IsAsync() bool {
+	return sc.Async
 }

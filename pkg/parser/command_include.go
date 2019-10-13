@@ -7,8 +7,9 @@ import (
 )
 
 type IncludeCommand struct {
-	File string
-	When Expression
+	File  string
+	When  Expression
+	Async bool
 }
 
 func (ic *IncludeCommand) Run(l *Lexer) interface{} {
@@ -29,7 +30,14 @@ func (ic *IncludeCommand) Run(l *Lexer) interface{} {
 	}
 
 	return nil
+}
 
+func (ic *IncludeCommand) IsAsync() bool {
+	return ic.Async
+}
+
+func (ic *IncludeCommand) SetAsync(async bool) {
+	ic.Async = async
 }
 
 func (ic *IncludeCommand) SetWhen(expr Expression) {

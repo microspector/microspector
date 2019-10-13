@@ -549,3 +549,21 @@ set is_state_reachable State.Must.Success == 2
 	assert.Equal(t, l.GlobalVars["must_success"], 2)
 	assert.Equal(t, l.GlobalVars["is_state_reachable"], true)
 }
+
+func TestParser_AssertMessage(t *testing.T) {
+	l := Parse(`
+set x false when 1==1
+must x equals true "x is not true must"
+should x equals true "x is not true should"
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.State.Must.Fail, 1)
+	assert.Equal(t, l.State.Should.Fail, 1)
+	assert.Equal(t, len(l.State.Should.Messages), 1)
+	assert.Equal(t, len(l.State.Must.Messages), 1)
+	assert.Equal(t, l.State.Must.Messages[0], "x is not true must")
+	assert.Equal(t, l.State.Should.Messages[0], "x is not true should")
+}
+

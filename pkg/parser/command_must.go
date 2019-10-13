@@ -1,9 +1,10 @@
 package parser
 
 type MustCommand struct {
-	Failed bool
-	Expr   Expression
-	When   Expression
+	Expr    Expression
+	When    Expression
+	Async   bool
+	Message Expression
 }
 
 func (mc *MustCommand) Run(l *Lexer) interface{} {
@@ -17,6 +18,9 @@ func (mc *MustCommand) Run(l *Lexer) interface{} {
 		if r {
 			l.State.Must.Success++
 		} else {
+			if mc.Message != nil {
+				l.State.Must.Messages = append(l.State.Must.Messages, mc.Message.Evaluate(l).(string))
+			}
 			l.State.Must.Fail++
 		}
 	}
@@ -24,6 +28,18 @@ func (mc *MustCommand) Run(l *Lexer) interface{} {
 	return r
 }
 
+func (mc *MustCommand) IsAsync() bool {
+	return mc.Async
+}
+
 func (mc *MustCommand) SetWhen(expr Expression) {
 	mc.When = expr
+}
+
+func (mc *MustCommand) SetAsync(async bool) {
+	mc.Async = async
+}
+
+func (mc *MustCommand) SetAssertionMessage(expression Expression) {
+	mc.Message = expression
 }

@@ -11,6 +11,7 @@ type CmdCommand struct {
 	Params ExprArray
 	When   Expression
 	Into   string
+	Async bool
 }
 
 func (cc *CmdCommand) Run(l *Lexer) interface{} {
@@ -50,3 +51,12 @@ func (cc *CmdCommand) SetWhen(expr Expression) {
 func (cc *CmdCommand) SetInto(into string) {
 	cc.Into = into
 }
+
+func (cc *CmdCommand) SetAsync(async bool) {
+	cc.Async = async
+}
+
+func (cc *CmdCommand) IsAsync() bool {
+	return cc.Async
+}
+

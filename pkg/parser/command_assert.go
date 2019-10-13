@@ -2,8 +2,10 @@ package parser
 
 type AssertCommand struct {
 	Command
-	Expr Expression
-	When Expression
+	Expr    Expression
+	When    Expression
+	Async   bool
+	Message Expression
 }
 
 func (ac *AssertCommand) Run(l *Lexer) interface{} {
@@ -16,6 +18,11 @@ func (ac *AssertCommand) Run(l *Lexer) interface{} {
 		if r {
 			l.State.Assert.Success++
 		} else {
+
+			if ac.Message != nil {
+				l.State.Assert.Messages = append(l.State.Assert.Messages, ac.Message.Evaluate(l).(string))
+			}
+
 			l.State.Assert.Fail++
 		}
 	}
@@ -24,4 +31,16 @@ func (ac *AssertCommand) Run(l *Lexer) interface{} {
 
 func (ac *AssertCommand) SetWhen(expr Expression) {
 	ac.When = expr
+}
+
+func (ac *AssertCommand) SetAsync(async bool) {
+	ac.Async = async
+}
+
+func (ac *AssertCommand) IsAsync() bool {
+	return ac.Async
+}
+
+func (ac *AssertCommand) SetAssertionMessage(expression Expression) {
+	ac.Message = expression
 }

@@ -7,6 +7,7 @@ type EchoCommand struct {
 	String string
 	Values []interface{}
 	When   Expression
+	Async  bool
 }
 
 func (ec *EchoCommand) Run(l *Lexer) interface{} {
@@ -19,4 +20,12 @@ func (ec *EchoCommand) Run(l *Lexer) interface{} {
 
 func (ec *EchoCommand) SetWhen(expr Expression) {
 	ec.When = expr
+}
+
+func (ec *EchoCommand) SetAsync(async bool) {
+	ec.Async = async
+}
+
+func (ec *EchoCommand) IsAsync() bool {
+	return ec.Async
 }

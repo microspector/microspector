@@ -10,6 +10,7 @@ type SetCommand struct {
 	Name  string
 	Value interface{}
 	When  Expression
+	Async bool
 }
 
 func (sc *SetCommand) Run(l *Lexer) interface{} {
@@ -47,4 +48,12 @@ func (sc *SetCommand) Run(l *Lexer) interface{} {
 
 func (sc *SetCommand) SetWhen(expr Expression) {
 	sc.When = expr
+}
+
+func (sc *SetCommand) SetAsync(async bool) {
+	sc.Async = async
+}
+
+func (sc *SetCommand) IsAsync() bool {
+	return sc.Async
 }

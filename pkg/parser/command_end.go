@@ -7,8 +7,9 @@ var (
 )
 
 type EndCommand struct {
-	Expr Expression
-	When Expression
+	Expr  Expression
+	When  Expression
+	Async bool
 }
 
 func (ec *EndCommand) Run(l *Lexer) interface{} {
@@ -25,4 +26,12 @@ func (ec *EndCommand) Run(l *Lexer) interface{} {
 
 func (ec *EndCommand) SetWhen(expr Expression) {
 	ec.When = expr
+}
+
+func (ec *EndCommand) SetAsync(async bool) {
+	ec.Async = async
+}
+
+func (ec *EndCommand) IsAsync() bool {
+	return ec.Async
 }

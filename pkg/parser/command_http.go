@@ -22,6 +22,7 @@ type HttpCommand struct {
 	VerifySSL       bool
 	When            Expression
 	Into            string
+	Async           bool
 }
 
 type HttpResult struct {
@@ -184,6 +185,14 @@ func (hc *HttpCommand) SetWhen(expr Expression) {
 
 func (hc *HttpCommand) SetInto(into string) {
 	hc.Into = into
+}
+
+func (hc *HttpCommand) SetAsync(async bool) {
+	hc.Async = async
+}
+
+func (hc *HttpCommand) IsAsync() bool {
+	return hc.Async
 }
 
 type HttpCommandParam struct {
