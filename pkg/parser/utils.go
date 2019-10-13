@@ -101,6 +101,10 @@ var typeMap = map[reflect.Kind]string{
 }
 
 func IsTypeOf(obj interface{}, typeName string) bool {
+	if obj == nil {
+		return false
+	}
+
 	kind := reflect.TypeOf(obj).Kind()
 
 	typeName = strings.ToLower(typeName)

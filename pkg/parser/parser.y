@@ -146,6 +146,7 @@ TYPE
 	cmd_command
 	echo_command
 	command_cond
+	comm_in_loop
 
 %union{
 	expression Expression
@@ -183,32 +184,12 @@ microspector			:
 						}
 					}
 				}
-				| microspector comm_in_loop
 
 
-comm_in_loop			:
-				LOOP variable IN variable command_list ENDLOOP
-				{
-					rng := $4.Evaluate(yylex.(*Lexer)).([]interface{})
-					for _,val := range rng{
-					yylex.(*Lexer).GlobalVars[$2.Name] = val
-						for _,cm := range $5{
-							yylex.(*Lexer).wg.Add(1)
-							if cm.IsAsync() {
-							  go cm.Run(yylex.(*Lexer))
-							}else{
-								r:= cm.Run(yylex.(*Lexer))
-								if r == ErrStopExecution{
-									return -1
-								}
-							}
-						}
-					}
-
-				}
 
 
-command_list			: command_cond
+command_list			:
+				command_cond
 				{
 					$$ = append($$,$1)
 				}
@@ -266,6 +247,7 @@ command				:
                                 |sleep_command
                                 |cmd_command
                                 |echo_command
+                                |comm_in_loop
 
 set_command			:
 				SET variable expr
@@ -371,6 +353,16 @@ http_command_param		:
 					}
 				}
 
+comm_in_loop			:
+				LOOP variable IN variable command_list ENDLOOP
+				{
+					$$ = &LoopCommand{
+						Var : $2,
+						In : $4,
+						Commands : $5,
+					}
+
+				}
 
 debug_command			: DEBUG multi_expressions
 				{
@@ -419,7 +411,7 @@ multi_expressions		: expr
 				{
 					$$.Values = append($$.Values,$1)
 				}
-				| comma_separated_expressions  expr
+				| multi_expressions  expr
 				{
 					$$.Values = append($$.Values,$2)
 				}

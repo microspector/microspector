@@ -577,7 +577,11 @@ func TestParser_Loop(t *testing.T) {
 set array [1,2,3,4,5]
 
 loop a in array
-must a equals 6
+	loop b in array
+		loop c in array
+			must c equals 6
+		endloop
+	endloop
 endloop
 
 loop a in array
@@ -590,7 +594,7 @@ set b a
 
 	Run(l)
 
-	assert.Equal(t, l.State.Must.Fail, 5)
+	assert.Equal(t, l.State.Must.Fail, 125)
 	assert.Equal(t, l.State.Must.Success, 5)
 	assert.Equal(t, l.GlobalVars["b"], int64(5))
 }
