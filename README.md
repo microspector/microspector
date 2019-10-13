@@ -213,6 +213,24 @@ set hash_md5(rand_hex) # b487c7f25df1575cdf73fa3a213c4026
 These functions are also template functions, we will make other go template builtin functions and some more reachable in this context.
 We are not considering allowing function defining yet since it is not a programming language but we will extend helper functions or allowing plugins to extend functions in future
 
+#### LOOP
+Microspector supports LOOPS through any type of array
+```bash
+SET myArray [1,2,3,4,5,6]
+LOOP item IN myArray
+    ECHO  "Hello %d\n" item
+ENDLOOP
+```
+
+Output:
+```bash
+Hello 1
+Hello 2
+Hello 3
+Hello 4
+Hello 5
+Hello 6
+```
 
 #### Reaching stats at runtime
 At the end of the execution, microspector provides some stats about assertions called `State`

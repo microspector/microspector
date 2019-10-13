@@ -16,7 +16,7 @@ func (ec *EchoCommand) Run(l *Lexer) interface{} {
 
 		params := make([]interface{}, len(ec.Params.Values))
 		for x, a := range ec.Params.Values {
-			params[x] = fmt.Sprintf("%v", a.Evaluate(l))
+			params[x] = a.Evaluate(l)
 		}
 
 		fmt.Printf(fmt.Sprintf("%v", ec.Expr.Evaluate(l)), params...)
