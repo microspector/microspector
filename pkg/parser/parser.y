@@ -219,6 +219,7 @@ command_list			: command_cond
 				}
 
 
+
 command_cond			:
 				command WHEN predicate_expr
 				{

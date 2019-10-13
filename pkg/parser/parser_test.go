@@ -589,4 +589,3 @@ set b a
 	assert.Equal(t, l.State.Must.Success, 5)
 	assert.Equal(t, l.GlobalVars["b"], int64(5))
 }
-

@@ -11,7 +11,7 @@ type CmdCommand struct {
 	Params ExprArray
 	When   Expression
 	Into   string
-	Async bool
+	Async  bool
 }
 
 func (cc *CmdCommand) Run(l *Lexer) interface{} {
@@ -59,4 +59,3 @@ func (cc *CmdCommand) SetAsync(async bool) {
 func (cc *CmdCommand) IsAsync() bool {
 	return cc.Async
 }
-
