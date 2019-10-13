@@ -192,11 +192,11 @@ command_cond			:
 					$$ = $1
 				}
 				|
-				command WHEN predicate_expr INTO variable
+				command INTO variable WHEN predicate_expr
 				{
 
-					 $1.SetWhen($3)
-					 $1.(IntoCommand).SetInto($5.Name)
+					 $1.SetWhen($5)
+					 $1.(IntoCommand).SetInto($3.Name)
 					 $$ = $1
 				}
 				|
