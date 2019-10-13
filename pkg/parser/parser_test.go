@@ -428,7 +428,7 @@ func TestParser_NotOperator(t *testing.T) {
 	l := Parse(`
 SET {{ Bool }} true
 SET $Microspector "Microspector"
-MUST {{ Bool }} not equals false
+MUST {{ Bool }} != false
 MUST {{ Bool }} equals true
 MUST $Microspector CONTAIN "Microspector"
 MUST $Microspector NOT contain "mcrospector"

@@ -129,7 +129,9 @@ func ToVariableName(str string) string {
 }
 
 func runop(left, operator, right interface{}) (eq bool) {
-
+	if operator == "!=" {
+		operator = "NOTEQUALS"
+	}
 	op := strings.TrimPrefix(strings.ToUpper(operator.(string)), "NOT")
 	not := op != operator
 

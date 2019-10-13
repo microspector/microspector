@@ -660,6 +660,10 @@ operator 	:
 		{
 			$$  = "NOT" + $2.(string)
 		}
+		| '!' operator
+		{
+			$$  = "NOT" + $2.(string)
+		}
 
 operator_math	:
 		'*'
