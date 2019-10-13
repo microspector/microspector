@@ -164,7 +164,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	if reqErr == nil {
 		defer r.Body.Close()
 		if r != nil && r.TLS != nil {
-			fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
+			//fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
 		}
 	}
 
