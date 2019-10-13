@@ -185,13 +185,14 @@ run_comm			:
 					go $2.Run(yylex.(*Lexer))
 				}
 
-command_cond			: command WHEN predicate_expr
+command_cond			:
+				command WHEN predicate_expr
 				{
-					$$ = $1
 					$$.SetWhen($3)
+					$$ = $1
 				}
 				|
-				command WHEN expr INTO variable
+				command WHEN predicate_expr INTO variable
 				{
 
 					 $1.SetWhen($3)
@@ -501,6 +502,7 @@ math_expression	:
 predicate_expr	:
 		variable
 		{
+			// convert variable to a predicate expression
 			$$ = &ExprPredicate{
 				Left: &ExprVariable{
 					Name: $1.Name,

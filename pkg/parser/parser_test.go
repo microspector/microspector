@@ -498,6 +498,7 @@ MUST "onestring2" IN {{ Array }}
 MUST {{ Array }} CONTAIN "onestring"
 MUST NOT "onestring2" IN {{ Array }}
 MUST NOT {{ Array }} CONTAIN  "onestring2"
+MUST NOT {{ Array }} CONTAIN  "onestring2" WHEN false #this command should never work, so, it wont affect the state.
 `)
 
 	Run(l)
@@ -527,4 +528,24 @@ set is_state_reachable State.Must.Success == 2
 	assert.Equal(t, l.GlobalVars["must_success"], 2)
 	assert.Equal(t, l.GlobalVars["is_state_reachable"], true)
 
+}
+
+func TestParser_When(t *testing.T) {
+	l := Parse(`
+set x true when 1==1
+must x equals true
+should x equals true
+should x equals false when 1==2
+must not x equals false when x == true
+set must_success State.Must.Success
+set must_success State.Must.Success+1 when false
+set is_state_reachable State.Must.Success == 2
+`)
+
+	Run(l)
+
+	assert.Equal(t, l.State.Must.Success, 2)
+	assert.Equal(t, l.State.Should.Success, 1)
+	assert.Equal(t, l.GlobalVars["must_success"], 2)
+	assert.Equal(t, l.GlobalVars["is_state_reachable"], true)
 }

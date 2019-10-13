@@ -108,7 +108,7 @@ state 4 // ASYNC
     assert_command   goto state 10
     cmd_command      goto state 15
     command          goto state 5
-    command_cond     goto state 158
+    command_cond     goto state 157
     debug_command    goto state 8
     echo_command     goto state 16
     end_command      goto state 9
@@ -122,7 +122,7 @@ state 4 // ASYNC
 state 5 // END [$end]
 
     5 command_cond: command . WHEN predicate_expr  // assoc %left, prec 2
-    6 command_cond: command . WHEN expr INTO variable
+    6 command_cond: command . WHEN predicate_expr INTO variable
     7 command_cond: command . INTO variable
     8 command_cond: command .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
@@ -894,7 +894,7 @@ state 33 // DEBUG '[' ']' [$end]
     TYPE        reduce using rule 58 (expr)
     WHEN        reduce using rule 58 (expr)
 
-state 34 // MUST IDENTIFIER '(' ')' [$end]
+state 34 // SHOULD IDENTIFIER '(' ')' [$end]
 
    59 expr: func_call .  [$end, '$', '%', '(', ')', ',', '-', '.', '[', ']', '{', AND, ASSERT, ASYNC, BODY, CMD, CONTAIN, CONTAINS, DEBUG, ECHO, END, EQUAL, EQUALS, FLOAT, FOLLOW, GE, GT, HEADER, HTTP, IDENTIFIER, IN, INCLUDE, INSECURE, INTEGER, INTO, IS, ISNOT, LE, LT, MATCH, MATCHES, MUST, NOFOLLOW, NOT, NOTEQUAL, NOTEQUALS, OR, SECURE, SET, SHOULD, SLEEP, STARTSWITH, STARTWITH, STRING, TYPE, WHEN]
 
@@ -4740,7 +4740,7 @@ state 150 // SET IDENTIFIER FALSE [$end]
 state 151 // END WHEN
 
     5 command_cond: command WHEN . predicate_expr  // assoc %left, prec 2
-    6 command_cond: command WHEN . expr INTO variable
+    6 command_cond: command WHEN . predicate_expr INTO variable
 
     '$'         shift, and goto state 44
     '%'         shift, and goto state 38
@@ -4759,7 +4759,7 @@ state 151 // END WHEN
     TYPE        shift, and goto state 35
 
     array            goto state 33
-    expr             goto state 155
+    expr             goto state 89
     func_call        goto state 34
     math_expression  goto state 32
     predicate_expr   goto state 154
@@ -4796,6 +4796,7 @@ state 153 // END INTO IDENTIFIER [$end]
 state 154 // END WHEN FALSE
 
     5 command_cond: command WHEN predicate_expr .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]  // assoc %left, prec 2
+    6 command_cond: command WHEN predicate_expr . INTO variable
    77 predicate_expr: predicate_expr . AND predicate_expr
    78 predicate_expr: predicate_expr . OR predicate_expr  // assoc %left, prec 1
    80 predicate_expr: predicate_expr . operator expr
@@ -4817,6 +4818,7 @@ state 154 // END WHEN FALSE
     HTTP        reduce using rule 5 (command_cond)
     IN          shift, and goto state 112
     INCLUDE     reduce using rule 5 (command_cond)
+    INTO        shift, and goto state 155
     IS          shift, and goto state 109
     ISNOT       shift, and goto state 110
     LE          shift, and goto state 102
@@ -4836,47 +4838,19 @@ state 154 // END WHEN FALSE
 
     operator  goto state 94
 
-state 155 // END WHEN FLOAT
+state 155 // END WHEN FALSE INTO
 
-    6 command_cond: command WHEN expr . INTO variable
-   76 predicate_expr: expr . operator expr
-   79 predicate_expr: expr . operator predicate_expr
-
-    CONTAIN     shift, and goto state 104
-    CONTAINS    shift, and goto state 103
-    EQUAL       shift, and goto state 96
-    EQUALS      shift, and goto state 95
-    GE          shift, and goto state 100
-    GT          shift, and goto state 99
-    IN          shift, and goto state 112
-    INTO        shift, and goto state 156
-    IS          shift, and goto state 109
-    ISNOT       shift, and goto state 110
-    LE          shift, and goto state 102
-    LT          shift, and goto state 101
-    MATCH       shift, and goto state 108
-    MATCHES     shift, and goto state 107
-    NOT         shift, and goto state 111
-    NOTEQUAL    shift, and goto state 98
-    NOTEQUALS   shift, and goto state 97
-    STARTSWITH  shift, and goto state 105
-    STARTWITH   shift, and goto state 106
-
-    operator  goto state 117
-
-state 156 // END WHEN FLOAT INTO
-
-    6 command_cond: command WHEN expr INTO . variable
+    6 command_cond: command WHEN predicate_expr INTO . variable
 
     '$'         shift, and goto state 44
     '{'         shift, and goto state 43
     IDENTIFIER  shift, and goto state 66
 
-    variable  goto state 157
+    variable  goto state 156
 
-state 157 // END WHEN FLOAT INTO IDENTIFIER
+state 156 // END WHEN FALSE INTO IDENTIFIER
 
-    6 command_cond: command WHEN expr INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
+    6 command_cond: command WHEN predicate_expr INTO variable .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 
     $end     reduce using rule 6 (command_cond)
     ASSERT   reduce using rule 6 (command_cond)
@@ -4892,7 +4866,7 @@ state 157 // END WHEN FLOAT INTO IDENTIFIER
     SHOULD   reduce using rule 6 (command_cond)
     SLEEP    reduce using rule 6 (command_cond)
 
-state 158 // ASYNC END [$end]
+state 157 // ASYNC END [$end]
 
     4 run_comm: ASYNC command_cond .  [$end, ASSERT, ASYNC, CMD, DEBUG, ECHO, END, HTTP, INCLUDE, MUST, SET, SHOULD, SLEEP]
 

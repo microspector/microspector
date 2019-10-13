@@ -11,7 +11,9 @@ type EchoCommand struct {
 
 func (ec *EchoCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	fmt.Printf(ec.String, ec.Values...)
+	if ec.When == nil || IsTrue(ec.When.Evaluate(l)) {
+		fmt.Printf(ec.String, ec.Values...)
+	}
 	return nil
 }
 

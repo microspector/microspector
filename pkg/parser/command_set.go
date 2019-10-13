@@ -12,18 +12,23 @@ type SetCommand struct {
 	When  Expression
 }
 
-func (hc *SetCommand) Run(l *Lexer) interface{} {
+func (sc *SetCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	if strings.Contains(hc.Name, ".") {
+
+	if sc.When != nil && !IsTrue(sc.When.Evaluate(l)) {
+		return nil
+	}
+
+	if strings.Contains(sc.Name, ".") {
 		panic(fmt.Errorf("nested variables are not supported yet"))
 	}
 
-	if hc.Name == "State" {
+	if sc.Name == "State" {
 		panic(fmt.Errorf(".State is a reserved variable for current state of the execution context"))
 	}
 
 	var i interface{}
-	i = hc.Value
+	i = sc.Value
 
 	for {
 		t := reflect.TypeOf(i)
@@ -36,10 +41,10 @@ func (hc *SetCommand) Run(l *Lexer) interface{} {
 			break
 		}
 	}
-	l.GlobalVars[hc.Name] = i
+	l.GlobalVars[sc.Name] = i
 	return i
 }
 
-func (hc *SetCommand) SetWhen(expr Expression) {
-	hc.When = expr
+func (sc *SetCommand) SetWhen(expr Expression) {
+	sc.When = expr
 }

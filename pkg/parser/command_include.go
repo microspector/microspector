@@ -14,16 +14,19 @@ type IncludeCommand struct {
 func (ic *IncludeCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
-	bytes, err := ioutil.ReadFile(ic.File)
+	if ic.When == nil || IsTrue(ic.When.Evaluate(l)) {
 
-	if err != nil {
-		fmt.Println(fmt.Errorf("error including file: %s", err))
-		os.Exit(1)
+		bytes, err := ioutil.ReadFile(ic.File)
+
+		if err != nil {
+			fmt.Println(fmt.Errorf("error including file: %s", err))
+			os.Exit(1)
+		}
+		lex := Parse(string(bytes))
+		lex.State = l.State
+		lex.GlobalVars = l.GlobalVars
+		Run(lex)
 	}
-	lex := Parse(string(bytes))
-	lex.State = l.State
-	lex.GlobalVars = l.GlobalVars
-	Run(lex)
 
 	return nil
 

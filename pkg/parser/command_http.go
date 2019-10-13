@@ -77,6 +77,10 @@ func NewFromResponse(response *http.Response) HttpResult {
 func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
 
+	if hc.When != nil && !IsTrue(hc.When.Evaluate(l)) {
+		return nil
+	}
+
 	urlStr := hc.Url.(Expression).Evaluate(l).(string)
 	_, urlError := url.Parse(urlStr)
 
