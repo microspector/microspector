@@ -235,17 +235,26 @@ Hello 6
 #### Reaching stats at runtime
 At the end of the execution, microspector provides some stats about assertions called `State`
 ```go
-type Stats struct {
-	Assert Stat
-	Must   Stat
-	Should Stat
+package parser
+
+type State struct {
+    Assert  struct {
+                Fail     int
+                Success  int
+                Messages []string
+            }
+    Must    struct {
+                Fail     int
+                Success  int
+                Messages []string
+            }
+    Should  struct {
+                Fail     int
+                Success  int
+                Messages []string
+            }
 }
 
-type Stat struct {
-	Fail     int
-	Success  int
-	Messages []string
-}
 ```
 where you have failed count for must,should and assert commands and the messages. Now, they are reachable at runtime too like;
 ```bash
