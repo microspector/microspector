@@ -553,18 +553,23 @@ set is_state_reachable State.Must.Success == 2
 func TestParser_AssertMessage(t *testing.T) {
 	l := Parse(`
 set x false when 1==1
-must x equals true "x is not true must"
-should x equals true "x is not true should"
+must x equals true "x must be true"
+should x equals true "x should be true"
+set mustFailCount State.Must.Fail
+set shouldFailCount State.Should.Fail
 `)
 
 	Run(l)
 
 	assert.Equal(t, l.State.Must.Fail, 1)
+	assert.Equal(t, l.GlobalVars["mustFailCount"], 1)
+	assert.Equal(t, l.GlobalVars["shouldFailCount"], 1)
 	assert.Equal(t, l.State.Should.Fail, 1)
 	assert.Equal(t, len(l.State.Should.Messages), 1)
+	assert.Equal(t, len(l.State.Should.Messages), 1)
 	assert.Equal(t, len(l.State.Must.Messages), 1)
-	assert.Equal(t, l.State.Must.Messages[0], "x is not true must")
-	assert.Equal(t, l.State.Should.Messages[0], "x is not true should")
+	assert.Equal(t, l.State.Must.Messages[0], "x must be true")
+	assert.Equal(t, l.State.Should.Messages[0], "x should be true")
 }
 
 func TestParser_Loop(t *testing.T) {
