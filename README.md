@@ -216,20 +216,29 @@ We are not considering allowing function defining yet since it is not a programm
 #### LOOP
 Microspector supports LOOPS through any type of array
 ```bash
-SET myArray [1,2,3,4,5,6]
-LOOP item IN myArray
-    ECHO  "Hello %d\n" item
-ENDLOOP
+set array [1,2,3,4,5,[6.1,6.2,6.3,6.4,6.5]]
+
+loop a in array
+    echo "a:%d\n" a when a is integer
+    loop b in a
+       echo "b:%.1f\n"  b
+    endloop when a is array
+endloop
+
 ```
 
 Output:
 ```bash
-Hello 1
-Hello 2
-Hello 3
-Hello 4
-Hello 5
-Hello 6
+a:1
+a:2
+a:3
+a:4
+a:5
+b:6.1
+b:6.2
+b:6.3
+b:6.4
+b:6.5
 ```
 
 #### Reaching stats at runtime
