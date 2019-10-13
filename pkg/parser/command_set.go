@@ -42,6 +42,7 @@ func (sc *SetCommand) Run(l *Lexer) interface{} {
 			break
 		}
 	}
+
 	l.GlobalVars[sc.Name] = i
 	return i
 }

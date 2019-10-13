@@ -4,6 +4,6 @@ type ExprInteger struct {
 	Val int64
 }
 
-func (es *ExprInteger) Evaluate(lexer *Lexer) interface{} {
-	return es.Val
+func (ei *ExprInteger) Evaluate(lexer *Lexer) interface{} {
+	return ei.Val
 }

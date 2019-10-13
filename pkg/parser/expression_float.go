@@ -4,6 +4,6 @@ type ExprFloat struct {
 	Val float64
 }
 
-func (es *ExprFloat) Evaluate(lexer *Lexer) interface{} {
-	return es.Val
+func (ef *ExprFloat) Evaluate(lexer *Lexer) interface{} {
+	return ef.Val
 }

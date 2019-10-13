@@ -276,16 +276,10 @@ it is restricted to set a variable called `State` in favor context state.
 # [Contributing](CONTRIBUTING.md)
 
 ## TODO
-- [x] ~~Support Including files~~
-- [x] ~~Support Sleep~~
-- [x] ~~Support `IS` operator to check type of a var in json~~
-- [x] ~~Support arrays~~
-- [x] ~~Support `IN` operator to  check elements in arrays~~
 - [ ] Support JWT
 - [ ] Support date-time operations and duration units
 - [ ] Print a better summary of the execution
-- [x] ~~Make stats(State) reachable in script~~
 - [ ] Support setting nested variables
 
 ## Known issues
-- [x] ~~any integer type converts into float64 during querying items from variables because of a weird behavior of~~ (Unmarshalling)[https://golang.org/pkg/encoding/json/#Unmarshal]
+-  

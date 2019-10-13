@@ -3,7 +3,6 @@ package parser
 import (
 	"fmt"
 	"github.com/microspector/microspector/pkg/lookup"
-	"github.com/microspector/microspector/pkg/templating"
 	"reflect"
 	"regexp"
 	"strconv"
@@ -132,7 +131,7 @@ func ToVariableName(str string) string {
 	return strings.Join(segments, "")
 }
 
-func runop(left, operator, right interface{}) (eq bool) {
+func RunOp(left, operator, right interface{}) (eq bool) {
 	if operator == "!=" {
 		operator = "NOTEQUALS"
 	}
@@ -355,7 +354,7 @@ func bothAreTime(left, right interface{}) bool {
 }
 
 func funcCall(funcName string, args []interface{}) interface{} {
-	if x, ok := templating.Functions[funcName]; ok {
+	if x, ok := Functions[funcName]; ok {
 		vals := make([]reflect.Value, len(args))
 
 		for index, arg := range args {

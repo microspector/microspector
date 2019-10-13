@@ -7,9 +7,9 @@ type ExprPredicate struct {
 	Not      bool
 }
 
-func (p *ExprPredicate) Evaluate(lexer *Lexer) interface{} {
-	r := runop(p.Left.Evaluate(lexer), p.Operator, p.Right.Evaluate(lexer))
-	if p.Not {
+func (ep *ExprPredicate) Evaluate(lexer *Lexer) interface{} {
+	r := RunOp(ep.Left.Evaluate(lexer), ep.Operator, ep.Right.Evaluate(lexer))
+	if ep.Not {
 		return !r
 	}
 	return r
