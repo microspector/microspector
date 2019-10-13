@@ -8,12 +8,17 @@ type MustCommand struct {
 
 func (mc *MustCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	r := IsTrue(mc.Expr.Evaluate(l))
 
-	if r {
-		l.State.Must.Success++
-	} else {
-		l.State.Must.Fail++
+	r := false
+
+	if mc.When == nil || IsTrue(mc.When.Evaluate(l)) {
+		r = IsTrue(mc.Expr.Evaluate(l))
+
+		if r {
+			l.State.Must.Success++
+		} else {
+			l.State.Must.Fail++
+		}
 	}
 
 	return r

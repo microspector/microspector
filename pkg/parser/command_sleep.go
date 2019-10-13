@@ -12,7 +12,9 @@ type SleepCommand struct {
 
 func (sc *SleepCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	time.Sleep(time.Duration(sc.Millisecond) * time.Millisecond)
+	if sc.When == nil || IsTrue(sc.When.Evaluate(l)) {
+		time.Sleep(time.Duration(sc.Millisecond) * time.Millisecond)
+	}
 	return nil
 
 }

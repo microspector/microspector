@@ -9,12 +9,15 @@ type ShouldCommand struct {
 
 func (sc *ShouldCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	r := IsTrue(sc.Expr.Evaluate(l))
+	r := false
 
-	if r {
-		l.State.Should.Success++
-	} else {
-		l.State.Should.Fail++
+	if sc.When == nil || IsTrue(sc.When.Evaluate(l)) {
+		r = IsTrue(sc.Expr.Evaluate(l))
+		if r {
+			l.State.Should.Success++
+		} else {
+			l.State.Should.Fail++
+		}
 	}
 
 	return r

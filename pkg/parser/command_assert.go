@@ -2,18 +2,22 @@ package parser
 
 type AssertCommand struct {
 	Command
-	Expr   Expression
-	When   Expression
+	Expr Expression
+	When Expression
 }
 
 func (ac *AssertCommand) Run(l *Lexer) interface{} {
 	defer l.wg.Done()
-	r := IsTrue(ac.Expr.Evaluate(l))
+	r := false
 
-	if r {
-		l.State.Assert.Success++
-	} else {
-		l.State.Assert.Fail++
+	if ac.When == nil || IsTrue(ac.When.Evaluate(l)) {
+		r = IsTrue(ac.Expr.Evaluate(l))
+
+		if r {
+			l.State.Assert.Success++
+		} else {
+			l.State.Assert.Fail++
+		}
 	}
 	return r
 }
