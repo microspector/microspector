@@ -241,6 +241,24 @@ b:6.4
 b:6.5
 ```
 
+#### IF/ELSE
+```bash
+
+set a rand(5,15)
+
+if a == 10
+    echo "a is %d \n" a
+else
+    echo "a is not 10 it is %d \n" a
+    if a < 10
+        echo "it is less than 10 \n"
+    else
+        echo "it is grater than 10 \n"
+    endif
+endif
+
+```
+
 #### Reaching stats at runtime
 At the end of the execution, microspector provides some stats about assertions called `State`
 ```go
