@@ -374,6 +374,18 @@ comm_in_loop			:
 					}
 
 				}
+				|
+				LOOP variable IN variable WHEN predicate_expr command_list ENDLOOP
+				{
+					$$ = &LoopCommand{
+						Var : $2,
+						In : $4,
+						Commands : $7,
+						When: $6,
+					}
+
+				}
+
 
 debug_command			: DEBUG multi_expressions
 				{

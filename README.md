@@ -220,9 +220,9 @@ set array [1,2,3,4,5,[6.1,6.2,6.3,6.4,6.5]]
 
 loop a in array
     echo "a:%d\n" a when a is integer
-    loop b in a
+    loop b in a when a is array
        echo "b:%.1f\n"  b
-    endloop when a is array
+    endloop 
 endloop
 
 ```
