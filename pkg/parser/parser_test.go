@@ -635,10 +635,15 @@ if overriden == false
 else
 	set ifcheckworked false
 endif
+
+if ifcheckworkedagain == true
+	set okallworked true
+endif
 `)
 
 	Run(l)
 	assert.Equal(t, l.GlobalVars["overriden"], false)
 	assert.Equal(t, l.GlobalVars["ifcheckworked"], true)
 	assert.Equal(t, l.GlobalVars["ifcheckworkedagain"], true)
+	assert.Equal(t, l.GlobalVars["okallworked"], true)
 }
