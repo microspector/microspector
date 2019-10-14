@@ -108,9 +108,9 @@ TYPE
 %type <val> operator operator_math
 %type <cmd_list> command_list
 
-%left ANR OR
+%left AND OR
 
-%left EQUALS
+%right EQUALS
       EQUAL
       NOTEQUALS
       NOTEQUAL
@@ -122,7 +122,6 @@ TYPE
       CONTAIN
       STARTSWITH
       STARTWITH
-      WHEN
       MATCHES
       MATCH
       IS
@@ -548,20 +547,6 @@ math_expression	:
 
 
 predicate_expr	:
-		variable
-		{
-			// convert variable to a predicate expression
-			$$ = &ExprPredicate{
-				Left: &ExprVariable{
-					Name: $1.Name,
-				},
-				Operator: "equals",
-				Right: &ExprBool{
-					Val : true,
-				},
-			}
-		}
-		|
 		'(' predicate_expr ')'
 		{
 			$$ = $2
@@ -702,16 +687,16 @@ operator 	:
 		|MATCH
 		|IS
 		|ISNOT
-		|NOT
 		|IN
-		| NOT operator
+		|NOT operator
 		{
-			$$  = "NOT" + $2.(string)
+		   	$$  = "NOT" + $2.(string)
 		}
-		| '!' operator
+		| IS NOT
 		{
-			$$  = "NOT" + $2.(string)
+			 $$  = "ISNOT"
 		}
+
 
 operator_math	:
 		'*'
