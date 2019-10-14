@@ -295,6 +295,8 @@ it is restricted to set a variable called `State` in favor context state.
 
 ## TODO
 - [ ] Support JWT
+- [ ] Support ICM Protocol
+- [ ] Support TCP read/write
 - [ ] Support date-time operations and duration units
 - [ ] Print a better summary of the execution
 - [ ] Support setting nested variables
