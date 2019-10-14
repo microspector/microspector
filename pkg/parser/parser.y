@@ -501,13 +501,15 @@ math_expression	:
 		{
 			$$ = $2
 		}
-		| INTEGER
+		|
+		INTEGER
 		{
 			$$ = &ExprInteger{
 				Val: $1.(int64),
 			}
 		}
-		| FLOAT
+		|
+		FLOAT
 		{
 			$$ = &ExprFloat{
 				Val : $1.(float64),
