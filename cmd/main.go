@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"github.com/microspector/microspector/pkg/parser"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
@@ -62,14 +61,7 @@ func main() {
 	}
 
 	for _, f := range files {
-
-		bytes, err := ioutil.ReadFile(f)
-
-		if err != nil {
-			fmt.Println(fmt.Errorf("error reading file: %s", err))
-			os.Exit(1)
-		}
-		lex := parser.Parse(string(bytes))
+		lex := parser.ParseFile(f)
 		if *vv {
 			fmt.Printf("%+v\n", lex)
 		}

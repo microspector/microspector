@@ -6,6 +6,8 @@ import __yyfmt__ "fmt"
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"reflect"
 	"strconv"
 	"strings"
@@ -1390,6 +1392,17 @@ yynewstate:
 		return -1
 	}
 	goto yystack /* stack new state and value */
+}
+
+func ParseFile(file string) *Lexer {
+
+	bytes, err := ioutil.ReadFile(file)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("error including file: %s", err))
+		os.Exit(1)
+	}
+	return Parse(string(bytes))
 }
 
 func Parse(text string) *Lexer {

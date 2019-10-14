@@ -7,6 +7,8 @@ import (
     "strconv"
     "fmt"
     "reflect"
+    "io/ioutil"
+    "os"
 )
 %}
 
@@ -722,6 +724,17 @@ operator_math	:
 
 
 %%
+
+func ParseFile(file string) *Lexer{
+
+	bytes, err := ioutil.ReadFile(file)
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("error including file: %s", err))
+		os.Exit(1)
+	}
+	return  Parse(string(bytes))
+}
 
 func Parse(text string) *Lexer {
 
