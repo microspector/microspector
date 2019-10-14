@@ -44,6 +44,9 @@ ASYNC
 ECHO
 LOOP
 ENDLOOP
+ELSE
+ENDIF
+IF
 
 //http command tokens
 %token <val>
@@ -148,6 +151,7 @@ TYPE
 	echo_command
 	command_cond
 	comm_in_loop
+	comm_in_if
 
 %union{
 	expression Expression
@@ -259,6 +263,7 @@ command				:
                                 |cmd_command
                                 |echo_command
                                 |comm_in_loop
+                                |comm_in_if
 
 set_command			:
 				SET variable expr
@@ -382,6 +387,26 @@ comm_in_loop			:
 						In : $4,
 						Commands : $7,
 						When: $6,
+					}
+
+				}
+comm_in_if			:
+				IF predicate_expr command_list ENDIF
+				{
+					$$ = &IfCommand{
+						Predicate : $2,
+						IfCommands : $3,
+						ElseCommands: nil,
+					}
+
+				}
+				|
+				IF predicate_expr command_list ELSE command_list ENDIF
+				{
+					$$ = &IfCommand{
+						Predicate : $2,
+						IfCommands : $3,
+						ElseCommands: $5,
 					}
 
 				}

@@ -616,3 +616,29 @@ func TestParser_Include(t *testing.T) {
 	assert.Equal(t, l.State.Must.Fail, 6)
 	assert.Equal(t, l.State.Must.Success, 0)
 }
+
+func TestParser_If(t *testing.T) {
+	l := Parse(`
+if false
+	set overriden true
+else
+	set overriden false
+endif
+
+if overriden == false
+	set ifcheckworked true
+	if ifcheckworked == true
+		set ifcheckworkedagain true
+	else 
+		set ifcheckworkedaagain false
+	endif
+else
+	set ifcheckworked false
+endif
+`)
+
+	Run(l)
+	assert.Equal(t, l.GlobalVars["overriden"], false)
+	assert.Equal(t, l.GlobalVars["ifcheckworked"], true)
+	assert.Equal(t, l.GlobalVars["ifcheckworkedagain"], true)
+}

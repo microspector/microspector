@@ -70,6 +70,9 @@ var keywords = map[string]int{
 	"ECHO":       ECHO,
 	"LOOP":       LOOP,
 	"ENDLOOP":    ENDLOOP,
+	"IF":         IF,
+	"ELSE":       ELSE,
+	"ENDIF":      ENDIF,
 }
 
 func NewScanner(r io.Reader) *Scanner {
