@@ -242,13 +242,10 @@ func (s *Scanner) scanQuotedString(delimiter rune) (tok Token) {
 				}
 
 				continue
-			} else {
-				panic("unescaped backslash")
 			}
 		}
 
 		if ch == delimiter {
-			//s.read() //consume delimiter
 			break
 		}
 
