@@ -3,8 +3,10 @@ package parser
 import (
 	"fmt"
 	"gotest.tools/assert"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 	"time"
 )
@@ -597,4 +599,20 @@ set b a
 	assert.Equal(t, l.State.Must.Fail, 125)
 	assert.Equal(t, l.State.Must.Success, 5)
 	assert.Equal(t, l.GlobalVars["b"], int64(5))
+}
+
+func TestParser_Include(t *testing.T) {
+
+	bytes, err := ioutil.ReadFile("../../test/main.msf")
+
+	if err != nil {
+		fmt.Println(fmt.Errorf("error reading file: %s", err))
+		os.Exit(1)
+	}
+	l := Parse(string(bytes))
+
+	Run(l)
+
+	assert.Equal(t, l.State.Must.Fail, 6)
+	assert.Equal(t, l.State.Must.Success, 0)
 }

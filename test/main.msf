@@ -1,0 +1,4 @@
+set elements [1,2,3,4,5,6]
+loop e in elements
+    include "../../test/sub.msf"
+endloop
