@@ -12,7 +12,7 @@ runv:
 	go run ./cmd --file="./tasks/main.msf" --verbose
 
 test:
-	go test ${PWD}/pkg/parser
+	go test -race ${PWD}/pkg/parser
 
 trainyacc:
 	goyacc -xegen ./pkg/parser/training.dat -o ./pkg/parser/parser.go ./pkg/parser/parser.y

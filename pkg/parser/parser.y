@@ -763,10 +763,10 @@ func ParseFile(file string) *Lexer{
 func Parse(text string) *Lexer {
 
 	l := &Lexer{
-	 	tokens : make(chan Token),
 	 	State:      NewStats(),
 		GlobalVars: map[string]interface{}{},
 		wg: &sync.WaitGroup{},
+		Scanner : NewScanner(strings.NewReader(strings.TrimSpace(text))),
 	}
 
 	l.GlobalVars["State"] = &l.State
@@ -775,12 +775,6 @@ func Parse(text string) *Lexer {
 		yyDebug = 3
 	}
 
-	go func() {
-		s := NewScanner(strings.NewReader(strings.TrimSpace(text)))
-		for {
-		    l.tokens <- s.Scan()
-		}
-	}()
 
 	return l
 }

@@ -28,30 +28,26 @@ func (t *Token) String() string {
 }
 
 type Lexer struct {
-	tokens     chan Token
 	GlobalVars map[string]interface{}
 	State      Stats
 	wg         *sync.WaitGroup
+	Scanner    *Scanner
 }
 
 func (l *Lexer) All() []Token {
 	tokens := make([]Token, 0)
-
 	for {
-
-		v := <-l.tokens
+		v := l.Scanner.Scan()
 		if v.Type == EOF || v.Type == -1 {
 			break
 		}
-
 		tokens = append(tokens, v)
 	}
-
 	return tokens
 }
 
 func (l *Lexer) Lex(lval *yySymType) int {
-	v := <-l.tokens
+	v :=  l.Scanner.Scan()
 	if v.Type == EOF || v.Type == -1 {
 		return 0
 	}

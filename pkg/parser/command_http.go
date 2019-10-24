@@ -126,8 +126,8 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	}
 
 	dialer := &net.Dialer{
-		Timeout:   30 * time.Second,
-		KeepAlive: 30 * time.Second,
+		Timeout:   10 * time.Second,
+		KeepAlive: 10 * time.Second,
 	}
 
 	dialDepth := 1
@@ -139,6 +139,7 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 	client := &http.Client{
 		Timeout: 30 * time.Second,
 		Transport: &http.Transport{
+			DisableKeepAlives :true,
 			TLSClientConfig: conf,
 			DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
 				// redirect all connections to host specified in url
@@ -164,12 +165,14 @@ func (hc *HttpCommand) Run(l *Lexer) interface{} {
 
 	if reqErr == nil {
 		defer r.Body.Close()
+		client.CloseIdleConnections()
 		if r != nil && r.TLS != nil {
 			//fmt.Println("r.TLS.PeerCertificates[0].NotAfter", r.TLS.PeerCertificates[0].NotAfter)
 		}
 	}
 
 	resp := NewFromResponse(r)
+	r = nil
 	resp.Took = elapsed
 	if reqErr != nil {
 		resp.Error = reqErr.Error()
