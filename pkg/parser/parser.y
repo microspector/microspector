@@ -582,6 +582,12 @@ math_expression	:
 				Name: $1.Name,
 			}
 		}
+		|
+		func_call
+		{
+			$$ = $1
+		}
+
 
 
 
