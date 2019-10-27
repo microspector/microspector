@@ -22,15 +22,15 @@ Usage of ./microspector:
 
 Writing a script in microspector is as simple as
 ```bash
-SET  Url  "https://microspector.com/test.json"
-HTTP GET  Url   HEADER "User-Agent:My super duper API test tool" INTO  ApiResult 
-MUST  ApiResult.Json.boolean  == true
-HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
-     HEADER "User-Agent:Microspector
+set  url  "https://microspector.com/test.json"
+http get url header "User-Agent:My super duper API test tool" into  ApiResult 
+must  ApiResult.Json.boolean  == true
+http post "https://hooks.slack.com/services/SLACK_TOKEN" 
+     header "User-Agent:Microspector
      Content-type: application/json"
-     BODY '{ "text":"Oh!:( Microspector API returns false in json.boolean, you broke it!" }'
-     INTO  SlackResult  
-     WHEN  ApiResult.Json.boolean  != true
+     body '{ "text":"Oh!:( Microspector API returns false in json.boolean, you broke it!" }'
+     into  SlackResult  
+     when  ApiResult.Json.boolean  != true
 ```
 
 ### Variables
@@ -64,9 +64,9 @@ Set command is used to define and set a variable
 
 Example:
 ```bash
-SET $Url "https://microspector.com"
-SET  Url  "https://microspector.com"
-SET  MyElements  [1,2,3,4,5,6,7,8]
+set $Url "https://microspector.com"
+set  Url  "https://microspector.com"
+set  MyElements  [1,2,3,4,5,6,7,8]
 ```
 
 
@@ -75,31 +75,31 @@ Http command takes method, url, header and body in order to make an http request
 
 Full Example:
 ```bash
-HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
-     HEADER "User-Agent:Microspector
+http post "https://hooks.slack.com/services/SLACK_TOKEN" 
+     header "User-Agent:Microspector
      Accept: application/json
      Content-Type: application/json"
-     BODY '{ "text":"Hello World!" }'
-     INTO  Result 
+     body '{ "text":"Hello World!" }'
+     into  Result 
 ```
 
 Basic Example:
 ```bash
-HTTP GET "https://microspector.com/test.json" INTO  result 
+http GET "https://microspector.com/test.json" INTO  result 
 ```
 this command basically tries to fetch the url and put an &HttpResult into result variable
 an HttpResult type has a few handy property that can be used for future commands like;
 HTTP command also has `nofollow` keyword return the first response instead of following redirection and `insecure` to skip ssl verifications
 
 ```bash
-HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN" 
-     HEADER "User-Agent:Microspector
+http post "https://hooks.slack.com/services/SLACK_TOKEN" 
+     header "User-Agent:Microspector
      Accept: application/json
      Content-Type: application/json"
-     BODY '{ "text":"Hello World!" }'
-     NOFOLLOW # or FOLLOW to follow redirection
-     INSECURE # ignore ssl errors for this call
-     INTO  Result 
+     body '{ "text":"Hello World!" }'
+     nofollow # or FOLLOW to follow redirection
+     insecure # ignore ssl errors for this call
+     into  Result 
 ```
 
 
@@ -123,55 +123,55 @@ type HttpResult struct {
 Assert is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded. Different assertion commands are just to categorize the failures.  
 Assertion commands also get a string at the end of the command to save it as messages in the assertion category to collect failure messages at the end
 ```bash
-ASSERT  result.Json.boolean equals true "boolean field in json body is not true"
-ASSERT  result.Json.boolean #both works cuz assertion does a truthy check
+assert  result.Json.boolean equals true "boolean field in json body is not true"
+assert  result.Json.boolean #both works cuz assertion does a truthy check
 ```
 
 #### MUST
 Must is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded. 
 
 ```bash
-MUST  result.StatusCode == 200 "it did not return 200, returned {{ .result.StatusCode }}"
+must result.StatusCode == 200 "it did not return 200, returned {{ .result.StatusCode }}"
 ```
 
 #### SHOULD
 Should is an assertion command, takes an expression and does a truthy check to mark it is failed or succeeded  
 
 ```bash
-SHOULD  result.Took  < 900  "loading microspector is too slow"
+should result.Took  < 900  "loading microspector is too slow"
 ```
 
 #### DEBUG
 Debug is used to printout variables with its structure, following example will just print the content to the stdout
 
 ```bash
-DEBUG  result.Content 
+debug  result.Content 
 ```
 
 #### END
 End takes optional boolean expression. It just skips if truthy fails. When its used without parameter or the given expression passes truthy check it ends the execution.
 ```bash
-END WHEN result.Json.boolean equals false
-END result.Json.boolean equals false
+end when result.Json.boolean equals false
+end result.Json.boolean equals false
 ```
 
 #### INCLUDE
 Include takes a file path as a parameter and parses in at runtime in the same context.
 ```bash
-INCLUDE "tasks/sub-commands.msf"
+include "tasks/sub-commands.msf"
 ```
 
 #### SLEEP
 Sleep takes an integer value in milliseconds and blocks the execution until then
 ```bash
-SLEEP 500
+sleep 500
 ```
 
 #### CMD
 CMD takes first argument as executable path and others as param and simply runs it in os/exec
 ```bash
-CMD 'echo' 'microspector' into output
-MUST output equals 'microspector' "output does not equal microspector"
+cmd 'echo' 'microspector' into output
+must output equals 'microspector' "output does not equal microspector"
 ```
 
 #### ECHO
@@ -185,7 +185,7 @@ echo "name is %s it works since %d" name since
 ##### Async Commands
 Any command can be run in background using `ASYNC` keyword like;
 ```bash
-ASYNC HTTP POST "https://hooks.slack.com/services/SLACK_TOKEN"  HEADER "User-Agent:Microspector\nAccept: application/json\nContent-Type: application/json" BODY '{ "text":"Hello World!" }'
+async http post "https://hooks.slack.com/services/SLACK_TOKEN" header "User-Agent:Microspector\nAccept: application/json\nContent-Type: application/json" body '{ "text":"Hello World!" }'
 ```
 with `async`, commands does not allow `INTO` they just work and no return for them, async commands are good for making callbacks in background
 
