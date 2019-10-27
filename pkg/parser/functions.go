@@ -71,6 +71,36 @@ var Functions = template.FuncMap{
 	"format": func(format string, params ...interface{}) string {
 		return fmt.Sprintf(format, params...)
 	},
+	"sum": func(arr []interface{}) float64 {
+		if len(arr) == 0 {
+			return 0
+		}
+
+		total := 0.0
+		for _, val := range arr {
+			switch val.(type) {
+			case int, int32, int64, uint, uint32, uint64, float64, float32:
+				total = total + floatVal(val)
+			}
+		}
+
+		return total
+	},
+	"avg": func(arr []interface{}) float64 {
+		if len(arr) == 0 {
+			return 0
+		}
+
+		total := 0.0
+		for _, val := range arr {
+			switch val.(type) {
+			case int, int32, int64, uint, uint32, uint64, float64, float32:
+				total = total + floatVal(val)
+			}
+		}
+
+		return total / float64(len(arr))
+	},
 }
 
 func OpenSslRand(len int64, enc string) string {

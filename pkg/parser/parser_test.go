@@ -647,3 +647,18 @@ endif
 	assert.Equal(t, l.GlobalVars["ifcheckworkedagain"], true)
 	assert.Equal(t, l.GlobalVars["okallworked"], true)
 }
+
+
+func TestParser_AvgSum(t *testing.T) {
+	l := Parse(`
+set myarray [1,2,3,4,5,6,7,8,9,3]
+set mysum sum(myarray)
+set myavg avg(myarray)
+set myavg2 sum(myarray) / len(myarray) 
+`)
+
+	Run(l)
+	assert.Equal(t, l.GlobalVars["mysum"], float64(48))
+	assert.Equal(t, l.GlobalVars["myavg"], 4.8)
+	assert.Equal(t, l.GlobalVars["myavg2"], 4.8)
+}
