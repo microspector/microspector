@@ -47,6 +47,7 @@ ENDLOOP
 ELSE
 ENDIF
 IF
+NAVIGATE
 
 //http command tokens
 %token <val>
@@ -139,7 +140,7 @@ TYPE
 %type <cmd>
 	command
 	set_command
-        http_command
+    http_command
 	debug_command
 	end_command
 	assert_command
@@ -152,6 +153,8 @@ TYPE
 	command_cond
 	comm_in_loop
 	comm_in_if
+	chrome_commands
+	navigate_command
 
 %union{
 	expression Expression
@@ -264,6 +267,16 @@ command				:
                                 |echo_command
                                 |comm_in_loop
                                 |comm_in_if
+                                |chrome_commands
+
+chrome_commands     :   navigate_command
+
+navigate_command    :   NAVIGATE expr
+                    {
+                        $$ = &NavigateCommand{
+                            Url: $2,
+                        }
+                    }
 
 set_command			:
 				SET variable expr

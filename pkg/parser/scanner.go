@@ -73,6 +73,8 @@ var keywords = map[string]int{
 	"IF":         IF,
 	"ELSE":       ELSE,
 	"ENDIF":      ENDIF,
+	//Chrome things
+	"NAVIGATE": NAVIGATE,
 }
 
 func NewScanner(r io.Reader) *Scanner {
